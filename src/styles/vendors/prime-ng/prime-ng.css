@@ -1,0 +1,46 @@
+@import "./theme/light/p-toast.css";
+@import "./theme/light/p-tooltip.css";
+
+.p-overlaypanel:after,
+.p-overlaypanel:before {
+  @apply dark:border-b-dark-low;
+}
+
+.p-inputnumber-buttons-stacked .p-button.p-inputnumber-button-up,
+.p-inputnumber-buttons-stacked .p-button.p-inputnumber-button-down {
+  @apply border-slate-500 bg-light-low text-slate-500;
+}
+
+.p-inputnumber-buttons-stacked .p-button.p-inputnumber-button-up:hover,
+.p-inputnumber-buttons-stacked .p-button.p-inputnumber-button-down:hover {
+  @apply bg-light-lowest;
+}
+
+.dark .p-inputnumber-buttons-stacked .p-button.p-inputnumber-button-up,
+.dark .p-inputnumber-buttons-stacked .p-button.p-inputnumber-button-down {
+  @apply border-slate-500 bg-dark-low;
+}
+
+.dark .p-inputnumber-buttons-stacked .p-button.p-inputnumber-button-up:hover,
+.dark .p-inputnumber-buttons-stacked .p-button.p-inputnumber-button-down:hover {
+  @apply bg-dark-lowest;
+}
+
+.dark .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
+  @apply bg-slate-700 text-slate-200;
+}
+
+.p-dropdown-panel
+  .p-dropdown-items
+  .p-dropdown-item:not(.p-highlight):not(.p-disabled):hover {
+  @apply bg-slate-700 text-slate-200;
+}
+.p-component-overlay {
+  backdrop-filter: blur(3px);
+}
+.p-overlaypanel {
+  @apply bg-transparent;
+}
+.p-overlaypanel .p-overlaypanel-content {
+  @apply overflow-hidden rounded-md p-0;
+}

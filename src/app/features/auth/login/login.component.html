@@ -1,0 +1,120 @@
+<div
+  class="relative flex h-dvh w-full items-center justify-center overflow-hidden"
+>
+  <span class="text-gray-900 dark:text-white absolute bottom-5 left-5 text-sm"
+    >© 2024 Liszthoven. All Rights Reserved.</span
+  >
+  <span
+    class="absolute bottom-4 right-5 flex items-center text-sm text-gray-900 dark:text-white"
+    >Developed By
+    <span class="ml-1 font-bold text-blue-500"> Folxcode </span>
+    <img
+      src="images/logo/fc-white-blue.png"
+      alt="logofolxcode"
+      class="ml-2 w-7 rounded-full"
+    />
+  </span>
+  <img
+    src="images/bg/listzhoven-bg.PNG"
+    alt=""
+    class="absolute inset-0 -z-10 w-full h-full object-cover"
+  />
+  <form
+    [formGroup]="loginForm"
+    (ngSubmit)="submit()"
+    class="custom-shadow relative z-20 flex h-dvh w-full flex-col items-center justify-center rounded-lg bg-white dark:bg-gray-800 p-4 min-[574px]:p-9 sm:h-fit sm:w-[30rem] sm:justify-start"
+  >
+    <!-- Logo untuk Light Mode -->
+    <img
+      src="images/logo/logo-image.webp"
+      alt="logo-liszthoven"
+      class="mt-auto h-fit w-72 object-contain dark:hidden"
+    />
+
+    <!-- Logo untuk Dark Mode -->
+    <img
+      src="images/logo/logo-image-white.webp"
+      alt="logo-liszthoven"
+      class="mt-auto h-fit w-72 object-contain hidden dark:block"
+    />
+
+    <h1 class="mt-5 text-xl font-bold text-gray-900 dark:text-white">
+      Sign in to your account
+    </h1>
+
+    <div class="mt-9 flex w-full flex-col gap-4">
+      <!-- Username Input -->
+      <p-inputgroup
+        class="flex items-center border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-md px-3 py-2 gap-2"
+      >
+        <p-inputgroup-addon>
+          <fa-icon
+            class="text-gray-900 dark:text-white"
+            [icon]="faUser"
+            [fixedWidth]="true"
+          ></fa-icon>
+        </p-inputgroup-addon>
+        <input
+          class="w-full !text-black !placeholder-gray-500 dark:!text-white dark:!placeholder-gray-400"
+          pInputText
+          formControlName="username"
+          placeholder="Enter Your Username"
+        />
+      </p-inputgroup>
+
+      <!-- Password Input -->
+      <div
+        class="flex items-center border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-md gap-2 px-3 py-2"
+      >
+        <fa-icon
+          class="text-gray-900 dark:text-white"
+          [fixedWidth]="true"
+          [icon]="faKey"
+        ></fa-icon>
+
+        <input
+          [type]="isPasswordVisible ? 'text' : 'password'"
+          formControlName="password"
+          placeholder="Enter Your Password"
+          id="password"
+          class="w-full !text-black !placeholder-gray-500 dark:!text-white dark:!placeholder-gray-400 focus:outline-none focus:ring-0 focus:border-transparent"
+        />
+
+        <button
+          *ngIf="loginForm.get('password')?.value !== ''"
+          type="button"
+          (click)="togglePasswordVisibility()"
+        >
+          <fa-icon
+            class="text-gray-900 dark:text-white"
+            [icon]="isPasswordVisible ? faEyeSlash : faEye"
+          ></fa-icon>
+        </button>
+      </div>
+    </div>
+
+    <button
+      type="submit"
+      class="mt-6 w-full rounded-lg bg-blue-600 p-3 font-bold text-white duration-200 hover:bg-blue-700"
+    >
+      Continue
+    </button>
+
+    <div
+      class="mt-auto flex w-full flex-wrap items-center justify-center gap-3 text-sm min-[574px]:justify-between sm:hidden"
+    >
+      <span class="text-gray-900 dark:text-white"
+        >© 2024 Liszthoven. All Rights Reserved.</span
+      >
+      <span class="flex items-center text-sm"
+        >Developed By
+        <span class="ml-1 font-bold bg-blue-600"> Folxcode </span>
+        <img
+          src="images/logo/fc-white-blue.png"
+          alt="logofolxcode"
+          class="ml-2 w-7 rounded-full"
+        />
+      </span>
+    </div>
+  </form>
+</div>
