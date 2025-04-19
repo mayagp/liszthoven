@@ -93,6 +93,13 @@ export class LayoutService {
         name: 'Warehouse',
         visible: this.ability.can('read', 'warehouse'),
       },
+      {
+        icon_path_light: 'images/sidebar-icon/black/student.png',
+        icon_path_dark: 'images/sidebar-icon/white/student.png',
+        route: '/branch',
+        name: 'Branch',
+        visible: true,
+      },
     ];
   }
 }

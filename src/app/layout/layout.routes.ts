@@ -18,6 +18,13 @@ export const layoutRoutes: Routes = [
         loadChildren: () =>
           import('../features/staff/staff.routes').then((m) => m.staffRoutes),
       },
+      {
+        path: 'branch',
+        loadChildren: () =>
+          import('../features/branch/branch.routes').then(
+            (m) => m.branchRoutes,
+          ),
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

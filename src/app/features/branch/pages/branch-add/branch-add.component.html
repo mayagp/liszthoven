@@ -1,0 +1,49 @@
+<div class="flex h-full flex-col space-y-3 @container">
+  <app-fc-action-bar
+    [isHasBackButton]="true"
+    [actionButtons]="actionButtons"
+    [filterButtons]="filterButtons"
+  ></app-fc-action-bar>
+  <div class="body h-full w-full overflow-y-auto text-xs">
+    <form class="mx-auto mt-2 grid w-full gap-3" [formGroup]="branchForm">
+      <div class="grid gap-3 @lg:grid-cols-2">
+        <fc-input-text
+          title="Address"
+          formControlName="address"
+          placeholder="Enter Branch Address"
+        ></fc-input-text>
+        <fc-input-text
+          title="Email"
+          formControlName="email"
+          placeholder="Enter Email"
+        ></fc-input-text>
+        <fc-input-tel
+          title="Phone No"
+          formControlName="phone"
+          placeholder="Enter Phone Number"
+        ></fc-input-tel>
+        <fc-input-text
+          title="Electril Bill No"
+          formControlName="electric_bill_no"
+          placeholder="Enter Electric Bill No"
+        ></fc-input-text>
+        <fc-input-text
+          title="Water Bill No"
+          formControlName="water_bill_no"
+          placeholder="Enter Water Bill No"
+        ></fc-input-text>
+        <fc-input-text
+          title="Internet Bill No"
+          formControlName="internet_bill_no"
+          placeholder="Enter Internet Bill No"
+        ></fc-input-text>
+      </div>
+
+      <fc-textarea
+        title="Note"
+        formControlName="note"
+        placeholder="Enter Branch Note"
+      ></fc-textarea>
+    </form>
+  </div>
+</div>
