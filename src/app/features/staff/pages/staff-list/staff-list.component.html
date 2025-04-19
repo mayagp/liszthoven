@@ -1,0 +1,124 @@
+<div class="flex h-full gap-3 @container">
+  <div
+    class="flex h-full w-full flex-col gap-3 transition-all duration-700 ease-in-out @container"
+    [ngClass]="{
+      '@3xl:w-full': !quickView,
+      '@3xl:w-[20rem]': quickView,
+    }"
+  >
+    <app-fc-action-bar
+      [actionButtons]="actionButtons"
+      [filterButtons]="filterButtons"
+    ></app-fc-action-bar>
+    <div class="body flex h-full w-full gap-3 overflow-y-auto text-xs">
+      <!-- Data List -->
+      <ng-container *ngIf="!loading && staffs.length > 0">
+        <div class="w-full space-y-2 overflow-y-auto py-2">
+          <ng-container *ngFor="let staff of staffs">
+            <div
+              (dblclick)="
+                quickView ? onChangeStaff(staff) : navigateToDetail(staff)
+              "
+              [ngClass]="{
+                'border-sky-600 dark:border-sky-600':
+                  selectedStaff?.id == staff.id && quickView,
+              }"
+              class="fc-animate-translate-up flex w-full cursor-pointer flex-col items-center justify-between gap-3 rounded-md border border-zinc-100/70 bg-zinc-100/70 p-3 hover:border-sky-600 @3xl:flex-row dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600"
+            >
+              <div class="flex w-full items-center gap-3 @3xl:w-[200px]">
+                <div class="relative w-10">
+                  <img
+                    src="{{
+                      staff.user.profile_url ||
+                        'images/placeholder/dummy-photo.webp'
+                    }}"
+                    alt="{{ staff.user.name }}"
+                    class="h-10 w-10 rounded-full border object-cover"
+                  />
+
+                  <!-- Active Indicator -->
+                  <span
+                    [ngClass]="{
+                      'bg-green-500': staff.status == 0,
+                      'bg-red-500': staff.status != 0,
+                    }"
+                    class="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white"
+                  ></span>
+                </div>
+                <p class="flex-1">{{ staff.user.name }}</p>
+              </div>
+              <div class="flex w-full items-center gap-2 @3xl:w-[100px]">
+                <div
+                  class="px-3 py-2"
+                  [style]="'background-color:' + staff.color"
+                ></div>
+                <p>{{ staff.color }}</p>
+              </div>
+              <div class="flex w-full gap-3 @3xl:w-[150px]">
+                <fa-icon [fixedWidth]="true" [icon]="faPhone"></fa-icon>
+                <p>{{ staff.user.phone_no || "-" }}</p>
+              </div>
+              <div class="flex w-full gap-3 @3xl:w-[200px]">
+                <fa-icon [fixedWidth]="true" [icon]="faLocationDot"></fa-icon>
+                <p>{{ staff.user.address || "-" }}</p>
+              </div>
+              <div class="flex w-full gap-3 @3xl:flex-1">
+                <fa-icon [fixedWidth]="true" [icon]="faBuilding"></fa-icon>
+                <!-- <p>
+                    {{
+                      staff.business_units.length
+                        ? staff.business_units[0].company.name
+                        : '-'
+                    }}
+                    ({{
+                      staff.business_units.length
+                        ? staff.business_units[0].branch
+                          ? staff.business_units[0].branch?.address
+                          : '-'
+                        : '-'
+                    }})
+                  </p> -->
+              </div>
+              <div class="flex w-full justify-end @3xl:w-[150px]">
+                <button
+                  type="button"
+                  class="btn btn-high"
+                  (click)="navigateToDetail(staff)"
+                >
+                  <fa-icon [fixedWidth]="true" [icon]="faEye"></fa-icon>
+                </button>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="!loading && staffs.length == 0">
+        <div class="w-full py-[20vh] text-center">
+          <p>No data found</p>
+        </div>
+      </ng-container>
+      <div class="w-full py-[20vh] text-center" *ngIf="loading">
+        <!-- <fc-loading></fc-loading> -->
+      </div>
+    </div>
+    <div class="flex justify-end gap-3">
+      <div class="w-full @lg:w-96">
+        <!-- <fc-pagination
+            [rows]="rows"
+            [page]="page"
+            [totalPages]="totalPages"
+            [totalRecords]="totalRecords"
+            (onPageUpdate)="onPageUpdate($event)"></fc-pagination> -->
+      </div>
+    </div>
+  </div>
+  <!-- <div
+      class="hidden flex-1 @3xl:block"
+      *ngIf="selectedStaff && quickView && staffs.length > 0">
+      <app-staff-view
+        [staff]="selectedStaff"
+        [quickView]="quickView"
+        (onDeleted)="onDeleted()"
+        (onUpdated)="onUpdated($event)"></app-staff-view>
+    </div> -->
+</div>

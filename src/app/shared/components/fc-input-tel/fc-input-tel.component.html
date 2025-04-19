@@ -1,0 +1,106 @@
+<label
+  #targetEl
+  class="form-input flex items-center gap-2 rounded-lg border bg-white p-2 focus-within:border-sky-600/50 dark:bg-zinc-800 focus-within:dark:border-zinc-700"
+  [for]="uniqueId"
+  [ngClass]="{
+    'border-red-400': isInvalid,
+    'border-zinc-200 dark:border-zinc-700': !isInvalid,
+  }"
+>
+  <div class="flex flex-1 flex-col">
+    <p
+      class="m-0 block p-0 text-2xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+    >
+      {{ title }}
+    </p>
+    <div class="flex gap-1">
+      <div
+        *ngIf="countryCode"
+        (click)="fcDialog.toggle($event, targetEl)"
+        class="cursor-pointer rounded-md px-0.5 py-0 text-xs hover:bg-zinc-200 dark:hover:bg-zinc-700"
+      >
+        +{{ countryCode }}
+      </div>
+      <!--
+      <fc-select-option
+        class="flex-1"
+        [options]="CountryCodeList"
+        [(ngModel)]="countryCode"
+        [optionValue]="'value'"
+        [optionLabel]="'name'"
+        title="Duration"
+        [desktopView]="'overlay'"
+        [mobileView]="'dialog'" /> -->
+      <input
+        fcNumber
+        class="m-0 w-full bg-white p-0 text-xs ring-0 focus:outline-none focus:ring-0 dark:bg-zinc-800"
+        [type]="type"
+        [id]="uniqueId"
+        [(ngModel)]="value"
+        (input)="onValueChange(value)"
+        [disabled]="disabled"
+        [readonly]="readonly"
+        [placeholder]="placeholder"
+        (keypress)="validateNumber($event)"
+      />
+    </div>
+  </div>
+  <button
+    type="button"
+    class="text-xs"
+    (click)="chat()"
+    *ngIf="value != null && value != ''"
+  >
+    <fa-icon [icon]="faComments" [fixedWidth]="true"></fa-icon>
+  </button>
+  <button
+    type="button"
+    (click)="onRemoveValue()"
+    *ngIf="value != null && value != '' && !disabled && !readonly"
+  >
+    <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
+  </button>
+</label>
+<fc-dialog
+  #fcDialog
+  [title]="title"
+  [desktopView]="'overlay'"
+  [mobileView]="'overlay'"
+>
+  <div
+    class="flex w-full flex-col gap-2 bg-white py-2 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
+  >
+    <div class="search flex px-2">
+      <span class="p-input-icon-left w-full">
+        <input
+          pInputText
+          type="text"
+          class="p-input h-8 w-full text-xs"
+          [(ngModel)]="searchQuery"
+          [placeholder]="'Search Country'"
+          (input)="onSearchQueryChange()"
+        />
+        <i class="pi pi-search"></i>
+      </span>
+    </div>
+    <div
+      class="list h-[200px] min-w-[250px] overflow-auto rounded p-2 hover:border-transparent hover:ring-transparent"
+    >
+      <ng-container *ngFor="let countryCodeItem of countryCodeList">
+        <button
+          (click)="
+            onChangeCountryCode(countryCodeItem); fcDialog.toggle($event)
+          "
+          class="grid w-full cursor-pointer items-center gap-2 rounded-md border border-zinc-100/70 bg-zinc-100/70 p-2 text-left text-xs hover:border-sky-600 dark:border-zinc-800 dark:bg-neutral-900 hover:dark:border-sky-600"
+        >
+          <div class="flex gap-1">
+            <span class="w-10">+{{ countryCodeItem.dial_code }}</span>
+            <p>
+              {{ countryCodeItem.name }}
+            </p>
+          </div>
+        </button>
+      </ng-container>
+    </div>
+  </div>
+</fc-dialog>

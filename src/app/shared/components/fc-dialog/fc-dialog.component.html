@@ -1,0 +1,28 @@
+<p-overlayPanel appendTo="body" #overlayPanel my="right top" at="right bottom">
+  <ng-container *ngTemplateOutlet="contentTpl"></ng-container>
+</p-overlayPanel>
+<p-dialog
+  [(visible)]="showModal"
+  [modal]="true"
+  styleClass="max-w-[800px] w-full p-0 overflow-hidden"
+  [draggable]="false"
+  [resizable]="false"
+  [showHeader]="false"
+  appendTo="body"
+>
+  <div
+    class="rounded-lg bg-light-highest py-2 backdrop-blur-sm dark:bg-dark-low"
+  >
+    <div class="flex items-center px-2">
+      <h3 class="flex-1 text-sm font-medium">{{ title }}</h3>
+      <button
+        class="rounded-md p-1 hover:bg-light-lowest hover:dark:bg-dark-lowest"
+        (click)="showModal = false"
+      >
+        <fa-icon [fixedWidth]="true" [icon]="faTimes"></fa-icon>
+      </button>
+    </div>
+    <ng-container *ngTemplateOutlet="contentTpl"></ng-container>
+  </div>
+</p-dialog>
+<ng-template #contentTpl><ng-content></ng-content></ng-template>

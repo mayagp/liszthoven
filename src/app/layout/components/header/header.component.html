@@ -1,0 +1,193 @@
+<div class="@container">
+  <div class="flex flex-wrap items-center gap-3 p-3 @xl:flex-nowrap @xl:p-5">
+    <div class="flex flex-1 items-center">
+      <button
+        [ngClass]="{
+          'w-0 scale-0 p-0': showSidebar,
+          'mr-2 scale-100 p-2': !showSidebar,
+        }"
+        type="button"
+        (click)="toggleSidebar()"
+        class="flex rounded-lg bg-white transition-all duration-500 ease-in-out hover:bg-zinc-200 dark:bg-neutral-900"
+      >
+        <fa-icon class="text-xs" [fixedWidth]="true" [icon]="faBars"></fa-icon>
+      </button>
+      <h1 class="flex-1 text-lg font-bold" *ngIf="headerConfig?.title">
+        {{ headerConfig?.title }}
+      </h1>
+    </div>
+    <div
+      class="order-last flex w-full @xl:order-none @xl:w-[300px]"
+      *ngIf="!searchConfig.hide"
+    >
+      <label
+        for="searchInput"
+        class="relative flex w-full items-center gap-1 rounded-md bg-zinc-100/70 p-2 text-xs dark:bg-zinc-800"
+      >
+        <fa-icon
+          class="dark:text-gray-600"
+          [icon]="searchConfig.loading ? faCircleNotch : faSearch"
+          [fixedWidth]="true"
+        ></fa-icon>
+        <input
+          id="searchInput"
+          type="text"
+          class="flex-1 bg-zinc-100/70 text-xs ring-0 focus:outline-none focus:ring-0 dark:bg-zinc-800"
+          placeholder="Cari"
+          [(ngModel)]="searchConfig.searchQuery"
+          (onEvent)="onSearch()"
+          [disabled]="searchConfig.disabled"
+          (keyup.enter)="onSearchEnter()"
+        />
+        <button
+          *ngIf="searchConfig.featureName"
+          type="button"
+          class="rounded-md bg-sky-600 p-0.5 px-2 text-2xs capitalize text-white dark:bg-sky-900 md:truncate"
+          [pTooltip]="searchConfig.featureName"
+        >
+          {{ searchConfig.featureName }}
+        </button>
+      </label>
+    </div>
+    <a
+      routerLink="/notification"
+      class="fc-animate-translate-up relative flex items-center justify-center gap-1 rounded-xl bg-sky-600 px-3 py-2 text-2xs text-white dark:bg-sky-900"
+    >
+      <fa-icon [icon]="faBell"></fa-icon>
+      <span *ngIf="notificationsCount" class="text-xs">{{
+        notificationsCount | number
+      }}</span>
+      <span
+        *ngIf="notificationsCount"
+        class="absolute -right-0.5 -top-0.5 h-3 w-3 animate-pulse rounded-full bg-red-500"
+      ></span>
+    </a>
+    <div class="flex gap-2" (click)="visible = true">
+      <button
+        (click)="(userDrawer)"
+        type="button"
+        class="fc-animate-translate-up flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-sky-600 text-2xs text-white dark:bg-sky-900"
+      >
+        <fa-icon *ngIf="false" [icon]="faUser"></fa-icon>
+        <img
+          *ngIf="true"
+          class="h-full w-full object-cover"
+          src="images/placeholder/dummy-photo.webp"
+          alt=""
+          srcset=""
+        />
+      </button>
+      <div class="hidden @4xl:block">
+        <p class="text-xs">{{ user.name }}</p>
+        <p class="text-[0.65rem]">{{ user.staff.role_name }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-drawer #userDrawer [(visible)]="visible" position="right" [closable]="false">
+  <div
+    class="h-full w-full overflow-y-auto rounded-l-xl bg-white text-xs [backdrop-filter:blur(3px)] dark:bg-neutral-900/80 dark:text-white"
+  >
+    <div class="header px-4 py-6 pb-3">
+      <div class="flex items-center gap-2">
+        <button
+          class="md:hidden"
+          type="button"
+          type="submit"
+          (click)="visible = false"
+        >
+          <fa-icon [icon]="faChevronLeft" [fixedWidth]="true"></fa-icon>
+        </button>
+        <img
+          class="aspect-square w-8 rounded-lg"
+          src="images/placeholder/dummy-photo.webp"
+          alt=""
+        />
+        <div>
+          <p class="text-xs">{{ user.name }}</p>
+          <p class="text-[0.65rem] text-gray-500">{{ user.staff.role_name }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="menus mb-3 px-2">
+      <div class="md:hidden">
+        <button
+          type="button"
+          class="flex w-full gap-3 rounded-md px-2 py-2 text-left hover:bg-zinc-100/70 dark:hover:bg-zinc-800"
+          (click)="showMenus = !showMenus"
+        >
+          <fa-icon [icon]="faBars"></fa-icon>
+          <span class="flex-1"> Menu </span>
+          <div
+            class="transition-all duration-500 ease-in-out"
+            [ngClass]="{
+              'rotate-180': showMenus,
+              'rotate-0': !showMenus,
+            }"
+          >
+            <fa-icon [fixedWidth]="true" [icon]="faChevronDown"></fa-icon>
+          </div>
+        </button>
+        <div class="ml-6">
+          <div
+            class="themes overflow-hidden transition-all ease-in-out"
+            [ngClass]="{
+              'h-0 duration-500': !showMenus,
+              'h-fit duration-300': showMenus,
+            }"
+          >
+            <div
+              class="options transition duration-500 ease-in-out"
+              [ngClass]="{
+                '-translate-y-full ': !showMenus,
+                ' delay-75': showMenus,
+              }"
+            >
+              <ng-container *ngFor="let menu of menus">
+                <ng-container *ngIf="!menu.parentRoute">
+                  <button
+                    type="button"
+                    class="flex w-full gap-3 rounded-md px-2 py-2 text-left hover:bg-zinc-100/70 dark:hover:bg-zinc-800"
+                    [routerLink]="[menu.route]"
+                    (click)="userDrawer.hide()"
+                  >
+                    {{ menu.name }}
+                  </button>
+                </ng-container>
+                <ng-container *ngIf="menu.parentRoute">
+                  <button
+                    type="button"
+                    class="flex w-full gap-3 rounded-md px-2 py-2 text-left hover:bg-zinc-100/70 dark:hover:bg-zinc-800"
+                    [routerLink]="[subMenu.route]"
+                    (click)="userDrawer.hide()"
+                    *ngFor="let subMenu of menu.subMenus"
+                  >
+                    {{ subMenu.name }}
+                  </button>
+                </ng-container>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- <button
+          type="button"
+          class="flex w-full gap-3 rounded-md px-2 py-2 text-left hover:bg-zinc-100/70 dark:hover:bg-zinc-800"
+          [routerLink]="['/setting']"
+          (click)="userDrawer.hide()">
+          <fa-icon [icon]="faCog"></fa-icon>
+          Pengaturan
+        </button> -->
+      <button
+        type="button"
+        class="flex w-full gap-3 rounded-md px-2 py-2 text-left hover:bg-zinc-100/70 dark:hover:bg-zinc-800"
+        (click)="logout()"
+      >
+        <fa-icon [icon]="faPowerOff"></fa-icon>
+        Logout
+      </button>
+    </div>
+  </div>
+</p-drawer>

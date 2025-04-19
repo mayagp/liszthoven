@@ -1,0 +1,94 @@
+<div
+  class="flex h-full w-full flex-col gap-1 bg-light-highest p-1 dark:bg-dark-high"
+>
+  <div class="bg-primary-main/20 flex rounded-md p-2 text-primary-light">
+    <p class="flex-1">Selected Date:</p>
+    <ng-container *ngIf="type == 'single'">
+      <p class="font-medium" *ngIf="value">
+        {{ value | date: "dd-MM-yyyy" }}
+      </p>
+    </ng-container>
+    <ng-container *ngIf="type == 'range'">
+      <p class="font-medium">
+        <ng-container
+          *ngIf="
+            (selectionDates[0] | date: 'dd-MM-yyyy') ==
+            (selectionDates[1] | date: 'dd-MM-yyyy')
+          "
+          >{{ selectionDates[0] | date: "dd-MM-yyyy" }}</ng-container
+        >
+        <ng-container
+          *ngIf="
+            (selectionDates[0] | date: 'dd-MM-yyyy') !=
+            (selectionDates[1] | date: 'dd-MM-yyyy')
+          "
+          >{{
+            (selectionDates[0] | date: "yyyy") != "1970"
+              ? (selectionDates[0] | date: "dd-MM-yyyy") +
+                (selectionDates[1]
+                  ? " - " + (selectionDates[1] | date: "dd-MM-yyyy")
+                  : "")
+              : "Maximum"
+          }}</ng-container
+        >
+      </p>
+    </ng-container>
+  </div>
+  <div class="space-y-2">
+    <ng-container *ngIf="type == 'range'">
+      <p-calendar
+        styleClass="w-full"
+        [selectionMode]="type"
+        [readonlyInput]="true"
+        [inputId]="uniqueId"
+        [(ngModel)]="selectionDates"
+        [ngModelOptions]="{ standalone: true }"
+        [inline]="true"
+        [numberOfMonths]="1"
+      >
+      </p-calendar>
+    </ng-container>
+    <ng-container *ngIf="type == 'single'">
+      <p-calendar
+        styleClass="w-full"
+        [readonlyInput]="true"
+        [inputId]="uniqueId"
+        [(ngModel)]="value"
+        [showButtonBar]="true"
+        [showButtonBar]="false"
+        [inline]="true"
+      ></p-calendar>
+    </ng-container>
+  </div>
+  <div class="flex-1">
+    <div class="grid grid-cols-3 gap-3">
+      <button
+        autofocus
+        type="button"
+        class="hover:bg-primary-main rounded border border-primary-light p-2 text-center text-xs text-primary-light"
+        *ngFor="let preset of presetDates"
+        (click)="datePreset(preset.dateRange)"
+      >
+        {{ preset.label }}
+      </button>
+    </div>
+  </div>
+  <div class="grid items-center gap-3">
+    <div class="flex gap-2">
+      <button
+        type="button"
+        class="w-full items-center gap-2 rounded-md border border-primary-light p-3 font-medium text-primary-light"
+        (click)="resetDate()"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="w-full items-center gap-2 rounded-md bg-primary-light p-3 font-medium text-slate-50"
+        (click)="setDate()"
+      >
+        Set Date
+      </button>
+    </div>
+  </div>
+</div>

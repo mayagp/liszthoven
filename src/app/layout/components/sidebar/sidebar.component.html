@@ -1,0 +1,90 @@
+<div class="flex h-screen flex-1 flex-col bg-[#f8f9fa] dark:bg-[#1f2125]">
+  <div class="flex items-center gap-3 p-5">
+    <div class="flex-1">
+      <img
+        src="images/logo/logo-image.webp"
+        alt="logo-liszthoven"
+        class="h-6 translate-x-5 scale-[1.8] object-contain dark:hidden"
+      />
+
+      <!-- Logo untuk Dark Mode -->
+      <img
+        src="images/logo/logo-image-white.webp"
+        alt="logo-liszthoven"
+        class="h-6 translate-x-5 scale-[1.8] object-contain hidden dark:block"
+      />
+    </div>
+
+    <button
+      type="button"
+      (click)="toggleSidebar()"
+      class="btn-high flex rounded-lg px-3 py-2"
+    >
+      <fa-icon class="text-xs" [icon]="faChevronLeft"></fa-icon>
+      <fa-icon class="text-xs" [icon]="faChevronLeft"></fa-icon>
+    </button>
+  </div>
+  <div class="h-full flex-1 overflow-y-auto">
+    <nav aria-label="Sidebar">
+      <div
+        *ngFor="let mainMenu of mainMenus"
+        class="relative w-full items-center text-xs"
+      >
+        <ng-container *ngIf="mainMenu.visible">
+          <a
+            (click)="
+              !mainMenu.subMenus
+                ? ''
+                : (mainMenu.showRoutes = !mainMenu.showRoutes)
+            "
+            class="relative flex cursor-pointer items-center px-5 py-2 hover:bg-sky-700 hover:text-white dark:hover:bg-sky-900"
+            [routerLink]="mainMenu.route"
+            routerLinkActive=" [&>.indicator]:flex-1 bg-sky-600 dark:bg-sky-900 text-white"
+          >
+            <!-- Icons -->
+            <div class="w-7">
+              <img class="w-4 dark:hidden" [src]="mainMenu.icon_path_light" />
+              <img
+                class="w-4 hidden dark:block"
+                [src]="mainMenu.icon_path_dark"
+              />
+            </div>
+            <div class="flex-1 dark:text-white">{{ mainMenu.name }}</div>
+            <div
+              *ngIf="mainMenu.subMenus"
+              class="fc-animate-scale"
+              [ngClass]="{ 'rotate-180': !mainMenu.showRoutes }"
+            >
+              <fa-icon [icon]="faChevronUp"></fa-icon>
+            </div>
+            <span
+              class="indicator absolute left-0 top-0 hidden h-full w-2 bg-sky-700 dark:bg-sky-700"
+            ></span>
+          </a>
+          <div
+            class="mx-7 my-1"
+            *ngIf="mainMenu.showRoutes && mainMenu.subMenus"
+          >
+            <ng-container *ngFor="let subMenu of mainMenu.subMenus">
+              <a
+                *ngIf="subMenu.visible"
+                class="block cursor-pointer rounded-md px-2 py-2 dark:text-white hover:bg-zinc-200 dark:hover:bg-zinc-500"
+                [routerLink]="subMenu.route"
+                routerLinkActive=" dark:text-white bg-zinc-200 dark:bg-zinc-500"
+              >
+                {{ subMenu.name }}
+              </a>
+            </ng-container>
+          </div>
+        </ng-container>
+      </div>
+    </nav>
+  </div>
+
+  <div class="px-4 py-3">
+    <p class="block text-center text-xs">
+      © 2023 Listzhoven Administration System
+    </p>
+    <p class="block text-center text-xs">Design and Developed by Folxcode</p>
+  </div>
+</div>

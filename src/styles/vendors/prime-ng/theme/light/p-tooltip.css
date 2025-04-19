@@ -1,7 +1,7 @@
 .p-tooltip {
-  @apply text-2xs;
+  @apply text-[0.65rem];
 }
 
 .p-tooltip .p-tooltip-text {
-  @apply bg-light-lowest px-3 py-1 text-dark-lowest dark:bg-dark-lowest dark:text-light-lowest;
+  @apply bg-[#e5e7eb] px-3 py-1 text-[#414246] dark:bg-[#414246] dark:text-[#e5e7eb];
 }

@@ -1,12 +1,24 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from '../core/guard/auth.guard';
 import { DashboardComponent } from '../features/dashboard/dashboard.component';
+import { LayoutComponent } from './layout.component';
 
 export const layoutRoutes: Routes = [
   {
-    path: 'dashboard',
-    canActivate: [AuthGuard],
-    component: DashboardComponent,
+    path: '',
+    component: LayoutComponent, // Tambahkan LayoutComponent
+    children: [
+      {
+        path: 'dashboard',
+        canActivate: [AuthGuard],
+        component: DashboardComponent,
+      },
+      {
+        path: 'staff',
+        loadChildren: () =>
+          import('../features/staff/staff.routes').then((m) => m.staffRoutes),
+      },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+    ],
   },
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' }, // Default ke login
 ];

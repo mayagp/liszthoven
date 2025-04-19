@@ -3,27 +3,27 @@
 
 .p-overlaypanel:after,
 .p-overlaypanel:before {
-  @apply dark:border-b-dark-low;
+  @apply dark:border-b-[#1F2125];
 }
 
 .p-inputnumber-buttons-stacked .p-button.p-inputnumber-button-up,
 .p-inputnumber-buttons-stacked .p-button.p-inputnumber-button-down {
-  @apply border-slate-500 bg-light-low text-slate-500;
+  @apply border-slate-500 bg-[#F8F9FA] text-slate-500;
 }
 
 .p-inputnumber-buttons-stacked .p-button.p-inputnumber-button-up:hover,
 .p-inputnumber-buttons-stacked .p-button.p-inputnumber-button-down:hover {
-  @apply bg-light-lowest;
+  @apply bg-[#e5e7eb];
 }
 
 .dark .p-inputnumber-buttons-stacked .p-button.p-inputnumber-button-up,
 .dark .p-inputnumber-buttons-stacked .p-button.p-inputnumber-button-down {
-  @apply border-slate-500 bg-dark-low;
+  @apply border-slate-500 bg-[#1F2125];
 }
 
 .dark .p-inputnumber-buttons-stacked .p-button.p-inputnumber-button-up:hover,
 .dark .p-inputnumber-buttons-stacked .p-button.p-inputnumber-button-down:hover {
-  @apply bg-dark-lowest;
+  @apply bg-[#414246];
 }
 
 .dark .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {

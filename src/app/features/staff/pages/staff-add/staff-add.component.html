@@ -1,0 +1,316 @@
+<div class="flex h-full flex-col space-y-3">
+  <app-fc-action-bar
+    [isHasBackButton]="true"
+    [actionButtons]="actionButtons"
+  ></app-fc-action-bar>
+  <div class="body h-full w-full overflow-y-auto py-5 text-xs @container">
+    <form [formGroup]="registerForm" class="grid w-full gap-3 @xl:grid-cols-2">
+      <fc-input-text
+        title="First Name"
+        formControlName="first_name"
+        placeholder="Enter Your First Name"
+      />
+      <fc-input-text
+        title="Middle Name"
+        formControlName="middle_name"
+        placeholder="Enter Your Middle Name"
+      />
+      <fc-input-text
+        title="Last Name"
+        formControlName="last_name"
+        placeholder="Enter Your Last Name"
+      />
+      <ng-container formGroupName="staff">
+        <fc-input-text
+          title="Identification Number"
+          formControlName="identification_number"
+          placeholder="Enter Your Identification Number"
+        />
+        <!-- <div
+            class="form-input flex flex-1 cursor-pointer items-center rounded-lg border border-light-lowest bg-light-high p-2 dark:border-dark-lowest dark:bg-dark-low dark:hover:bg-dark-lowest">
+            <div class="flex flex-1 flex-col" (click)="onSelectTaxCategory()">
+              <p
+                class="m-0 block p-0 text-2xs font-medium leading-5 text-dark-lowest dark:text-white/60">
+                Tax Category
+              </p>
+              <p *ngIf="staffForm.value.tax_category" class="text-xs">
+                {{ staffForm.value.tax_category.name }}
+              </p>
+              <p
+                *ngIf="!staffForm.value.tax_category"
+                class="text-xs dark:text-gray-400">
+                Select Tax Category
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button
+                *ngIf="staffForm.value.tax_category"
+                type="button"
+                (click)="onRemoveTaxCategory()">
+                <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
+              </button>
+              <button type="button" (click)="onSelectTaxCategory()">
+                <fa-icon [fixedWidth]="true" [icon]="faChevronDown"></fa-icon>
+              </button>
+            </div>
+          </div> -->
+        <fc-input-text
+          title="Tax Number"
+          formControlName="tax_number"
+          placeholder="Enter Your Tax Number"
+        />
+        <fc-input-text
+          title="BPJS Number"
+          formControlName="bpjs_number"
+          placeholder="Enter Your BPJS Number"
+        />
+        <!-- <fc-datepicker title="Working Since" formControlName="working_since" /> -->
+        <!-- <fc-select-option
+            [options]="maritalStatus"
+            formControlName="marital_status"
+            [optionValue]="'id'"
+            [optionLabel]="'label'"
+            title="Marital Status"
+            [placeholder]="'Select Marital Status'"
+            [desktopView]="'overlay'"
+            [mobileView]="'dialog'" />
+          <fc-select-option
+            [options]="religion"
+            formControlName="religion"
+            [optionValue]="'id'"
+            [optionLabel]="'label'"
+            title="Religion"
+            [placeholder]="'Select Religion'"
+            [desktopView]="'overlay'"
+            [mobileView]="'dialog'" /> -->
+      </ng-container>
+      <fc-input-text
+        title="Address"
+        formControlName="address"
+        placeholder="Enter Your Address"
+      ></fc-input-text>
+      <fc-input-text
+        title="Email"
+        formControlName="email"
+        placeholder="Enter Your Email"
+      ></fc-input-text>
+      <fc-input-tel
+        title="Phone Number"
+        formControlName="phone_no"
+        placeholder="Enter Your Phone Number"
+      >
+      </fc-input-tel>
+
+      <ng-container formGroupName="staff">
+        <!-- <fc-select-option
+            [options]="roles"
+            formControlName="role"
+            [optionValue]="'id'"
+            [optionLabel]="'label'"
+            title="Role Name"
+            [placeholder]="'Select Role Name'"
+            [desktopView]="'overlay'"
+            [mobileView]="'dialog'" /> -->
+        <div *ngIf="isTeacherRole">
+          <div formGroupName="teacher">
+            <!-- <fc-select-option
+                [options]="teacherTypes"
+                formControlName="type"
+                [optionValue]="'value'"
+                [optionLabel]="'label'"
+                title="Teacher Type"
+                [placeholder]="'Select Teacher Type'"
+                [desktopView]="'overlay'"
+                [mobileView]="'dialog'" /> -->
+          </div>
+        </div>
+        <div class="@xl:col-span-2">
+          <fc-textarea
+            title="Note"
+            formControlName="note"
+            placeholder="Enter Staff Note"
+          ></fc-textarea>
+        </div>
+      </ng-container>
+      <!-- Upload Document -->
+      <!-- <div class="@xl:col-span-2">
+          <fc-file-input
+            *ngIf="!documentFilesArray.length"
+            [multiple]="true"
+            (onInput)="addMultipleFiles($event)">
+            <div
+              class="flex h-[200px] flex-col items-center justify-center gap-2 overflow-y-auto rounded-md border bg-light-low p-5 dark:border-dark-low dark:bg-dark-low">
+              <fa-icon class="text-3xl" [icon]="faCloudArrowUp" />
+              <p>Drag or Upload Documents Here</p>
+            </div>
+          </fc-file-input>
+        </div> -->
+      <!-- <div
+          *ngIf="documentFilesArray.length"
+          class="flex h-[200px] flex-col gap-2 rounded-md bg-light-low p-2 @xl:col-span-2 dark:bg-dark-low">
+          <div class="h-[180px] flex-1 overflow-y-auto">
+            <div class="grid gap-1 @md:grid-cols-2 @3xl:grid-cols-3">
+              <ng-container formArrayName="user_documents">
+                <ng-container
+                  *ngFor="
+                    let document of documentFilesArray.controls;
+                    let i = index
+                  "
+                  [formGroupName]="i">
+                  <div
+                    class="flex w-full items-center justify-between gap-2 rounded-md bg-light-highest p-2 dark:border-dark-highest dark:bg-dark-highest">
+                    <div class="flex w-full items-center gap-2">
+                      <div
+                        *ngIf="
+                          fileType(documentFilesArray.value[i].file_type) ==
+                          'file'
+                        "
+                        class="flex cursor-pointer items-center justify-center rounded-md bg-light-low p-2 hover:bg-light-lowest dark:bg-dark-low dark:hover:bg-dark-lowest">
+                        <fa-icon [icon]="faFile" />
+                      </div>
+                      <ng-container
+                        *ngIf="
+                          fileType(documentFilesArray.value[i].file_type) ==
+                          'image'
+                        ">
+                        <fc-image-preview
+                          class="w-[70px]"
+                          [preview]="true"
+                          [src]="documentFilesArray.value[i].src">
+                        </fc-image-preview>
+                      </ng-container>
+                      <div
+                        *ngIf="
+                          fileType(documentFilesArray.value[i].file_type) == 'pdf'
+                        "
+                        class="flex cursor-pointer items-center justify-center rounded-md bg-light-low p-2 hover:bg-light-lowest dark:bg-dark-low dark:hover:bg-dark-lowest">
+                        PDF
+                      </div>
+                      <div
+                        *ngIf="
+                          documentFilesArray.value[i].inputChangeName == false
+                        "
+                        class="space-y-1">
+                        <p class="text-md ]">
+                          {{ documentFilesArray.value[i].name }}
+                        </p>
+                        <p class="text-2xs text-slate-400">
+                          {{ documentFilesArray.value[i].note }}
+                        </p>
+                      </div>
+                      <div class="space-y-1">
+                        <label
+                          *ngIf="documentFilesArray.value[i].inputChangeName"
+                          class="form-input flex w-full items-center gap-2 rounded-lg border border-light-lowest bg-light-high p-2 focus-within:border-primary-light/50 dark:border-dark-lowest dark:bg-dark-low focus-within:dark:border-dark-lowest">
+                          <div class="flex flex-1 flex-col">
+                            <input
+                              class="m-0 w-full bg-light-high p-0 text-xs ring-0 focus:outline-none focus:ring-0 dark:bg-dark-low"
+                              type="text"
+                              formControlName="name"
+                              placeholder="Enter Document Name" />
+                          </div>
+                        </label>
+                        <label
+                          *ngIf="documentFilesArray.value[i].inputChangeName"
+                          class="form-input flex w-full items-center gap-2 rounded-lg border border-light-lowest bg-light-high p-2 focus-within:border-primary-light/50 dark:border-dark-lowest dark:bg-dark-low focus-within:dark:border-dark-lowest">
+                          <div class="flex flex-1 flex-col">
+                            <input
+                              class="m-0 w-full bg-light-high p-0 text-xs ring-0 focus:outline-none focus:ring-0 dark:bg-dark-low"
+                              type="text"
+                              formControlName="note"
+                              placeholder="Enter Document Name" />
+                          </div>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <button
+                        (click)="changeDocumentName(i)"
+                        type="button"
+                        class="flex items-center justify-center rounded-md bg-light-low p-2 hover:bg-light-lowest dark:border-dark-low dark:bg-dark-low hover:dark:bg-dark-lowest">
+                        <fa-icon
+                          [icon]="
+                            documentFilesArray.value[i].inputChangeName
+                              ? faFloppyDisk
+                              : faPencil
+                          " />
+                      </button>
+                      <button
+                        (click)="removeDocument(i)"
+                        type="button"
+                        class="flex items-center justify-center rounded-md p-2 hover:bg-light-lowest hover:dark:bg-dark-lowest">
+                        <fa-icon [icon]="faXmark" />
+                      </button>
+                    </div>
+                  </div>
+                </ng-container>
+              </ng-container>
+            </div>
+          </div>
+          <fc-file-input [multiple]="true" (onInput)="addMultipleFiles($event)">
+            <div
+              class="flex w-full items-center justify-center gap-2 rounded-md bg-light-highest px-2 py-3 dark:bg-dark-highest">
+              <fa-icon
+                class="text-md"
+                [fixedWidth]="true"
+                [icon]="faCloudArrowUp" />
+              Upload More
+            </div>
+          </fc-file-input>
+        </div> -->
+
+      <!-- Business Unit Data -->
+      <div class="flex-1 @xl:col-span-2">
+        <div class="mb-3 flex items-center justify-between">
+          <p class="text-sm">Branches</p>
+          <!-- <button
+              type="button"
+              (click)="onAddBusinessUnit()"
+              class="fc-animate-translate-up flex gap-1 text-xs">
+              <fa-icon class="" [icon]="faPlus"></fa-icon>
+              Add Branch
+            </button> -->
+        </div>
+        <div
+          class="flex h-full items-center justify-center"
+          *ngIf="businessUnitsForm.value.length == 0"
+        >
+          <div class="text-center text-sm">
+            <fa-icon class="" [icon]="faBoxOpen"></fa-icon>
+            Empty Branches
+          </div>
+        </div>
+        <div *ngIf="businessUnitsForm.value" class="grid gap-2">
+          <ng-container
+            *ngFor="let businessUnit of businessUnitsForm.value; let i = index"
+          >
+            <div
+              class="fc-animate-translate-up flex w-full cursor-pointer items-center justify-between rounded-md border border-light-low bg-light-low p-2 hover:border-primary-light dark:border-dark-low dark:bg-dark-low hover:dark:border-primary-light"
+            >
+              <div class="flex-1">
+                <div class="flex gap-2">
+                  <fa-icon class="" [icon]="faBuilding"></fa-icon>
+                  <!-- <p>{{ businessUnit.company.name }}</p> -->
+                  <p>Liszthoven</p>
+                </div>
+                <div class="flex gap-2">
+                  <fa-icon class="" [icon]="faLocationDot"></fa-icon>
+                  <p>{{ businessUnit.branch?.address }}</p>
+                </div>
+              </div>
+              <div class="flex justify-end gap-2">
+                <button
+                  type="button"
+                  class="btn btn-high"
+                  (click)="removeBusinessUnit(i)"
+                >
+                  <fa-icon [fixedWidth]="true" [icon]="faTrash"></fa-icon>
+                </button>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

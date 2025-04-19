@@ -3,10 +3,10 @@
 }
 
 .p-toast .p-toast-message .p-toast-message-content {
-  @apply border-none p-3 text-2xs;
+  @apply border-none p-3 text-[0.65rem];
 }
 .p-toast .p-toast-message.p-toast-message-error {
-  @apply border-none bg-light-low text-gray-600;
+  @apply border-none bg-[#F8F9FA] text-gray-600;
 }
 .p-toast .p-toast-message.p-toast-message-success {
   @apply border-l-8 border-solid border-emerald-400 bg-white text-emerald-500;
@@ -26,11 +26,11 @@
   @apply h-3 w-3;
 }
 .p-toast .p-toast-message {
-  @apply dark:bg-dark-low dark:text-slate-200;
+  @apply dark:bg-[#1F2125] dark:text-slate-200;
 }
 
 .p-toast .p-toast-message.p-toast-message-success {
-  @apply border-none text-gray-600 dark:bg-dark-low dark:text-slate-200;
+  @apply border-none text-gray-600 dark:bg-[#1F2125] dark:text-slate-200;
 }
 .p-toast
   .p-toast-message.p-toast-message-success

@@ -22,8 +22,9 @@ export class AuthService {
     private ability: PureAbility,
   ) {
     this.currentUserTokensSubject = new BehaviorSubject(
-      JSON.parse(localStorage.getItem('access_token') as string),
+      localStorage.getItem('access_token') || '',
     );
+    console.log(localStorage.getItem('access_token'));
     this.currentUserDataSubject = new BehaviorSubject(
       JSON.parse(localStorage.getItem('user') as string),
     );
@@ -42,10 +43,7 @@ export class AuthService {
       map((res: any) => {
         if (res.statusCode == 200) {
           // set cookie
-          localStorage.setItem(
-            'access_token',
-            JSON.stringify(res.data.access_token),
-          );
+          localStorage.setItem('access_token', res.data.access_token);
           this.currentUserTokensSubject.next(res.data.access_token);
           localStorage.setItem('user', JSON.stringify(res.data.user));
           this.currentUserDataSubject.next(res.data.user);

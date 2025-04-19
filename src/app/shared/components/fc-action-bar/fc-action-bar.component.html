@@ -1,0 +1,113 @@
+<div
+  class="action flex gap-3 rounded-lg bg-zinc-100/70 px-3 py-1 text-xs @container dark:bg-zinc-800"
+>
+  <div class="flex flex-1 items-center gap-3">
+    <button
+      *ngIf="isHasBackButton"
+      type="button"
+      (click)="back()"
+      class="btn btn-high"
+      tooltipPosition="bottom"
+      pTooltip="Back"
+      [showDelay]="1000"
+    >
+      <fa-icon [fixedWidth]="true" [icon]="faChevronLeft"></fa-icon>
+    </button>
+    <ng-container *ngFor="let actionButton of actionButtons">
+      <button
+        *ngIf="!actionButton.route && !actionButton.hidden"
+        type="button"
+        class="hidden gap-1 rounded-lg p-2 hover:bg-zinc-200 @lg:flex dark:hover:bg-zinc-700"
+        (click)="actionButton.action()"
+        [ngClass]="{ 'opacity-50': actionButton.loading }"
+      >
+        <fa-icon
+          [icon]="faSpinner"
+          [fixedWidth]="true"
+          class="fa-spin"
+          *ngIf="actionButton.loading"
+        ></fa-icon>
+        <fa-icon
+          [icon]="actionButton.icon"
+          *ngIf="!actionButton.loading"
+        ></fa-icon>
+        {{ actionButton.label }}
+      </button>
+      <a
+        *ngIf="actionButton.route && !actionButton.hidden"
+        [routerLink]="actionButton.route"
+      >
+        <div
+          class="flex gap-1 rounded-lg p-2 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+        >
+          <fa-icon [fixedWidth]="true" [icon]="actionButton.icon"></fa-icon>
+          {{ actionButton.label }}
+        </div>
+      </a>
+    </ng-container>
+    <button
+      *ngIf="hiddenActionButtons.length > 0"
+      type="button"
+      class="flex gap-1 rounded-lg p-2 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+    >
+      <fa-icon [fixedWidth]="true" [icon]="faEllipsisVertical"></fa-icon>
+    </button>
+  </div>
+  <div class="flex items-center gap-2">
+    <ng-container *ngFor="let filterButton of filterButtons">
+      <button
+        (click)="filterButton.action()"
+        type="button"
+        class="btn btn-high"
+        [ngClass]="{
+          'hidden md:block': filterButton.mobileHidden,
+        }"
+        tooltipPosition="bottom"
+        [pTooltip]="filterButton.label"
+      >
+        <fa-icon [fixedWidth]="true" [icon]="filterButton.icon"></fa-icon>
+      </button>
+    </ng-container>
+    <button
+      type="button"
+      title="more"
+      class="btn btn-high @lg:hidden"
+      [ngClass]="{ hidden: !isHasMoreButton }"
+      (click)="op.toggle($event)"
+      tooltipPosition="bottom"
+      pTooltip="More"
+    >
+      <fa-icon [fixedWidth]="true" [icon]="faEllipsisVertical"></fa-icon>
+    </button>
+  </div>
+</div>
+
+<p-popover #op>
+  <div class="min-w-[12rem] bg-white dark:bg-neutral-900">
+    <ng-container *ngFor="let actionButton of actionButtons">
+      <button
+        *ngIf="!actionButton.route && !actionButton.hidden"
+        type="button"
+        [title]="actionButton.label"
+        class="flex w-full gap-2 rounded-lg p-2 text-zinc-700 hover:bg-zinc-200 dark:text-zinc-200 dark:hover:bg-zinc-700"
+        (click)="actionButton.action()"
+        [ngClass]="{
+          'opacity-50': actionButton.loading,
+        }"
+        [disabled]="actionButton.loading"
+      >
+        <fa-icon
+          [icon]="faSpinner"
+          class="fa-spin"
+          [fixedWidth]="true"
+          *ngIf="actionButton.loading"
+        ></fa-icon>
+        <fa-icon
+          [icon]="actionButton.icon"
+          *ngIf="!actionButton.loading"
+        ></fa-icon>
+        {{ actionButton.label }}
+      </button>
+    </ng-container>
+  </div>
+</p-popover>

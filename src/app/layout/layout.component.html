@@ -1,1 +1,27 @@
-<p>layout works!</p>
+<div class="flex h-[100dvh] w-[100dvw] overflow-hidden">
+  <div
+    class="hidden h-full w-[266px] flex-none transition-all duration-500 ease-in-out md:block"
+    [ngClass]="{
+      'ml-0 hidden': sidebarConfig.showSidebar,
+      '-ml-[266px] block': !sidebarConfig.showSidebar,
+    }"
+  >
+    <app-sidebar
+      (onToggleSidebar)="toggleSidebar($event)"
+      [showSidebar]="sidebarConfig.showSidebar"
+      [hideWhenChangeRoute]="sidebarConfig.hideWhenChangeRoute"
+    ></app-sidebar>
+  </div>
+  <div
+    class="flex h-full w-full flex-1 flex-col bg-white dark:bg-neutral-900"
+    [ngClass]="{ 'md:rounded-l-3xl': sidebarConfig.showSidebar }"
+  >
+    <app-header
+      (onToggleSidebar)="toggleSidebar($event)"
+      [showSidebar]="sidebarConfig.showSidebar"
+    ></app-header>
+    <div class="relative flex-1 overflow-y-auto px-3 pb-3">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

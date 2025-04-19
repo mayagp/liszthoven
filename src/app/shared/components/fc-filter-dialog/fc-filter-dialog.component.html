@@ -1,0 +1,297 @@
+<div
+  class="space-y-3 rounded-lg bg-white p-3 backdrop-blur-sm dark:bg-neutral-900"
+>
+  <div class="flex items-center">
+    <h3 class="flex-1 text-sm font-medium">Filter</h3>
+    <button
+      class="rounded-md p-2 hover:bg-[zinc-200] hover:dark:bg-zinc-700"
+      (click)="onClose()"
+    >
+      <fa-icon [fixedWidth]="true" [icon]="faTimes"></fa-icon>
+    </button>
+  </div>
+  <div class="mt-3 flex-1 space-y-3 overflow-y-auto text-xs">
+    <!-- feature: sort -->
+    <div class="sort space-y-3" *ngIf="fcFilterConfig.sort">
+      <div class="sort-by" *ngIf="fcFilterConfig.sort.fields.length">
+        <h2 class="mb-3 font-medium">Sort By</h2>
+        <div class="flex flex-wrap gap-3">
+          <button
+            type="button"
+            autofocus
+            class="cursor-pointer rounded-full border border-zinc-200 px-2 py-1 text-2xs dark:border-zinc-700"
+            [ngClass]="{
+              'bg-zinc-200 dark:bg-zinc-700':
+                fcFilterConfig.sort.selectedField == field.name,
+            }"
+            *ngFor="let field of fcFilterConfig.sort.fields"
+            (click)="onSelectSortField(field)"
+          >
+            {{ field.header }}
+          </button>
+        </div>
+      </div>
+      <div class="sort-direction">
+        <h2 class="mb-3 font-medium">Sort Direction</h2>
+        <div class="flex flex-wrap gap-3">
+          <button
+            type="button"
+            autofocus
+            class="cursor-pointer rounded-full border border-zinc-200 px-2 py-1 text-2xs dark:border-zinc-700"
+            [ngClass]="{
+              'bg-zinc-200 dark:bg-zinc-700':
+                fcFilterConfig.sort.direction == direction.value,
+            }"
+            *ngFor="let direction of sortDirection"
+            (click)="onSelectSortDirection(direction.value)"
+          >
+            {{ direction.name }}
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- feature: Filter Option -->
+    <div class="sort space-y-3" *ngIf="fcFilterConfig.filterOptions">
+      <div
+        class="sort-by"
+        *ngFor="let filterOption of fcFilterConfig.filterOptions; let i = index"
+      >
+        <h2 class="mb-3 font-medium">{{ filterOption.optionLabel }}</h2>
+        <div class="flex flex-wrap gap-3">
+          <button
+            type="button"
+            autofocus
+            class="cursor-pointer rounded-full border border-zinc-200 px-2 py-1 text-2xs dark:border-zinc-700"
+            [ngClass]="{
+              'bg-zinc-200 dark:bg-zinc-700':
+                filterOption.selectedValue == option.value,
+            }"
+            *ngFor="let option of filterOption.options"
+            (click)="onSelectOption(option, i)"
+          >
+            {{ option.name }}
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- feature: Filter Range Date -->
+    <div>
+      <div class="date" *ngFor="let filterDate of fcFilterConfig.filterDates">
+        <div class="header flex items-center justify-between">
+          <h3 class="font-medium">
+            {{ filterDate.header }}
+          </h3>
+          <button
+            class="h-4 w-4 cursor-pointer rounded border dark:border-zinc-800"
+            [ngClass]="
+              filterDate.isActive
+                ? 'border-2 border-zinc-100/70 bg-sky-500 '
+                : 'border-zinc-100/70 dark:bg-zinc-700'
+            "
+            (click)="filterDate.isActive = !filterDate.isActive"
+          ></button>
+        </div>
+        <div
+          class="flex items-end space-x-3"
+          [ngClass]="{ 'opacity-50': !filterDate.isActive }"
+        >
+          <div class="form-date w-full">
+            <p-calendar
+              id="date"
+              styleClass="w-full"
+              [readonlyInput]="true"
+              inputId="date"
+              [showButtonBar]="true"
+              [(ngModel)]="filterDate.start"
+              [disabled]="!filterDate.isActive"
+              dateFormat="dd/mm/yy"
+              appendTo="body"
+            ></p-calendar>
+          </div>
+          <span class="py-3"> - </span>
+          <div class="form-date w-full">
+            <p-calendar
+              id="date"
+              styleClass="w-full"
+              [readonlyInput]="true"
+              inputId="date"
+              [(ngModel)]="filterDate.end"
+              dateFormat="dd/mm/yy"
+              [showButtonBar]="true"
+              [disabled]="!filterDate.isActive"
+              appendTo="body"
+            ></p-calendar>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- feature: Filter Range Field -->
+    <div *ngIf="fcFilterConfig.filterRanges">
+      <div
+        class="filter-range"
+        *ngFor="let filterRange of fcFilterConfig.filterRanges"
+      >
+        <div class="header flex items-center justify-between">
+          <h3 class="font-medium">
+            {{ filterRange.header }}
+          </h3>
+          <button
+            class="h-4 w-4 cursor-pointer rounded border dark:border-zinc-800"
+            [ngClass]="
+              filterRange.isActive
+                ? 'border-2 border-zinc-100/70 bg-sky-500 '
+                : 'border-zinc-100/70 dark:bg-zinc-700'
+            "
+            (click)="filterRange.isActive = !filterRange.isActive"
+          ></button>
+        </div>
+        <div class="body" [ngSwitch]="filterRange.type">
+          <div
+            class="flex items-end space-x-3"
+            *ngSwitchCase="'price'"
+            [ngClass]="{ 'opacity-50': !filterRange.isActive }"
+          >
+            <div class="form-start">
+              <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">Rp</span>
+                <p-inputNumber
+                  class="w-full"
+                  styleClass="text-zinc-100/70 w-full"
+                  [(ngModel)]="filterRange.start"
+                  mode="decimal"
+                  [disabled]="!filterRange.isActive"
+                  placeholder="Price"
+                ></p-inputNumber>
+              </div>
+            </div>
+            <span class="py-3"> - </span>
+            <div class="form-end">
+              <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">Rp</span>
+                <p-inputNumber
+                  class="w-full"
+                  styleClass="text-zinc-100/70 w-full"
+                  [(ngModel)]="filterRange.end"
+                  mode="decimal"
+                  [disabled]="!filterRange.isActive"
+                  placeholder="Price"
+                ></p-inputNumber>
+              </div>
+            </div>
+          </div>
+          <div
+            class="md:flex md:items-end md:space-x-3"
+            *ngSwitchCase="'number'"
+            [ngClass]="{ 'opacity-50': !filterRange.isActive }"
+          >
+            <div class="form-start">
+              <p-inputNumber
+                class="w-full"
+                styleClass="text-zinc-100/70 w-full"
+                [(ngModel)]="filterRange.start"
+                mode="decimal"
+                [disabled]="!filterRange.isActive"
+              ></p-inputNumber>
+            </div>
+            <span class="hidden py-3 md:block"> - </span>
+            <span class="block text-center md:hidden"> to </span>
+            <div class="form-end">
+              <p-inputNumber
+                class="w-full"
+                styleClass="text-zinc-100/70 w-full"
+                [(ngModel)]="filterRange.end"
+                mode="decimal"
+                [disabled]="!filterRange.isActive"
+              ></p-inputNumber>
+            </div>
+          </div>
+          <div *ngSwitchDefault></div>
+        </div>
+      </div>
+    </div>
+    <!-- feature: filter field -->
+    <div class="space-y-3 filter">
+      <div
+        class=""
+        *ngFor="let field of fcFilterConfig.filterFields; let i = index"
+      >
+        <div class="flex justify-between">
+          <h2 class="font-medium">{{ field.header }}</h2>
+          <span
+            class="cursor-pointer font-medium text-red-500"
+            *ngIf="field.value && !field.component"
+            (click)="field.value = undefined"
+          >
+            Hapus
+          </span>
+        </div>
+        <div [ngSwitch]="field.type">
+          <div class="form-text w-full" *ngSwitchCase="'text'">
+            <input
+              type="text"
+              id="value"
+              class="w-full"
+              pInputText
+              [(ngModel)]="field.value"
+            />
+          </div>
+          <div class="form-text w-full" *ngSwitchCase="'number'">
+            <p-inputNumber
+              class="w-full"
+              styleClass="text-zinc-100/70 w-full"
+              [(ngModel)]="field.value"
+              mode="decimal"
+              [useGrouping]="false"
+            ></p-inputNumber>
+          </div>
+          <div class="form-text w-full" *ngSwitchCase="'object'">
+            <div class="customer-button" *ngIf="!field.valueLabel">
+              <button
+                class="fc-animate-translate-up w-full items-center gap-2 rounded-md border border-zinc-100/70 bg-slate-100 p-3 text-center hover:bg-zinc-100/70 dark:border-slate-500 dark:bg-zinc-700 dark:hover:bg-slate-900"
+                (click)="openDialog(field, i)"
+              >
+                Select {{ field.header }}
+              </button>
+            </div>
+            <div class="customer-selected" *ngIf="field.valueLabel">
+              <div
+                class="flex items-center justify-between rounded-md border bg-slate-100 p-3 py-2 dark:border-slate-500 dark:bg-slate-700"
+              >
+                <div class="flex-1 truncate">
+                  <span>{{ field.valueLabel }}</span>
+                </div>
+                <div>
+                  <button
+                    class="fc-animate-translate-up flex cursor-pointer items-center gap-2 rounded-md p-2 text-xs font-medium hover:bg-zinc-100/70/50 dark:bg-slate-700 dark:hover:bg-zinc-700"
+                    (click)="field.valueLabel = null; field.value = null"
+                  >
+                    <i class="pi pi-times"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-text w-full" *ngSwitchDefault>
+            <input
+              type="text"
+              id="value"
+              class="w-full"
+              pInputText
+              [(ngModel)]="field.value"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex items-center justify-end gap-3 pt-3">
+    <button
+      type="button"
+      class="fc-animate-translate-up flex items-center gap-2 rounded-md bg-zinc-200 p-2 text-sm dark:bg-zinc-700"
+      (click)="submit()"
+    >
+      Submit
+    </button>
+  </div>
+</div>
