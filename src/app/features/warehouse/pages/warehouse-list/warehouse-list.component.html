@@ -1,0 +1,78 @@
+<div class="flex h-full gap-3 @container">
+  <div
+    class="flex h-full w-full flex-col gap-3 transition-all duration-700 ease-in-out @container"
+    [ngClass]="{
+      '@3xl:w-full': !quickView,
+      '@3xl:w-[20rem]': quickView,
+    }"
+  >
+    <app-fc-action-bar
+      [actionButtons]="actionButtons"
+      [filterButtons]="filterButtons"
+    ></app-fc-action-bar>
+    <div class="body flex h-full w-full gap-3 overflow-y-auto text-xs">
+      <!-- Data List -->
+      <ng-container *ngIf="!loading && warehouses.length > 0">
+        <div class="w-full space-y-2 overflow-y-auto py-2">
+          <ng-container *ngFor="let warehouse of warehouses">
+            <div
+              (dblclick)="
+                quickView
+                  ? onChangeWarehouse(warehouse)
+                  : navigateToDetail(warehouse)
+              "
+              class="fc-animate-translate-up grid cursor-pointer grid-cols-1 items-center justify-between rounded-md border border-zinc-100/70 bg-zinc-100/70 p-3 hover:border-sky-600 dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600 lg:flex"
+            >
+              <div class="flex-1 space-y-1">
+                <p>Code : {{ warehouse.code }}</p>
+                <p>{{ warehouse.name }}</p>
+                <p class="flex gap-1">
+                  <fa-icon [fixedWidth]="true" [icon]="faLocationDot"></fa-icon>
+                  {{ warehouse.location }}
+                </p>
+              </div>
+              <div class="flex w-full justify-end lg:w-[150px]">
+                <button
+                  type="button"
+                  class="btn btn-high"
+                  (click)="navigateToDetail(warehouse)"
+                >
+                  <fa-icon [fixedWidth]="true" [icon]="faEye"></fa-icon>
+                </button>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="!loading && warehouses.length == 0">
+        <div class="w-full py-[20vh] text-center">
+          <p>No data found</p>
+        </div>
+      </ng-container>
+      <div class="w-full py-[20vh] text-center" *ngIf="loading">
+        <!-- <fc-loading></fc-loading> -->
+      </div>
+    </div>
+    <div class="flex justify-end gap-3">
+      <div class="w-full @lg:w-96">
+        <!-- <fc-pagination
+            [rows]="rows"
+            [page]="page"
+            [totalPages]="totalPages"
+            [totalRecords]="totalRecords"
+            (onPageUpdate)="onPageUpdate($event)"></fc-pagination> -->
+      </div>
+    </div>
+  </div>
+  <div
+    class="hidden flex-1 @3xl:block"
+    *ngIf="selectedWarehouse && quickView && warehouses.length > 0"
+  >
+    <app-warehouse-view
+      [warehouse]="selectedWarehouse"
+      [quickView]="quickView"
+      (onDeleted)="onDeleted()"
+      (onUpdated)="onUpdated($event)"
+    ></app-warehouse-view>
+  </div>
+</div>

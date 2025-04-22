@@ -87,17 +87,17 @@ export class LayoutService {
         visible: true,
       },
       {
-        icon_path_light: 'images/sidebar-icon/black/warehouse.png',
-        icon_path_dark: 'images/sidebar-icon/white/warehouse.png',
-        route: '/warehouse',
-        name: 'Warehouse',
-        visible: this.ability.can('read', 'warehouse'),
-      },
-      {
         icon_path_light: 'images/sidebar-icon/black/student.png',
         icon_path_dark: 'images/sidebar-icon/white/student.png',
         route: '/branch',
         name: 'Branch',
+        visible: true,
+      },
+      {
+        icon_path_light: 'images/sidebar-icon/black/warehouse.png',
+        icon_path_dark: 'images/sidebar-icon/white/warehouse.png',
+        route: '/warehouse',
+        name: 'Warehouse',
         visible: true,
       },
     ];

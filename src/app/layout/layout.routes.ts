@@ -25,6 +25,13 @@ export const layoutRoutes: Routes = [
             (m) => m.branchRoutes,
           ),
       },
+      {
+        path: 'warehouse',
+        loadChildren: () =>
+          import('../features/warehouse/warehouse.routes').then(
+            (m) => m.warehouseRoutes,
+          ),
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

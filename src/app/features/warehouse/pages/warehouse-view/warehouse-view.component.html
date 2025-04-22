@@ -1,0 +1,120 @@
+<div class="flex h-full flex-col space-y-3">
+  <app-fc-action-bar
+    [isHasBackButton]="!quickView"
+    [actionButtons]="actionButtons"
+    [filterButtons]="filterButtons"
+  ></app-fc-action-bar>
+  <p-toast></p-toast>
+  <p-confirmDialog></p-confirmDialog>
+  <div class="body h-full w-full overflow-y-auto text-xs @container">
+    <form
+      *ngIf="!loading"
+      class="mx-auto mb-16 mt-2 grid w-full gap-3 md:mb-0 lg:mb-0"
+      [formGroup]="warehouseForm"
+    >
+      <!-- Select Business Unit -->
+      <div
+        class="form-input flex cursor-pointer items-center rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+      >
+        <div class="flex flex-1 flex-col">
+          <p
+            class="m-0 block p-0 text-2xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+          >
+            Branch
+          </p>
+          <p *ngIf="warehouseForm.value.business_unit" class="text-xs">
+            {{ warehouseForm.value.business_unit.branch?.address }}
+            <!-- ({{warehouseForm.value.business_unit.company.name}}) -->
+          </p>
+          <p
+            *ngIf="!warehouseForm.value.business_unit"
+            class="text-xs dark:text-gray-400"
+          >
+            Select Branch
+          </p>
+        </div>
+      </div>
+      <fc-input-text
+        title="Code"
+        formControlName="code"
+        placeholder="Enter Warehouse Code"
+      ></fc-input-text>
+      <fc-input-text
+        title="Name"
+        formControlName="name"
+        placeholder="Enter Warehouse Name"
+      ></fc-input-text>
+      <fc-input-text
+        title="Location"
+        formControlName="location"
+        placeholder="Enter Warehouse Location"
+      ></fc-input-text>
+
+      <div class="inventories @xl:col-span-2">
+        <div class="mt-2 flex w-full items-center">
+          <h3 class="flex-1">Inventories</h3>
+        </div>
+        <div
+          class="w-full overflow-y-auto py-2 transition-all duration-700 ease-in-out"
+        >
+          <div
+            class="grid gap-2 @xl:grid-cols-2 @3xl:grid-cols-3"
+            *ngIf="inventories.length > 0 && !loadingInventory"
+          >
+            <ng-container *ngFor="let inventory of inventories; let i = index">
+              <div
+                class="fc-animate-translate-up flex w-full cursor-pointer grid-cols-1 items-center justify-between gap-3 rounded-md border border-zinc-100/70 bg-zinc-100/70 p-3 @container hover:border-sky-600 dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600"
+              >
+                <div
+                  class="aspect-square w-20 flex-none rounded-lg bg-white object-cover"
+                >
+                  <!-- <fc-image-preview
+                      [preview]="true"
+                      [src]="
+                        inventory.product.product_images[0].url
+                          ? inventory.product.product_images[0].url
+                          : 'assets/images/placeholder/placeholder_small.jpg'
+                      ">
+                    </fc-image-preview> -->
+                </div>
+                <!-- <div class="flex-1 space-y-1">
+                    <a
+                      [routerLink]="['/product/view', inventory.product.id]"
+                      target="_blank"
+                      pTooltip="View Product"
+                      class="font-bold capitalize hover:text-primary-dark dark:hover:text-sky-600">
+                      {{ inventory.product.name }}
+                    </a>
+                    <p>{{ inventory.quantity }} Pcs</p>
+                  </div> -->
+                <!-- <div class="flex justify-end gap-2">
+                    <button
+                      (click)="onSelectInventoryTransactions(inventory.id)"
+                      type="button"
+                      class="btn-high flex gap-2 rounded-lg p-2">
+                      <fa-icon class="text-xs" [icon]="faTruckMoving"></fa-icon>
+                      <p class="hidden @sm:block">Transactions</p>
+                    </button>
+                  </div> -->
+              </div>
+            </ng-container>
+          </div>
+          <div
+            class="flex h-full w-full items-center justify-center"
+            *ngIf="inventories.length == 0 && !loadingInventory"
+          >
+            <p class="py-10 text-xs text-zinc-700 dark:text-white/60">
+              No Product
+            </p>
+          </div>
+          <div class="py-[20vh] text-center" *ngIf="loadingInventory">
+            <!-- <fc-loading></fc-loading> -->
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="py-[20vh] text-center" *ngIf="loading">
+      <!-- <fc-loading></fc-loading> -->
+    </div>
+  </div>
+</div>

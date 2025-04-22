@@ -1,0 +1,63 @@
+<div class="flex h-full flex-col space-y-3">
+  <app-fc-action-bar
+    [isHasBackButton]="true"
+    [actionButtons]="actionButtons"
+    [hiddenActionButtons]="hiddenActionButtons"
+    [filterButtons]="filterButtons"
+  ></app-fc-action-bar>
+  <div class="body h-full w-full overflow-y-auto text-xs">
+    <form class="mx-auto mt-2 grid w-full gap-3" [formGroup]="warehouseForm">
+      <!-- Select Business Unit -->
+      <div
+        class="form-input flex cursor-pointer items-center rounded-lg border border-zinc-200 bg-whita p-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+      >
+        <div class="flex flex-1 flex-col" (click)="onSelectBranch()">
+          <p
+            class="m-0 block p-0 text-2xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+          >
+            Branch
+          </p>
+          <p *ngIf="warehouseForm.value.business_unit" class="text-xs">
+            {{ warehouseForm.value.business_unit.branch?.address }}
+            <!-- ({{
+                warehouseForm.value.business_unit.company.name
+              }}) -->
+          </p>
+          <p
+            *ngIf="!warehouseForm.value.business_unit"
+            class="text-xs dark:text-gray-400"
+          >
+            Select Branch
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button
+            *ngIf="warehouseForm.value.business_unit"
+            type="button"
+            (click)="removeBusinessUnit()"
+          >
+            <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
+          </button>
+          <button type="button" (click)="onSelectBranch()">
+            <fa-icon [fixedWidth]="true" [icon]="faChevronDown"></fa-icon>
+          </button>
+        </div>
+      </div>
+      <fc-input-text
+        title="Code"
+        formControlName="code"
+        placeholder="Enter Warehouse Code"
+      ></fc-input-text>
+      <fc-input-text
+        title="Name"
+        formControlName="name"
+        placeholder="Enter Warehouse Name"
+      ></fc-input-text>
+      <fc-input-text
+        title="Location"
+        formControlName="location"
+        placeholder="Enter Warehouse Location"
+      ></fc-input-text>
+    </form>
+  </div>
+</div>

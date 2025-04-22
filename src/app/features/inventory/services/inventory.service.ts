@@ -4,14 +4,15 @@ import { environment } from '../../../../environments/environment';
 import { DataListParameter } from '../../../shared/interfaces/data-list-parameter.interface';
 
 const ROOT_API = environment.API_URL;
-
 @Injectable({
   providedIn: 'root',
 })
-export class BranchService {
+export class InventoryServices {
   constructor(private http: HttpClient) {}
 
-  getBranches(dataListParameter: DataListParameter = {} as DataListParameter) {
+  getInventories(
+    dataListParameter: DataListParameter = {} as DataListParameter,
+  ) {
     let param = '';
     if (dataListParameter.rows && dataListParameter.page) {
       param = param.concat(
@@ -32,31 +33,16 @@ export class BranchService {
         param = param.concat('&q=' + dataListParameter.searchQuery);
       }
     }
-
-    return this.http.get(`${ROOT_API}/admin/branches${param}`);
+    return this.http.get(`${ROOT_API}/admin/inventories${param}`);
   }
 
-  getBranch(branchId: string) {
-    return this.http.get(`${ROOT_API}/admin/branches/${branchId}`);
+  getInventory(id: any) {
+    return this.http.get(`${ROOT_API}/admin/inventories/${id}`);
   }
 
-  addBranch(data: any) {
-    return this.http.post(`${ROOT_API}/admin/branches`, data);
-  }
-
-  updateBrach(branchId: string, data: any) {
-    return this.http.put(`${ROOT_API}/admin/branches/${branchId}`, data);
-  }
-
-  deleteBranch(branchId: string) {
-    return this.http.delete(`${ROOT_API}/admin/branches/${branchId}`);
-  }
-
-  assignBranchToCompany(branchId: string, data: any) {
-    return this.http.put(`${ROOT_API}/admin/branches/${branchId}/assign`, data);
-  }
-
-  getCompanies(dataListParameter: DataListParameter = {} as DataListParameter) {
+  getInventoryTransactions(
+    dataListParameter: DataListParameter = {} as DataListParameter,
+  ) {
     let param = '';
     if (dataListParameter.rows && dataListParameter.page) {
       param = param.concat(
@@ -77,29 +63,14 @@ export class BranchService {
         param = param.concat('&q=' + dataListParameter.searchQuery);
       }
     }
-    return this.http.get(`${ROOT_API}/admin/companies${param}`);
+    return this.http.get(`${ROOT_API}/admin/inventory-transactions${param}`);
   }
 
-  getCompany(companyId: string) {
-    return this.http.get(`${ROOT_API}/admin/companies/${companyId}`);
+  getInventoryTransaction(id: any) {
+    return this.http.get(`${ROOT_API}/admin/inventory-transactions/${id}`);
   }
 
-  addCompany(data: any) {
-    return this.http.post(`${ROOT_API}/admin/companies`, data);
-  }
-
-  updateCompany(companyId: string, data: any) {
-    return this.http.put(`${ROOT_API}/admin/companies/${companyId}`, data);
-  }
-
-  delete(companyId: string) {
-    return this.http.delete(`${ROOT_API}/admin/companies/${companyId}`);
-  }
-
-  assignCompanyToBranch(companyId: string, data: any) {
-    return this.http.put(
-      `${ROOT_API}/admin/companies/${companyId}/assign`,
-      data,
-    );
+  createInventory(data: any) {
+    return this.http.post(`${ROOT_API}/admin/stock-movements`, data);
   }
 }
