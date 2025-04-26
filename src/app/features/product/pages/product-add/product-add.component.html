@@ -1,0 +1,275 @@
+<div class="flex h-full flex-col space-y-3">
+  <app-fc-action-bar
+    [isHasBackButton]="true"
+    [actionButtons]="actionButtons"
+  ></app-fc-action-bar>
+  <div class="body h-full w-full overflow-y-auto py-5 text-xs">
+    <form [formGroup]="productForm">
+      <div class="mb-16 grid w-full gap-3 md:mb-0 lg:mb-0 lg:grid-cols-2">
+        <!-- Left Side -->
+        <div class="flex flex-1 flex-col gap-3">
+          <fc-input-text
+            title="Name"
+            formControlName="name"
+            placeholder="Enter Product Name"
+          ></fc-input-text>
+          <!-- <fc-input-number
+              title="Base price"
+              formControlName="base_price"
+              [currency]="true"
+              placeholder="Enter price"></fc-input-number> -->
+          <div class="card flex justify-center w-full">
+            <p-iftalabel class="w-full">
+              <p-inputnumber
+                class="w-full"
+                mode="currency"
+                currency="IDR"
+                locale="id-ID"
+                [minFractionDigits]="0"
+                [maxFractionDigits]="0"
+                formControlName="base_price"
+                placeholder="Enter price"
+                [inputStyle]="{
+                  'background-color': '#27272a',
+                  border: '1px solid #3f3f46',
+                  color: '#ffffff',
+                  'font-size': '12px',
+                }"
+              />
+              <label
+                for="base_price"
+                style="font-weight: 500 !important; color: #ffffff99 !important"
+                >Base price</label
+              >
+            </p-iftalabel>
+          </div>
+          <!-- <fc-input-number
+              title="Quantity"
+              formControlName="quantity"
+              placeholder="Enter quantity"></fc-input-number> -->
+          <div class="grid gap-2 lg:grid-cols-3">
+            <div class="card flex justify-center">
+              <p-iftalabel class="w-full md:w-56">
+                <p-select
+                  formControlName="type"
+                  inputId="dd-type"
+                  [options]="productType"
+                  optionLabel="name"
+                  optionValue="id"
+                  placeholder="Select Product Type"
+                  styleClass="w-full"
+                  [style]="{
+                    'background-color': '#27272a',
+                    color: '#ffffff',
+                    border: '1px solid #3f3f46',
+                    'line-height': '1.5',
+                  }"
+                >
+                </p-select>
+                <label
+                  for="dd-type"
+                  style="
+                    font-weight: 500 !important;
+                    color: #ffffff99 !important;
+                    line-height: 1.4 !important;
+                  "
+                  >Product Type</label
+                >
+              </p-iftalabel>
+            </div>
+            <div class="card flex justify-center">
+              <p-iftalabel class="w-full md:w-56">
+                <p-select
+                  formControlName="status"
+                  inputId="dd-status"
+                  [options]="productStatus"
+                  optionLabel="name"
+                  optionValue="id"
+                  placeholder="Select Status Product"
+                  styleClass="w-full"
+                  [style]="{
+                    'background-color': '#27272a',
+                    color: '#ffffff',
+                    border: '1px solid #3f3f46',
+                    'line-height': '1.5',
+                  }"
+                >
+                </p-select>
+                <label
+                  for="dd-status"
+                  style="
+                    font-weight: 500 !important;
+                    color: #ffffff99 !important;
+                    line-height: 1.4 !important;
+                  "
+                  >Status</label
+                >
+              </p-iftalabel>
+            </div>
+            <div class="card flex justify-center">
+              <p-iftalabel class="w-full md:w-56">
+                <p-select
+                  formControlName="valuation_method"
+                  inputId="dd-valuation_method"
+                  [options]="productValuationMethod"
+                  optionLabel="name"
+                  optionValue="id"
+                  placeholder="Select Valuation Method"
+                  styleClass="w-full"
+                  [style]="{
+                    'background-color': '#27272a',
+                    color: '#ffffff',
+                    border: '1px solid #3f3f46',
+                    'line-height': '1.5',
+                  }"
+                >
+                </p-select>
+                <label
+                  for="dd-valuation_method"
+                  style="
+                    font-weight: 500 !important;
+                    color: #ffffff99 !important;
+                    line-height: 1.4 !important;
+                  "
+                  >Valuation Method</label
+                >
+              </p-iftalabel>
+            </div>
+          </div>
+        </div>
+        <!-- Right Side -->
+        <div class="flex flex-1 flex-col gap-3">
+          <fc-textarea
+            title="Description"
+            formControlName="description"
+            placeholder="Enter Description"
+          ></fc-textarea>
+          <div class="grid gap-2 lg:grid-cols-2">
+            <!-- Category -->
+            <div
+              class="form-input flex cursor-pointer items-center rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+            >
+              <div
+                class="flex flex-1 flex-col"
+                (click)="onSelectProductCategory()"
+              >
+                <p
+                  class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+                >
+                  Product Category
+                </p>
+                <p *ngIf="selectedCategory" class="text-xs">
+                  {{ selectedCategory.name }}
+                </p>
+                <p *ngIf="!selectedCategory" class="text-xs dark:text-gray-400">
+                  Select Product Category
+                </p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button
+                  *ngIf="selectedCategory"
+                  type="button"
+                  (click)="removeCategory()"
+                >
+                  <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
+                </button>
+                <button type="button" (click)="onSelectProductCategory()">
+                  <fa-icon [fixedWidth]="true" [icon]="faChevronDown"></fa-icon>
+                </button>
+              </div>
+            </div>
+            <!-- Brand -->
+            <fc-input-text
+              title="Brand"
+              formControlName="brand"
+              placeholder="Enter Product Name"
+            ></fc-input-text>
+            <!-- <div
+                  (click)="onSelectProductBrand()"
+                  class="form-input flex cursor-pointer items-center rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700">
+                  <div class="flex flex-1 flex-col">
+                    <p
+                      class="m-0 block p-0 text-2xs font-medium leading-5 text-zinc-700 dark:text-white/60">
+                      Product Brand
+                    </p>
+                    <p *ngIf="selectedBrand" class="text-xs">
+                      {{ selectedBrand.name }}
+                    </p>
+                    <p *ngIf="!selectedBrand" class="text-xs dark:text-gray-400">
+                      Select Product Brand
+                    </p>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <button
+                      *ngIf="selectedBrand"
+                      type="button"
+                      (click)="removeBrand()">
+                      <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
+                    </button>
+                    <button type="button">
+                      <fa-icon [fixedWidth]="true" [icon]="faChevronDown"></fa-icon>
+                    </button>
+                  </div>
+                </div> -->
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-2 lg:flex-wrap">
+        <!-- <fc-file-input [multiple]="true" (onInput)="addMultipleImage($event)">
+            <div
+              class="form-input flex h-32 w-32 flex-col items-center justify-center rounded-lg border border-transparent bg-zinc-200 p-3 text-center dark:bg-zinc-800">
+              <fa-icon
+                class="text-xl"
+                [fixedWidth]="true"
+                [icon]="faCloudArrowUp"></fa-icon>
+              <p>Drag or Image here</p>
+            </div>
+          </fc-file-input> -->
+        <div
+          class="mt-6 flex w-full flex-col rounded-md border-2 border-dashed border-gray-300 p-4"
+          (click)="fileInput.click()"
+          (drop)="handleDrop($event)"
+          (dragover)="handleDragOver($event)"
+        >
+          <div
+            class="mx-auto items-center text-center text-gray-300"
+            *ngIf="pastedImages.length == 0"
+          >
+            <fa-icon
+              [icon]="faImage"
+              [fixedWidth]="true"
+              class="h-12 w-12 text-4xl"
+            ></fa-icon>
+            <h3 class="text-center text-gray-700">
+              Paste, Drag and Drop, or Select Images <br />
+            </h3>
+          </div>
+          <input
+            #fileInput
+            type="file"
+            multiple
+            (change)="onFileSelected($event); fileInput.value = ''"
+            class="mb-4 hidden"
+          />
+          <div class="flex flex-1 gap-3 overflow-x-auto">
+            <div
+              class="relative aspect-square h-full"
+              *ngFor="let image of pastedImages; let i = index"
+            >
+              <img
+                [src]="image.image_url"
+                alt="Pasted Image"
+                class="h-full w-full rounded-sm object-cover"
+              />
+              <fa-icon
+                class="absolute right-2 top-2 cursor-pointer text-red-500"
+                [icon]="faTrash"
+                (click)="removeImage($event, i)"
+              ></fa-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

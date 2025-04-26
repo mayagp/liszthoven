@@ -1,0 +1,71 @@
+<div class="img relative h-full w-full">
+  <img
+    class="h-full w-full object-contain"
+    [ngClass]="{
+      'animate-pulse bg-zinc-700': loading,
+    }"
+    (error)="setErrorImg()"
+    (load)="loadSuccess()"
+    [src]="isError ? srcError : src"
+    [alt]="alt"
+  />
+  <div
+    class="group absolute left-0 top-0 z-10 flex h-full w-full items-center justify-center"
+    [ngClass]="{
+      'cursor-pointer hover:[backdrop-filter:blur(3px)] hover:dark:bg-neutral-900/20':
+        preview || isError,
+    }"
+    (click)="handleClick()"
+  >
+    <p *ngIf="isError && !loading" class="hidden group-hover:block">
+      retry
+      <fa-icon [icon]="faRefresh" [fixedWidth]="true"></fa-icon>
+    </p>
+    <p *ngIf="!isError && !loading && preview" class="hidden group-hover:block">
+      view
+      <fa-icon [icon]="faArrowUpRightFromSquare" [fixedWidth]="true"></fa-icon>
+    </p>
+    <p *ngIf="loading" class="hidden group-hover:block">loading</p>
+  </div>
+  <div class="absolute right-0.5 top-0.5 z-20">
+    <ng-content select=".action-buttons"> </ng-content>
+  </div>
+</div>
+
+<p-dialog
+  class="p-0"
+  #imageDialog
+  [showHeader]="false"
+  [(visible)]="showPreview"
+  [modal]="true"
+  [style]="{ width: '100vw', height: '100vh' }"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="false"
+  appendTo="body"
+>
+  <div class="relative flex h-full w-full flex-col">
+    <div
+      class="preview-action-buttons absolute left-0 top-0 z-20 flex w-full items-center justify-end p-3"
+    >
+      <button
+        class="rounded-full p-2 transition duration-100 ease-in-out hover:bg-zinc-50/50 dark:hover:bg-zinc-700/50"
+        (click)="showPreview = false"
+      >
+        <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
+      </button>
+    </div>
+    <div class="relative flex w-full flex-1 items-center justify-center">
+      <img
+        class="relative z-10 aspect-square w-full max-w-[600px] object-contain"
+        [src]="src"
+        [alt]="alt"
+        loading="lazy"
+      />
+      <div
+        class="absolute left-0 top-0 h-full w-full"
+        (click)="showPreview = false"
+      ></div>
+    </div>
+  </div>
+</p-dialog>

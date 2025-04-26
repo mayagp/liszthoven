@@ -15,7 +15,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Ability } from '@casl/ability';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
@@ -42,6 +42,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { FcInputTextComponent } from '../../../../shared/components/fc-input-text/fc-input-text.component';
 import { BranchSelectDialogComponent } from '../../../branch/components/branch-select-dialog/branch-select-dialog.component';
 import { ToastModule } from 'primeng/toast';
+import { FcImagePreviewComponent } from '../../../../shared/components/fc-image-preview/fc-image-preview.component';
+import { InventoryTransactionsDialogComponent } from '../../../inventory/components/inventory-transactions-dialog/inventory-transactions-dialog.component';
 
 @Component({
   selector: 'app-warehouse-view',
@@ -54,6 +56,8 @@ import { ToastModule } from 'primeng/toast';
     FormsModule,
     ReactiveFormsModule,
     ToastModule,
+    FcImagePreviewComponent,
+    RouterModule,
   ],
   templateUrl: './warehouse-view.component.html',
   styleUrl: './warehouse-view.component.css',
@@ -185,29 +189,29 @@ export class WarehouseViewComponent
       });
   }
 
-  // onSelectInventoryTransactions(id: number) {
-  //   // Open Dialog
-  //   const ref = this.dialogService.open(InventoryTransactionsDialogComponent, {
-  //     data: {
-  //       title: 'Inventory Transactions',
-  //       stockMovementId: id,
-  //     },
-  //     showHeader: false,
-  //     contentStyle: {
-  //       padding: '0',
-  //     },
-  //     style: {
-  //       overflow: 'hidden',
-  //     },
-  //     styleClass: 'rounded-sm',
-  //     dismissableMask: true,
-  //     width: '450px',
-  //   });
-  //   ref.onClose.subscribe((newData) => {
-  //     if (newData) {
-  //     }
-  //   });
-  // }
+  onSelectInventoryTransactions(id: number) {
+    // Open Dialog
+    const ref = this.dialogService.open(InventoryTransactionsDialogComponent, {
+      data: {
+        title: 'Inventory Transactions',
+        stockMovementId: id,
+      },
+      showHeader: false,
+      contentStyle: {
+        padding: '0',
+      },
+      style: {
+        overflow: 'hidden',
+      },
+      styleClass: 'rounded-sm',
+      dismissableMask: true,
+      width: '450px',
+    });
+    ref.onClose.subscribe((newData) => {
+      if (newData) {
+      }
+    });
+  }
 
   delete() {
     this.confirmationService.confirm({

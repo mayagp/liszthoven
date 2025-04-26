@@ -1,0 +1,338 @@
+<div class="flex h-full flex-col gap-5 @container">
+  <div
+    class="flex h-full w-full flex-col gap-3 transition-all duration-700 ease-in-out @container"
+    [ngClass]="{
+      '@3xl:w-full': !quickView,
+      '@3xl:w-[20rem]': quickView,
+    }"
+  >
+    <app-fc-action-bar
+      [actionButtons]="actionButtons"
+      [filterButtons]="filterButtons"
+    ></app-fc-action-bar>
+    <p-toast></p-toast>
+    <p-confirmDialog></p-confirmDialog>
+    <div class="body flex h-full w-full gap-3 overflow-y-auto text-xs">
+      <!-- Data List -->
+      <ng-container *ngIf="!loading && productCategories.length > 0">
+        <div
+          class="w-full space-y-2 overflow-y-auto transition-all duration-700 ease-in-out @container"
+        >
+          <div
+            class="grid gap-3 @xl:grid-cols-2 @3xl:grid-cols-2 @4xl:grid-cols-3 @5xl:grid-cols-4 @6xl:grid-cols-5"
+          >
+            <ng-container *ngFor="let productCategory of productCategories">
+              <!-- category card -->
+              <div
+                class="flip-card h-64 w-full bg-transparent [perspective:1000px]"
+              >
+                <div
+                  [ngClass]="{
+                    '[transform:rotateY(180deg)]':
+                      productCategory.selectedSubcategory,
+                    '[transform:rotateY(0deg)]':
+                      !productCategory.selectedSubcategory,
+                  }"
+                  class="flip-card-inner relative h-full w-full transition-all duration-500 [transform-style:preserve-3d]"
+                >
+                  <div
+                    class="flip-card-front absolute flex h-full w-full flex-col space-y-1 overflow-hidden rounded-lg border bg-zinc-100/70 [backface-visibility:hidden] dark:border-zinc-700 dark:bg-zinc-800"
+                  >
+                    <div class="header px-3 pt-3">
+                      <div class="flex items-center gap-2">
+                        <h3 class="flex-1 text-2xs">Category</h3>
+                        <div class="action flex justify-end gap-2">
+                          <button
+                            type="button"
+                            class="btn-high rounded-md p-1"
+                            (click)="onEditProductCategory(productCategory)"
+                          >
+                            <fa-icon
+                              [icon]="faPencil"
+                              [fixedWidth]="true"
+                            ></fa-icon>
+                          </button>
+                          <button
+                            (click)="navigateToDetail(productCategory)"
+                            type="button"
+                            class="btn-high rounded-md p-1"
+                          >
+                            <fa-icon
+                              [icon]="faEye"
+                              [fixedWidth]="true"
+                            ></fa-icon>
+                          </button>
+                          <button
+                            type="button"
+                            class="btn-high rounded-md p-1"
+                            (click)="deleteProductCategory(productCategory)"
+                          >
+                            <fa-icon
+                              [icon]="faTrash"
+                              [fixedWidth]="true"
+                            ></fa-icon>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="category-title flex items-center px-3">
+                      <h4 class="flex-1 text-xs font-bold">
+                        {{ productCategory.name }}
+                      </h4>
+                    </div>
+                    <div class="subcategories space-y-1 px-3">
+                      <div class="header flex items-center justify-between">
+                        <h5 class="flex items-center text-2xs">
+                          Subcategories ({{
+                            productCategory.subcategories.length
+                          }})
+                        </h5>
+                        <div class="action">
+                          <button
+                            type="button"
+                            class="btn-high rounded-md p-1"
+                            (click)="onAddCategory(productCategory)"
+                          >
+                            <fa-icon
+                              [icon]="faPlus"
+                              [fixedWidth]="true"
+                            ></fa-icon>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="h-full space-y-1 overflow-y-auto bg-white pt-1 dark:bg-neutral-900"
+                    >
+                      <div
+                        (dblclick)="
+                          productCategory.selectedSubcategory =
+                            productSubcategory
+                        "
+                        class="group flex cursor-pointer items-center px-3 py-1 hover:bg-zinc-100/70 dark:hover:bg-zinc-800"
+                        *ngFor="
+                          let productSubcategory of productCategory.subcategories
+                        "
+                      >
+                        <p class="flex-1 text-2xs">
+                          {{ productSubcategory.name }}
+                        </p>
+                        <div
+                          class="action invisible flex justify-end gap-2 group-hover:visible"
+                        >
+                          <button
+                            type="button"
+                            class="dark:hover:text-white"
+                            (click)="onEditProductCategory(productSubcategory)"
+                          >
+                            <fa-icon
+                              class="text-xs"
+                              [icon]="faPencil"
+                              [fixedWidth]="true"
+                            ></fa-icon>
+                          </button>
+                          <button
+                            type="button"
+                            class="dark:hover:text-white"
+                            (click)="navigateToDetail(productSubcategory)"
+                          >
+                            <fa-icon
+                              class="text-xs"
+                              [icon]="faEye"
+                              [fixedWidth]="true"
+                            ></fa-icon>
+                          </button>
+                          <button
+                            type="button"
+                            class="dark:hover:text-white"
+                            (click)="deleteProductCategory(productSubcategory)"
+                          >
+                            <fa-icon
+                              class="text-xs"
+                              [icon]="faTrash"
+                              [fixedWidth]="true"
+                            ></fa-icon>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="flip-card-back absolute flex h-full w-full flex-col space-y-1 overflow-hidden rounded-lg border bg-sky-600/60 [transform:rotateY(180deg)] [backface-visibility:hidden] dark:border-zinc-700 dark:bg-sky-900/30"
+                  >
+                    <ng-container *ngIf="productCategory.selectedSubcategory">
+                      <div class="header px-3 pt-3">
+                        <div class="flex items-center gap-2">
+                          <button
+                            (click)="productCategory.selectedSubcategory = null"
+                            class="flex flex-1 items-center gap-1 rounded-md p-1"
+                          >
+                            <fa-icon
+                              [icon]="faChevronLeft"
+                              [fixedWidth]="true"
+                            ></fa-icon>
+                            Subcategory
+                          </button>
+                          <div class="action flex justify-end gap-2">
+                            <button
+                              type="button"
+                              class="btn-high rounded-md p-1"
+                              (click)="
+                                onEditProductCategory(
+                                  productCategory.selectedSubcategory
+                                )
+                              "
+                            >
+                              <fa-icon
+                                [icon]="faPencil"
+                                [fixedWidth]="true"
+                              ></fa-icon>
+                            </button>
+                            <button
+                              type="button"
+                              class="btn-high rounded-md p-1"
+                              (click)="
+                                navigateToDetail(
+                                  productCategory.selectedSubcategory
+                                )
+                              "
+                            >
+                              <fa-icon
+                                [icon]="faEye"
+                                [fixedWidth]="true"
+                              ></fa-icon>
+                            </button>
+                            <button
+                              type="button"
+                              class="btn-high rounded-md p-1"
+                              (click)="
+                                deleteProductCategory(
+                                  productCategory.selectedSubcategory
+                                );
+                                productCategory.selectedSubcategory = null
+                              "
+                            >
+                              <fa-icon
+                                [icon]="faTrash"
+                                [fixedWidth]="true"
+                              ></fa-icon>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="category-title flex items-center px-3">
+                        <h4 class="flex-1 text-xs font-bold">
+                          {{ productCategory.selectedSubcategory.name }}
+                        </h4>
+                      </div>
+                      <div class="subcategories space-y-1 px-3">
+                        <div class="header flex items-center justify-between">
+                          <h5 class="flex items-center text-2xs">
+                            Subcategories ({{
+                              productCategory.selectedSubcategory.subcategories
+                                .length
+                            }})
+                          </h5>
+                          <div class="action">
+                            <button
+                              type="button"
+                              class="btn-high rounded-md p-1"
+                              (click)="
+                                onAddCategory(
+                                  productCategory.selectedSubcategory
+                                )
+                              "
+                            >
+                              <fa-icon
+                                [icon]="faPlus"
+                                [fixedWidth]="true"
+                              ></fa-icon>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="h-full space-y-1 overflow-y-auto bg-zinc-100/70 dark:bg-zinc-800"
+                      >
+                        <div
+                          class="group flex cursor-pointer items-center px-3 py-1 hover:bg-zinc-100/70 dark:hover:bg-zinc-800"
+                          *ngFor="
+                            let productSubcategory of productCategory
+                              .selectedSubcategory.subcategories
+                          "
+                        >
+                          <p class="flex-1 text-2xs">
+                            {{ productSubcategory.name }}
+                          </p>
+                          <div
+                            class="action invisible flex justify-end gap-2 group-hover:visible"
+                          >
+                            <button
+                              type="button"
+                              class="dark:hover:text-white"
+                              (click)="
+                                onEditProductCategory(productSubcategory)
+                              "
+                            >
+                              <fa-icon
+                                class="text-xs"
+                                [icon]="faPencil"
+                                [fixedWidth]="true"
+                              ></fa-icon>
+                            </button>
+                            <button
+                              type="button"
+                              class="dark:hover:text-white"
+                              (click)="navigateToDetail(productSubcategory)"
+                            >
+                              <fa-icon
+                                class="text-xs"
+                                [icon]="faEye"
+                                [fixedWidth]="true"
+                              ></fa-icon>
+                            </button>
+                            <button
+                              type="button"
+                              class="dark:hover:text-white"
+                              (click)="
+                                deleteProductCategory(productSubcategory)
+                              "
+                            >
+                              <fa-icon
+                                class="text-xs"
+                                [icon]="faTrash"
+                                [fixedWidth]="true"
+                              ></fa-icon>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="!loading && productCategories.length === 0">
+        <div class="w-full py-[20vh] text-center">
+          <p>No data found</p>
+        </div>
+      </ng-container>
+      <div class="w-full py-[20vh] text-center" *ngIf="loading">
+        <!-- <fc-loading></fc-loading> -->
+      </div>
+    </div>
+    <div class="flex justify-end gap-3">
+      <!-- <div class="w-full @lg:w-96">
+          <fc-pagination
+            [rows]="rows"
+            [page]="page"
+            [totalPages]="totalPages"
+            [totalRecords]="totalRecords"
+            (onPageUpdate)="onPageUpdate($event)"></fc-pagination>
+        </div> -->
+    </div>
+  </div>
+</div>

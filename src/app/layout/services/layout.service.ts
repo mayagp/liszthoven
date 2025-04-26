@@ -100,6 +100,31 @@ export class LayoutService {
         name: 'Warehouse',
         visible: true,
       },
+      {
+        icon_path_light: 'images/sidebar-icon/black/product.png',
+        icon_path_dark: 'images/sidebar-icon/white/product.png',
+        name: 'Product',
+        parentRoute: 'report',
+        showRoutes: false,
+        visible: true,
+        subMenus: [
+          {
+            name: 'Product List',
+            route: '/product',
+            visible: true,
+          },
+          {
+            name: 'Product Category',
+            route: '/product-category',
+            visible: true,
+          },
+          {
+            name: 'Product Stock Movement',
+            route: '/stock-movement',
+            visible: true,
+          },
+        ],
+      },
     ];
   }
 }

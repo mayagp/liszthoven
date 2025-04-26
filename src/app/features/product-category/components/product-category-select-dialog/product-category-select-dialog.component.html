@@ -1,0 +1,96 @@
+<div
+  class="space-y-3 rounded-lg bg-white p-3 backdrop-blur-sm dark:bg-neutral-900"
+>
+  <div class="flex items-center">
+    <h3 class="flex-1 text-sm font-medium">{{ title }}</h3>
+    <button
+      class="rounded-md p-2 hover:bg-zinc-200 hover:dark:bg-zinc-700"
+      (click)="onClose()"
+    >
+      <fa-icon [fixedWidth]="true" [icon]="faTimes"></fa-icon>
+    </button>
+  </div>
+  <div class="space-y-3">
+    <div class="overflow-auto rounded dark:bg-neutral-900">
+      <div class="space-y-2" *ngIf="!loading">
+        <div class="flex gap-3 text-xs">
+          <!-- main categories -->
+          <div
+            class="h-[300px] w-[150px] overflow-y-scroll rounded-md bg-zinc-100/70 p-3 dark:bg-zinc-800 lg:w-[200px]"
+          >
+            <ng-container *ngFor="let category of productCategories">
+              <button
+                (click)="onShowCategory(category)"
+                type="button"
+                class="flex w-full items-center justify-between border-b border-b-slate-500 p-3 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+              >
+                <p>{{ category.name }}</p>
+                <fa-icon [fixedWidth]="true" [icon]="faChevronRight"></fa-icon>
+              </button>
+            </ng-container>
+          </div>
+          <!-- sub categories -->
+          <div
+            *ngIf="activeRootCategory"
+            class="grid h-[300px] flex-1 grid-cols-2 gap-x-2 gap-y-8 overflow-y-scroll"
+          >
+            <ng-container
+              *ngFor="let categories2 of activeRootCategory.subcategories"
+            >
+              <div class="flex flex-col space-y-2">
+                <button
+                  (click)="onSelectCategory(categories2)"
+                  type="button"
+                  class="cursor-pointer text-left font-bold hover:text-sky-600"
+                >
+                  {{ categories2.name }}
+                </button>
+                <ng-container
+                  *ngFor="let categories3 of categories2.subcategories"
+                >
+                  <button
+                    (click)="onSelectCategory(categories3)"
+                    type="button"
+                    class="cursor-pointer text-left text-2xs hover:text-sky-600"
+                  >
+                    {{ categories3.name }}
+                  </button>
+                </ng-container>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <div
+        class="flex w-full items-center justify-center text-center"
+        *ngIf="loading"
+      >
+        <!-- <fc-loading></fc-loading> -->
+      </div>
+      <div
+        class="py-[15vh] text-center"
+        *ngIf="!productCategories.length && !loading"
+      >
+        <img
+          class="mx-auto w-32 rounded-lg object-cover"
+          src="assets/images/bg/empty.png"
+        />
+        <p>No Product Category Data</p>
+      </div>
+    </div>
+  </div>
+  <div class="flex items-center justify-end gap-3 pt-3">
+    <p *ngIf="selectedCategory" class="text-xs font-bold">
+      Selected Category : {{ selectedCategory.name }}
+    </p>
+    <button
+      type="button"
+      [ngClass]="isSubmitAllowed() ? 'opacity-100' : 'opacity-25'"
+      class="fc-animate-translate-up flex items-center gap-2 rounded-md bg-zinc-200 p-2 text-sm dark:bg-zinc-700"
+      (click)="submit()"
+      [disabled]="!isSubmitAllowed()"
+    >
+      Submit
+    </button>
+  </div>
+</div>

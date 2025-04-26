@@ -1,0 +1,82 @@
+<div class="flex h-full flex-col space-y-3">
+  <app-fc-action-bar
+    [isHasBackButton]="true"
+    [actionButtons]="actionButtons"
+    [filterButtons]="filterButtons"
+  ></app-fc-action-bar>
+  <div class="body h-full w-full overflow-y-auto text-xs @container">
+    <form
+      class="mx-auto mt-2 grid w-full gap-3"
+      [formGroup]="productCategoryForm"
+    >
+      <fc-input-text
+        title="Name"
+        formControlName="name"
+        placeholder="Enter Your Name Category"
+      >
+      </fc-input-text>
+    </form>
+    <div>
+      <div class="mt-2 flex w-full items-center">
+        <h3 class="flex-1">Product</h3>
+        <!-- <button
+            type="button"
+            class="flex gap-1 rounded-lg p-2 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+            (click)="onAddExchangeRate()">
+            <fa-icon [icon]="faPlus"></fa-icon>
+            Add
+          </button> -->
+      </div>
+      <div
+        class="w-full overflow-y-auto py-2 transition-all duration-700 ease-in-out @container"
+        *ngIf="!loading"
+      >
+        <div class="grid gap-2 @lg:grid-cols-2" *ngIf="products.length > 0">
+          <ng-container *ngFor="let product of products; let i = index">
+            <div
+              (dblclick)="navigateToProductDetail(product.id)"
+              class="fc-animate-translate-up grid cursor-pointer grid-cols-1 items-center justify-between rounded-md border border-zinc-100/70 bg-zinc-100/70 p-3 hover:border-sky-600 dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600 lg:flex"
+            >
+              <div class="flex w-full items-start justify-between">
+                <div class="flex gap-5">
+                  <img
+                    class="aspect-square w-20 flex-none rounded-lg bg-white object-cover"
+                    [src]="
+                      product.default_image
+                        ? product.default_image.url
+                        : 'assets/images/placeholder/placeholder_small.jpg'
+                    "
+                  />
+                  <div class="text-xs">
+                    <p class="mb-3 font-bold capitalize">{{ product.name }}</p>
+                    <p>Stock: {{ product.quantity | number }} Pcs</p>
+                    <p class="font-bold">
+                      {{ product.base_price | fcCurrency }}
+                    </p>
+                  </div>
+                </div>
+                <div class="flex w-full justify-end lg:w-[150px]">
+                  <button
+                    type="button"
+                    class="btn btn-high"
+                    (click)="navigateToProductDetail(product.id)"
+                  >
+                    <fa-icon [fixedWidth]="true" [icon]="faEye"></fa-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+        <div
+          class="flex h-full w-full items-center justify-center"
+          *ngIf="products.length === 0"
+        >
+          <p class="py-10 text-xs text-zinc-700 dark:text-white/60">
+            No Product with this category
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

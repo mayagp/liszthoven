@@ -1,3 +1,5 @@
+import { Product } from '../../product/interfaces/product';
+
 export interface Inventory {
   id: number;
   product_id: number;
@@ -11,7 +13,7 @@ export interface Inventory {
   remaining_quantity: number;
   inventory_in_transactions: InventoryInTransaction[];
   inventory_out_transactions: InventoryOutTransaction[];
-  //   product: Product;
+  product: Product;
   loading: boolean;
   showDetail: boolean;
   inventoryDetailLoaded: boolean;

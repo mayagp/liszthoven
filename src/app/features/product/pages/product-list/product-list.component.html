@@ -1,0 +1,98 @@
+<div class="flex h-full gap-3 @container">
+  <div
+    class="flex h-full w-full flex-col gap-3 transition-all duration-700 ease-in-out @container"
+    [ngClass]="{
+      '@3xl:w-full': !quickView,
+      '@3xl:w-[20rem]': quickView,
+    }"
+  >
+    <app-fc-action-bar
+      [actionButtons]="actionButtons"
+      [filterButtons]="filterButtons"
+    ></app-fc-action-bar>
+    <div class="body flex h-full w-full gap-3 overflow-y-auto text-xs">
+      <!-- Data List -->
+      <ng-container *ngIf="!loading && products.length > 0">
+        <div
+          class="grid h-fit w-full gap-2 py-2 @xl:grid-cols-2 @3xl:grid-cols-3"
+        >
+          <ng-container *ngFor="let product of products">
+            <div
+              (dblclick)="
+                quickView ? onChangeProduct(product) : navigateToDetail(product)
+              "
+              [ngClass]="{
+                'border-sky-600 dark:border-sky-600':
+                  selectedProduct?.id == product.id && quickView,
+              }"
+              class="fc-animate-translate-up grid cursor-pointer grid-cols-1 items-center justify-between rounded-md border border-zinc-100/70 bg-zinc-100/70 p-3 hover:border-sky-600 dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600 lg:flex"
+            >
+              <div class="flex w-full items-start justify-between">
+                <div class="flex gap-5">
+                  <div
+                    class="aspect-square w-20 flex-none rounded-lg bg-white object-cover"
+                  >
+                    <fc-image-preview
+                      [preview]="true"
+                      [src]="
+                        product.default_image
+                          ? product.default_image.url
+                          : 'assets/images/placeholder/placeholder_small.jpg'
+                      "
+                      [alt]="'liszthoven'"
+                    />
+                  </div>
+                  <div class="text-xs">
+                    <p class="mb-3 font-bold capitalize">{{ product.name }}</p>
+                    <p>Stock: {{ product.quantity | number }} Pcs</p>
+                    <p class="font-bold">
+                      {{ product.base_price | fcCurrency }}
+                    </p>
+                  </div>
+                </div>
+                <div class="flex w-fit justify-end">
+                  <button
+                    type="button"
+                    class="btn btn-high"
+                    (click)="navigateToDetail(product)"
+                  >
+                    <fa-icon [fixedWidth]="true" [icon]="faEye"></fa-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="!loading && products.length == 0">
+        <div class="w-full py-[20vh] text-center">
+          <p>No product found</p>
+        </div>
+      </ng-container>
+      <div class="w-full py-[20vh] text-center" *ngIf="loading">
+        <!-- <fc-loading></fc-loading> -->
+      </div>
+    </div>
+    <div class="flex justify-end gap-3">
+      <div class="w-full @lg:w-96">
+        <!-- <fc-pagination
+            [rows]="rows"
+            [page]="page"
+            [totalPages]="totalPages"
+            [totalRecords]="totalRecords"
+            (onPageUpdate)="onPageUpdate($event)"></fc-pagination> -->
+      </div>
+    </div>
+  </div>
+  <div
+    class="hidden flex-1 @3xl:block"
+    *ngIf="selectedProduct && quickView && products.length > 0"
+  >
+    <app-product-view
+      [product]="selectedProduct"
+      [quickView]="quickView"
+      (onDeleted)="onDeleted()"
+      (onUpdated)="onUpdated($event)"
+    ></app-product-view>
+  </div>
+</div>

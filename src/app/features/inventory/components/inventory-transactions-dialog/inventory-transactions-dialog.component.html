@@ -1,0 +1,102 @@
+<div
+  class="space-y-3 rounded-lg bg-light-highest p-3 backdrop-blur-sm dark:bg-dark-highest"
+>
+  <div class="flex items-center">
+    <h3 class="flex-1 text-sm font-medium">{{ title }}</h3>
+    <button
+      class="rounded-md p-2 hover:bg-light-lowest hover:dark:bg-dark-lowest"
+      (click)="onClose()"
+    >
+      <fa-icon [fixedWidth]="true" [icon]="faTimes"></fa-icon>
+    </button>
+  </div>
+  <!-- Form -->
+
+  <div class="grid gap-3">
+    <div class="h-[400px] overflow-auto" *ngIf="!loading">
+      <div class="grid gap-2">
+        <ng-container *ngFor="let inventory of inventories; let i = index">
+          <div
+            (click)="showDetail(i)"
+            class="flex cursor-pointer items-center justify-between rounded-lg bg-light-lowest p-2 dark:bg-dark-low dark:hover:bg-dark-lowest"
+          >
+            <div class="flex items-center gap-2">
+              <fa-icon [fixedWidth]="true" [icon]="faBoxesStocked"></fa-icon>
+              <div class="grid">
+                <p class="text-2xs">{{ inventory.date | date }} - Stock In</p>
+                <p class="text-xs capitalize">
+                  By : {{ removeUnderscores(inventory.inable_type) }} ({{
+                    inventory.quantity
+                  }}
+                  Pcs - Remaining Qty : {{ inventory.remaining_quantity }})
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button text-xs">
+                <fa-icon
+                  [fixedWidth]="true"
+                  [icon]="inventory.showDetail ? faChevronUp : faChevronDown"
+                ></fa-icon>
+              </button>
+            </div>
+          </div>
+
+          <div *ngIf="inventory.showDetail">
+            <div class="py-[2vh] text-center" *ngIf="inventory.loading">
+              <!-- <fc-loading></fc-loading> -->
+            </div>
+            <div
+              class="grid gap-1"
+              *ngIf="!inventory.loading && inventory.inventory_out_transactions"
+            >
+              <ng-container
+                *ngFor="
+                  let inventoryOut of inventory.inventory_out_transactions
+                "
+              >
+                <div
+                  class="ml-4 flex cursor-pointer items-center justify-between rounded-lg bg-light-lowest px-2 py-1 text-2xs dark:bg-dark-low dark:hover:bg-dark-lowest"
+                >
+                  <div class="flex items-center gap-3">
+                    <fa-icon [fixedWidth]="true" [icon]="faBoxOpen"></fa-icon>
+                    <div class="grid">
+                      <p class="">{{ inventoryOut.date | date }} - Stock Out</p>
+                      <p class="capitalize">
+                        By :
+                        {{ removeUnderscores(inventoryOut.outable_type) }} ({{
+                          inventoryOut.quantity
+                        }}
+                        Pcs)
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+            <p
+              *ngIf="
+                !inventory.loading &&
+                !inventory.inventory_out_transactions.length
+              "
+              class="text-center text-xs"
+            >
+              No Data
+            </p>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+    <div class="py-[20vh] text-center" *ngIf="loading">
+      <!-- <fc-loading></fc-loading> -->
+    </div>
+  </div>
+  <div>
+    <!-- <fc-pagination
+      [rows]="rows"
+      [page]="page"
+      [totalPages]="totalPages"
+      [totalRecords]="totalRecords"
+      (onPageUpdate)="onPageUpdate($event)"></fc-pagination> -->
+  </div>
+</div>

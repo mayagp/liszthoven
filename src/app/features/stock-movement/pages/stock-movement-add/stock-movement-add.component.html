@@ -1,0 +1,163 @@
+<div class="flex h-full flex-col space-y-3">
+  <app-fc-action-bar [isHasBackButton]="true" [actionButtons]="actionButtons" />
+  <div class="body h-full w-full overflow-y-auto text-xs @container">
+    <form
+      class="mx-auto mt-2 w-full gap-3 lg:flex"
+      [formGroup]="stockMovementForm"
+    >
+      <div class="w-full space-y-3">
+        <!-- Select Warehouse From -->
+        <div
+          class="form-input flex cursor-pointer items-center rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+        >
+          <div class="flex flex-1 flex-col" (click)="onSelectWarehouseFrom()">
+            <p
+              class="m-0 block p-0 text-2xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+            >
+              Warehouse From
+            </p>
+            <p *ngIf="stockMovementForm.value.from_warehouse" class="text-xs">
+              {{ stockMovementForm.value.from_warehouse.name }}
+            </p>
+            <p
+              *ngIf="!stockMovementForm.value.from_warehouse"
+              class="text-xs dark:text-gray-400"
+            >
+              Select Warehouse From
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button
+              *ngIf="stockMovementForm.value.from_warehouse"
+              type="button"
+              (click)="removeWarehouseFrom()"
+            >
+              <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
+            </button>
+            <button type="button" (click)="onSelectWarehouseFrom()">
+              <fa-icon [fixedWidth]="true" [icon]="faChevronDown"></fa-icon>
+            </button>
+          </div>
+        </div>
+        <div class="py-[2vh] text-center" *ngIf="loadingWarehouse">
+          <!-- <fc-loading></fc-loading> -->
+        </div>
+        <div
+          *ngIf="stockMovementForm.value.from_warehouse && !loadingWarehouse"
+          class="grid gap-2 lg:grid-cols-2"
+        >
+          <!-- Select Product Inventories -->
+          <div
+            (click)="onSelectProductInventory()"
+            class="form-input flex cursor-pointer items-center rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+          >
+            <div class="flex flex-1 flex-col">
+              <p
+                class="m-0 block p-0 text-2xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+              >
+                Product Inventory
+              </p>
+              <p *ngIf="stockMovementForm.value.product" class="text-xs">
+                {{ stockMovementForm.value.product.name }}
+              </p>
+              <p
+                *ngIf="!stockMovementForm.value.product"
+                class="text-xs dark:text-gray-400"
+              >
+                Select Product Inventory
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button
+                *ngIf="stockMovementForm.value.product"
+                type="button"
+                (click)="removeProductInventory()"
+              >
+                <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
+              </button>
+              <button type="button" (click)="onSelectProductInventory()">
+                <fa-icon [fixedWidth]="true" [icon]="faChevronDown"></fa-icon>
+              </button>
+            </div>
+          </div>
+          <fc-input-number
+            *ngIf="stockMovementForm.value.product"
+            [title]="'Quantity' + ' (Max ' + allowedQuantity + ' Pcs)'"
+            formControlName="quantity"
+            placeholder="Enter Quantity"
+          >
+          </fc-input-number>
+        </div>
+      </div>
+      <div class="w-full space-y-3">
+        <!-- Select Warehouse To -->
+        <div
+          (click)="onSelectWarehouseTo()"
+          class="form-input flex cursor-pointer items-center rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+        >
+          <div class="flex flex-1 flex-col">
+            <p
+              class="m-0 block p-0 text-2xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+            >
+              Warehouse To
+            </p>
+            <p *ngIf="stockMovementForm.value.to_warehouse" class="text-xs">
+              {{ stockMovementForm.value.to_warehouse.name }}
+            </p>
+            <p
+              *ngIf="!stockMovementForm.value.to_warehouse"
+              class="text-xs dark:text-gray-400"
+            >
+              Select Warehouse To
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button
+              *ngIf="stockMovementForm.value.to_warehouse"
+              type="button"
+              (click)="removeWarehouseTo()"
+            >
+              <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
+            </button>
+            <button type="button">
+              <fa-icon [fixedWidth]="true" [icon]="faChevronDown"></fa-icon>
+            </button>
+          </div>
+        </div>
+        <div class="grid gap-2 lg:grid-cols-2">
+          <div class="card w-full">
+            <p-iftalabel>
+              <p-datepicker
+                [style]="{ width: '100%' }"
+                inputId="icondisplay"
+                showIcon
+                iconDisplay="input"
+                [showButtonBar]="true"
+                formControlName="date"
+                placeholder="Date"
+                appendTo="body"
+                [inputStyle]="{
+                  'background-color': '#27272a',
+                  border: '1px solid #3f3f46',
+                  color: '#ffffff',
+                  'font-size': '12px',
+                  'line-height': '1.7',
+                }"
+              />
+              <label
+                for="date"
+                style="font-weight: 500 !important; color: #ffffff99 !important"
+                >Date</label
+              >
+            </p-iftalabel>
+          </div>
+          <fc-input-text
+            title="Note"
+            formControlName="note"
+            placeholder="Enter Note"
+          ></fc-input-text>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

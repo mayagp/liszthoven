@@ -32,6 +32,27 @@ export const layoutRoutes: Routes = [
             (m) => m.warehouseRoutes,
           ),
       },
+      {
+        path: 'product',
+        loadChildren: () =>
+          import('../features/product/product.routes').then(
+            (m) => m.productRoutes,
+          ),
+      },
+      {
+        path: 'product-category',
+        loadChildren: () =>
+          import('../features/product-category/product-category.routes').then(
+            (m) => m.productCategoryRoutes,
+          ),
+      },
+      {
+        path: 'stock-movement',
+        loadChildren: () =>
+          import('../features/stock-movement/stock-movement.routes').then(
+            (m) => m.stockMovementRoutes,
+          ),
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

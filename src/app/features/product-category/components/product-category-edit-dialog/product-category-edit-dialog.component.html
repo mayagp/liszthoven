@@ -1,0 +1,37 @@
+<div
+  class="space-y-3 rounded-lg bg-white p-3 backdrop-blur-sm dark:bg-neutral-900"
+>
+  <div class="flex items-center">
+    <h3 class="flex-1 text-sm font-medium">{{ title }}</h3>
+    <button
+      class="rounded-md p-2 hover:bg-zinc-200 hover:dark:bg-zinc-700"
+      (click)="onClose()"
+    >
+      <fa-icon [fixedWidth]="true" [icon]="faTimes"></fa-icon>
+    </button>
+  </div>
+  <form [formGroup]="productCategoryForm" class="space-y-3">
+    <fc-input-text
+      title="Name"
+      formControlName="name"
+      placeholder="Enter Category Name"
+    ></fc-input-text>
+
+    <div class="flex items-center justify-end gap-2 mt-3">
+      <button
+        type="button"
+        class="flex gap-1 rounded-lg bg-emerald-500 p-2 text-2xs text-white hover:bg-emerald-600 dark:bg-emerald-700 dark:hover:bg-emerald-600"
+        (click)="submit()"
+        [ngClass]="{ 'opacity-50': loading }"
+        [disabled]="loading"
+      >
+        <fa-icon
+          [icon]="faSpinner"
+          [fixedWidth]="true"
+          *ngIf="loading"
+        ></fa-icon>
+        Submit
+      </button>
+    </div>
+  </form>
+</div>

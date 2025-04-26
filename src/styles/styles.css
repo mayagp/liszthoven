@@ -6,3 +6,10 @@
 /* @import "./utils/colors.css"; */
 @import "./utils/buttons.css";
 @import "./vendors/prime-ng/prime-ng.css";
+
+.fc-animate-scale {
+  @apply transition ease-in-out hover:scale-150;
+}
+.fc-animate-translate-up {
+  @apply transition ease-in-out hover:-translate-y-1;
+}

@@ -68,34 +68,37 @@
                 <div
                   class="aspect-square w-20 flex-none rounded-lg bg-white object-cover"
                 >
-                  <!-- <fc-image-preview
-                      [preview]="true"
-                      [src]="
-                        inventory.product.product_images[0].url
-                          ? inventory.product.product_images[0].url
-                          : 'assets/images/placeholder/placeholder_small.jpg'
-                      ">
-                    </fc-image-preview> -->
+                  <fc-image-preview
+                    [preview]="true"
+                    [src]="
+                      inventory.product.product_images[0].url
+                        ? inventory.product.product_images[0].url
+                        : 'assets/images/placeholder/placeholder_small.jpg'
+                    "
+                  >
+                  </fc-image-preview>
                 </div>
-                <!-- <div class="flex-1 space-y-1">
-                    <a
-                      [routerLink]="['/product/view', inventory.product.id]"
-                      target="_blank"
-                      pTooltip="View Product"
-                      class="font-bold capitalize hover:text-primary-dark dark:hover:text-sky-600">
-                      {{ inventory.product.name }}
-                    </a>
-                    <p>{{ inventory.quantity }} Pcs</p>
-                  </div> -->
-                <!-- <div class="flex justify-end gap-2">
-                    <button
-                      (click)="onSelectInventoryTransactions(inventory.id)"
-                      type="button"
-                      class="btn-high flex gap-2 rounded-lg p-2">
-                      <fa-icon class="text-xs" [icon]="faTruckMoving"></fa-icon>
-                      <p class="hidden @sm:block">Transactions</p>
-                    </button>
-                  </div> -->
+                <div class="flex-1 space-y-1">
+                  <a
+                    [routerLink]="['/product/view', inventory.product.id]"
+                    target="_blank"
+                    pTooltip="View Product"
+                    class="font-bold capitalize hover:text-sky-900 dark:hover:text-sky-600"
+                  >
+                    {{ inventory.product.name }}
+                  </a>
+                  <p>{{ inventory.quantity }} Pcs</p>
+                </div>
+                <div class="flex justify-end gap-2">
+                  <button
+                    (click)="onSelectInventoryTransactions(inventory.id)"
+                    type="button"
+                    class="btn-high flex gap-2 rounded-lg p-2"
+                  >
+                    <fa-icon class="text-xs" [icon]="faTruckMoving"></fa-icon>
+                    <p class="hidden @sm:block">Transactions</p>
+                  </button>
+                </div>
               </div>
             </ng-container>
           </div>

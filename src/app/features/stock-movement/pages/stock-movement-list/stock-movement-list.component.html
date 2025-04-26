@@ -1,0 +1,52 @@
+<div class="flex h-full flex-col space-y-3">
+  <app-fc-action-bar
+    [actionButtons]="actionButtons"
+    [filterButtons]="filterButtons"
+  ></app-fc-action-bar>
+  <div class="body mb-4 h-full w-full overflow-y-auto text-xs md:mb-0 lg:mb-0">
+    <!-- Data List -->
+    <div class="mt-2 grid gap-2" *ngIf="!loading">
+      <ng-container *ngFor="let stockMovement of stockMovements">
+        <div
+          class="fc-animate-translate-up grid cursor-pointer items-center gap-3 rounded-md border border-zinc-100/70 bg-zinc-100/70 p-3 @container hover:border-sky-600 dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600 lg:flex"
+        >
+          <div class="w-full @lg:w-[90px]">
+            <p class="text-2xs">{{ stockMovement.date | date }}</p>
+          </div>
+          <div class="w-full @lg:w-[200px]">
+            {{ stockMovement.product.name }}
+            ({{ stockMovement.quantity }} Pcs)
+          </div>
+          <div class="w-full @lg:w-[200px]">
+            <p>
+              From : {{ stockMovement.from ? stockMovement.from.name : "-" }}
+            </p>
+            <p>To : {{ stockMovement.to ? stockMovement.to.name : "-" }}</p>
+          </div>
+          <div class="flex-1">Note : {{ stockMovement.note }}</div>
+          <div class="flex w-full justify-end lg:w-[150px]">
+            <!-- <button
+                type="button"
+                class="btn btn-high"
+                (click)="navigateToDetail(stockMovement)">
+                <fa-icon [fixedWidth]="true" [icon]="faEye"></fa-icon>
+              </button> -->
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <div class="py-[20vh] text-center" *ngIf="loading">
+      <!-- <fc-loading></fc-loading> -->
+    </div>
+  </div>
+  <div class="flex justify-end gap-3">
+    <div class="w-full lg:w-96">
+      <!-- <fc-pagination
+          [rows]="rows"
+          [page]="page"
+          [totalPages]="totalPages"
+          [totalRecords]="totalRecords"
+          (onPageUpdate)="onPageUpdate($event)"></fc-pagination> -->
+    </div>
+  </div>
+</div>
