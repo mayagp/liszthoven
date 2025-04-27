@@ -125,6 +125,77 @@ export class LayoutService {
           },
         ],
       },
+      {
+        icon_path_light: 'images/sidebar-icon/black/supplier.png',
+        icon_path_dark: 'images/sidebar-icon/white/supplier.png',
+        route: '/supplier',
+        name: 'Supplier',
+        visible: true,
+      },
+      {
+        icon_path_light: 'images/sidebar-icon/black/purchase.png',
+        icon_path_dark: 'images/sidebar-icon/white/purchase.png',
+        name: 'Purchase',
+        parentRoute: 'purchase',
+        showRoutes: false,
+        visible: true,
+        // this.ability.can('read', 'purchase-plan') ||
+        // this.ability.can('read', 'purchase-request') ||
+        // this.ability.can('read', 'supplier-quotation') ||
+        // this.ability.can('read', 'purchase-order') ||
+        // this.ability.can('read', 'purchase-invoice') ||
+        // this.ability.can('read', 'goods-receipt') ||
+        // this.ability.can('read', 'purchase-payment') ||
+        // this.ability.can('read', 'purchase-return') ||
+        // this.ability.can('read', 'purchase-note'),
+        subMenus: [
+          {
+            name: 'Purchase Plan',
+            route: '/purchase-plan',
+            visible: true,
+          },
+          {
+            name: 'Purchase Request',
+            route: '/purchase-request',
+            visible: true,
+          },
+          {
+            name: 'Supplier Quotation',
+            route: '/supplier-quotation',
+            visible: true,
+          },
+          // {
+          //   name: 'Purchase Order',
+          //   route: '/purchase-order',
+          //   visible: this.ability.can('read', 'purchase-order'),
+          // },
+          // {
+          //   name: 'Purchase Invoice',
+          //   route: '/purchase-invoice',
+          //   visible: this.ability.can('read', 'purchase-invoice'),
+          // },
+          // {
+          //   name: 'Goods Receipt',
+          //   route: '/goods-receipt',
+          //   visible: this.ability.can('read', 'goods-receipt'),
+          // },
+          // {
+          //   name: 'Purchase Payment',
+          //   route: '/purchase-payment',
+          //   visible: this.ability.can('read', 'purchase-payment'),
+          // },
+          // {
+          //   name: 'Purchase Return',
+          //   route: '/purchase-return',
+          //   visible: this.ability.can('read', 'purchase-return'),
+          // },
+          // {
+          //   name: 'Purchase Note',
+          //   route: '/purchase-note',
+          //   visible: this.ability.can('read', 'purchase-note'),
+          // },
+        ],
+      },
     ];
   }
 }

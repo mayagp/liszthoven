@@ -7,6 +7,7 @@ import {
   faPlus,
   faBuilding,
   faLocationDot,
+  faSearch,
 } from '@fortawesome/free-solid-svg-icons';
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { Subject, takeUntil } from 'rxjs';
@@ -38,6 +39,7 @@ export class BranchSelectDialogComponent
   faPlus = faPlus;
   faBuilding = faBuilding;
   faLocationDot = faLocationDot;
+  faSearch = faSearch;
 
   filterByCompany = false;
   companyId?: number;

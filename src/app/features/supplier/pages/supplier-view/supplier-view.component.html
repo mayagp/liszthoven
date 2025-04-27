@@ -1,0 +1,117 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+<div class="flex h-full flex-col space-y-3">
+  <app-fc-action-bar
+    [isHasBackButton]="!quickView"
+    [actionButtons]="actionButtons"
+    [filterButtons]="filterButtons"
+  ></app-fc-action-bar>
+  <div
+    class="body mt-5 h-full w-full overflow-y-auto py-2 text-xs"
+    *ngIf="!loading"
+  >
+    <form [formGroup]="supplierForm" class="grid w-full gap-3 lg:grid-cols-2">
+      <fc-input-text
+        title="Name"
+        formControlName="name"
+        placeholder="Enter Supplier Name"
+      ></fc-input-text>
+      <fc-input-text
+        title="PIC"
+        formControlName="pic"
+        placeholder="Enter PIC"
+      ></fc-input-text>
+      <fc-input-tel
+        title="Contact Number"
+        formControlName="contact_no"
+        placeholder="Enter Supplier Contact Number"
+      ></fc-input-tel>
+      <fc-input-text
+        title="Tax Number"
+        formControlName="tax_no"
+        placeholder="Enter Supplier Tax Number"
+      ></fc-input-text>
+      <fc-input-text
+        title="Address"
+        formControlName="address"
+        placeholder="Enter Supplier Address"
+      ></fc-input-text>
+    </form>
+    <!-- Supplier Bank Account -->
+    <div class="mt-6 grid w-full gap-3">
+      <div class="flex-1">
+        <div class="mb-3 flex items-center justify-between">
+          <p>Supplier Bank Account</p>
+          <div>
+            <button
+              type="button"
+              (click)="addSupplierBankAccount()"
+              class="flex items-center gap-1 rounded-md text-xs text-gray-800 dark:text-white"
+            >
+              <fa-icon [fixedWidth]="true" [icon]="faPlus"></fa-icon>
+              <p>Add Account</p>
+            </button>
+          </div>
+        </div>
+        <div *ngIf="supplierBankAccounts.value.length" class="grid gap-2">
+          <ng-container
+            *ngFor="
+              let supplierBankAccount of supplierBankAccounts.value;
+              let i = index
+            "
+          >
+            <div class="@container">
+              <div
+                class="fc-animate-translate-up grid grid-cols-1 items-center justify-between gap-1 rounded-md border border-zinc-100/70 bg-zinc-100/70 p-3 hover:border-sky-600 @lg:flex @lg:gap-5 dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600"
+              >
+                <div class="space-y-1 @xl:flex-1">
+                  <p class="text-2xs">Bank Name</p>
+                  <p>
+                    {{ supplierBankAccount.bank }}
+                  </p>
+                </div>
+                <div class="space-y-1 @xl:flex-1">
+                  <p class="text-2xs">Account No</p>
+                  <p>
+                    {{ supplierBankAccount.account_no }}
+                  </p>
+                </div>
+                <div class="space-y-1 @xl:flex-1">
+                  <p class="text-2xs">Swift Code</p>
+                  <p>
+                    {{ supplierBankAccount.swift_code }}
+                  </p>
+                </div>
+                <div class="flex justify-end gap-2">
+                  <button
+                    (click)="editSupplierBankAccountDetail(i)"
+                    type="button"
+                    class="btn-high flex rounded-lg p-2"
+                  >
+                    <fa-icon class="text-xs" [icon]="faPencil"></fa-icon>
+                  </button>
+                  <button
+                    (click)="deleteSupplierBankAccountDetail(i)"
+                    type="button"
+                    class="btn-high flex rounded-lg p-2"
+                  >
+                    <fa-icon class="text-xs" [icon]="faTrash"></fa-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+        <div
+          *ngIf="!supplierBankAccounts.value.length"
+          class="flex h-10 w-full items-center justify-center text-center"
+        >
+          No Supplier Bank Accounts Data
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="py-[20vh] text-center" *ngIf="loading">
+    <!-- <fc-loading></fc-loading> -->
+  </div>
+</div>

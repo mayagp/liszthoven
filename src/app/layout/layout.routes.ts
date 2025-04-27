@@ -53,6 +53,13 @@ export const layoutRoutes: Routes = [
             (m) => m.stockMovementRoutes,
           ),
       },
+      {
+        path: 'supplier',
+        loadChildren: () =>
+          import('../features/supplier/supplier.routes').then(
+            (m) => m.supplierRoutes,
+          ),
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
