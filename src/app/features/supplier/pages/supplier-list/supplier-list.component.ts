@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Ability } from '@casl/ability';
+import { PureAbility } from '@casl/ability';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faLocationDot,
@@ -113,9 +113,9 @@ export class SupplierListComponent {
     private route: ActivatedRoute,
     private fcFilterDialogService: FcFilterDialogService,
     private dialogService: DialogService,
-    private ability: Ability,
+    private ability: PureAbility,
   ) {
-    // this.actionButtons[0].hidden = !this.ability.can('create', 'supplier');
+    this.actionButtons[0].hidden = !this.ability.can('create', 'supplier');
     this.layoutService.setHeaderConfig({
       title: 'Suppliers',
       icon: '',

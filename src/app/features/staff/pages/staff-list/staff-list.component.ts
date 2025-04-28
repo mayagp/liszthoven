@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Ability } from '@casl/ability';
+import { PureAbility } from '@casl/ability';
 import {
   faBars,
   faBuilding,
@@ -105,11 +105,11 @@ export class StaffListComponent {
     private staffService: StaffService,
     private router: Router,
     private route: ActivatedRoute,
-    private ability: Ability,
+    private ability: PureAbility,
     private fcFilterDialogService: FcFilterDialogService,
     private dialogService: DialogService,
   ) {
-    // this.actionButtons[0].hidden = !this.ability.can('create', 'staff');
+    this.actionButtons[0].hidden = !this.ability.can('create', 'staff');
     this.layoutService.setHeaderConfig({
       title: 'Staff',
       icon: '',

@@ -8,7 +8,7 @@ import {
   Validators,
   FormArray,
 } from '@angular/forms';
-import { Ability } from '@casl/ability';
+import { PureAbility } from '@casl/ability';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faPlus,
@@ -71,9 +71,9 @@ export class SupplierAddComponent {
     private location: Location,
     private messageService: MessageService,
     private dialogService: DialogService,
-    private ability: Ability,
+    private ability: PureAbility,
   ) {
-    // this.actionButtons[0].hidden = !this.ability.can('create', 'supplier');
+    this.actionButtons[0].hidden = !this.ability.can('create', 'supplier');
     this.layoutService.setHeaderConfig({
       title: 'Add Supplier',
       icon: '',

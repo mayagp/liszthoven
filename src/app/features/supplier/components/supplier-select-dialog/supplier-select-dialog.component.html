@@ -1,0 +1,91 @@
+<div
+  class="space-y-3 rounded-lg bg-light-highest p-3 backdrop-blur-sm dark:bg-dark-highest"
+>
+  <div class="flex items-center">
+    <h3 class="flex-1 text-sm font-medium">{{ title }}</h3>
+    <button
+      class="rounded-md p-2 hover:bg-light-lowest hover:dark:bg-dark-lowest"
+      (click)="onClose()"
+    >
+      <fa-icon [fixedWidth]="true" [icon]="faTimes"></fa-icon>
+    </button>
+  </div>
+  <div class="space-y-3">
+    <div class="supplier-search mb-4 flex gap-2">
+      <span class="p-input-icon-left w-full">
+        <input
+          pInputText
+          type="text"
+          class="p-input h-8 w-full text-xs"
+          placeholder="Search Supplier"
+          [(ngModel)]="searchQuery"
+          fcDebounceKeyup
+          (onEvent)="search()"
+        />
+        <i class="pi pi-search"></i>
+      </span>
+      <a
+        title="Add Supllier"
+        class="btn btn-high p-1 text-xs"
+        [routerLink]="['/supplier/add']"
+        target="_blank"
+      >
+        <fa-icon [fixedWidth]="true" [icon]="faPlus"></fa-icon>
+      </a>
+      <button
+        title="Refresh"
+        type="button"
+        [disabled]="loading"
+        class="btn btn-high p-1 text-xs"
+        (click)="loadData()"
+      >
+        <fa-icon [fixedWidth]="true" [icon]="faRefresh"></fa-icon>
+      </button>
+    </div>
+    <div
+      class="customer-list h-[400px] overflow-auto rounded dark:bg-dark-high"
+    >
+      <div class="space-y-2" *ngIf="!loading">
+        <ng-container *ngFor="let supplier of suppliers">
+          <button
+            class="grid w-full cursor-pointer items-center gap-2 rounded-md border border-light-low bg-light-low p-2 text-left text-xs hover:border-primary-light dark:border-dark-low dark:bg-dark-low hover:dark:border-primary-light"
+            (click)="submit(supplier)"
+          >
+            <div class="grid flex-1 gap-1">
+              <div class="flex gap-3">
+                <fa-icon [fixedWidth]="true" [icon]="faBuilding"></fa-icon>
+                <p>{{ supplier.name }}</p>
+              </div>
+              <div class="flex gap-3">
+                <fa-icon [fixedWidth]="true" [icon]="faPhone"></fa-icon>
+                <p>{{ supplier.contact_no }}</p>
+              </div>
+              <div class="flex gap-3">
+                <fa-icon [fixedWidth]="true" [icon]="faLocationDot"></fa-icon>
+                <p>{{ supplier.address }}</p>
+              </div>
+            </div>
+          </button>
+        </ng-container>
+      </div>
+      <div class="py-[15vh] text-center" *ngIf="!suppliers.length && !loading">
+        <img
+          class="mx-auto w-32 rounded-lg object-cover"
+          src="assets/images/bg/empty.png"
+        />
+        <p>No Supplier Data</p>
+      </div>
+      <div class="py-[20vh] text-center" *ngIf="loading">
+        <!-- <fc-loading></fc-loading> -->
+      </div>
+    </div>
+    <!-- <div>
+      <fc-pagination
+        [rows]="rows"
+        [page]="page"
+        [totalPages]="totalPages"
+        [totalRecords]="totalRecords"
+        (onPageUpdate)="onPageUpdate($event)"></fc-pagination>
+    </div> -->
+  </div>
+</div>

@@ -16,7 +16,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Ability } from '@casl/ability';
+import { PureAbility } from '@casl/ability';
 import {
   faCloudArrowUp,
   faCheck,
@@ -146,11 +146,11 @@ export class ProductViewComponent
     private router: Router,
     private dialogService: DialogService,
     private confirmationService: ConfirmationService,
-    private ability: Ability,
+    private ability: PureAbility,
   ) {
     this.product.id = String(this.route.snapshot.paramMap.get('id'));
-    // this.actionButtons[0].hidden = !this.ability.can('update', 'product');
-    // this.actionButtons[1].hidden = !this.ability.can('delete', 'product');
+    this.actionButtons[0].hidden = !this.ability.can('update', 'product');
+    this.actionButtons[1].hidden = !this.ability.can('delete', 'product');
     this.layoutService.setHeaderConfig({
       title: 'Product Detail',
       icon: '',

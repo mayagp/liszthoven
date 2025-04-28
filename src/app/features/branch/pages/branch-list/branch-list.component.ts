@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Ability } from '@casl/ability';
+import { PureAbility } from '@casl/ability';
 import {
   faLocationDot,
   faUser,
@@ -107,9 +107,9 @@ export class BranchListComponent {
     private route: ActivatedRoute,
     private fcFilterDialogService: FcFilterDialogService,
     private dialogService: DialogService,
-    private ability: Ability,
+    private ability: PureAbility,
   ) {
-    // this.actionButtons[0].hidden = !this.ability.can('create', 'branch');
+    this.actionButtons[0].hidden = !this.ability.can('create', 'branch');
     this.layoutService.setHeaderConfig({
       title: 'Branches',
       icon: '',

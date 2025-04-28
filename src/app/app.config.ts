@@ -12,7 +12,7 @@ import Aura from '@primeng/themes/aura';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { MessageService } from 'primeng/api';
-import { Ability, PureAbility } from '@casl/ability';
+import { PureAbility } from '@casl/ability';
 import { jwtInterceptor } from './core/interceptors/jwt.interceptor';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -39,7 +39,6 @@ export const appConfig: ApplicationConfig = {
       ConfirmDialogModule,
     ),
     MessageService,
-    Ability,
     PureAbility,
     providePrimeNG({
       theme: {

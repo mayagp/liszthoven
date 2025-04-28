@@ -8,7 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Ability } from '@casl/ability';
+import { PureAbility } from '@casl/ability';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faTimes,
@@ -72,13 +72,13 @@ export class StockMovementAddComponent {
     private dialogService: DialogService,
     private router: Router,
     private warehouseService: WarehouseService,
-    private ability: Ability,
+    private ability: PureAbility,
     private messageService: MessageService,
   ) {
-    // this.actionButtons[0].hidden = !this.ability.can(
-    //   'create',
-    //   'stock-movement',
-    // );
+    this.actionButtons[0].hidden = !this.ability.can(
+      'create',
+      'stock-movement',
+    );
     this.layoutService.setHeaderConfig({
       title: 'Add Stock Movement',
       icon: '',

@@ -9,7 +9,7 @@ import {
   FormArray,
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Ability } from '@casl/ability';
+import { PureAbility } from '@casl/ability';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faPlus,
@@ -100,10 +100,11 @@ export class SupplierViewComponent {
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private dialogService: DialogService,
-    private ability: Ability,
+    private ability: PureAbility,
   ) {
     this.supplier.id = String(this.route.snapshot.paramMap.get('id'));
-
+    this.actionButtons[0].hidden = !this.ability.can('update', 'supplier');
+    this.actionButtons[1].hidden = !this.ability.can('delete', 'supplier');
     this.layoutService.setHeaderConfig({
       title: 'Supplier',
       icon: '',

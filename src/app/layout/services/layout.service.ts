@@ -2,7 +2,7 @@ import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { HeaderConfig } from '../interfaces/header-config';
 import { isPlatformBrowser } from '@angular/common';
-import { Ability } from '@casl/ability';
+import { PureAbility } from '@casl/ability';
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +24,7 @@ export class LayoutService {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
-    private ability: Ability,
+    private ability: PureAbility,
   ) {
     this.isMobileSubject = new BehaviorSubject(
       Boolean(this.deviceType == 'mobile'),
@@ -149,11 +149,11 @@ export class LayoutService {
         // this.ability.can('read', 'purchase-return') ||
         // this.ability.can('read', 'purchase-note'),
         subMenus: [
-          {
-            name: 'Purchase Plan',
-            route: '/purchase-plan',
-            visible: true,
-          },
+          // {
+          //   name: 'Purchase Plan',
+          //   route: '/purchase-plan',
+          //   visible: true,
+          // },
           {
             name: 'Purchase Request',
             route: '/purchase-request',
@@ -164,11 +164,11 @@ export class LayoutService {
             route: '/supplier-quotation',
             visible: true,
           },
-          // {
-          //   name: 'Purchase Order',
-          //   route: '/purchase-order',
-          //   visible: this.ability.can('read', 'purchase-order'),
-          // },
+          {
+            name: 'Purchase Order',
+            route: '/purchase-order',
+            visible: this.ability.can('read', 'purchase-order'),
+          },
           // {
           //   name: 'Purchase Invoice',
           //   route: '/purchase-invoice',

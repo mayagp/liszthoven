@@ -16,7 +16,6 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Ability } from '@casl/ability';
 import {
   faPlus,
   faTrash,
@@ -43,6 +42,7 @@ import { FcActionBarComponent } from '../../../../shared/components/fc-action-ba
 import { FcInputTextComponent } from '../../../../shared/components/fc-input-text/fc-input-text.component';
 import { FcTextareaComponent } from '../../../../shared/components/fc-textarea/fc-textarea.component';
 import { FcInputTelComponent } from '../../../../shared/components/fc-input-tel/fc-input-tel.component';
+import { PureAbility } from '@casl/ability';
 
 @Component({
   selector: 'app-branch-view',
@@ -128,11 +128,11 @@ export class BranchViewComponent
     private location: Location,
     // private fcConfirmService: FcConfirmService,
     private confirmationService: ConfirmationService,
-    private ability: Ability,
+    private ability: PureAbility,
   ) {
     this.branch.id = String(this.route.snapshot.paramMap.get('id'));
-    // this.actionButtons[0].hidden = !this.ability.can('update', 'branch');
-    // this.actionButtons[1].hidden = !this.ability.can('delete', 'branch');
+    this.actionButtons[0].hidden = !this.ability.can('update', 'branch');
+    this.actionButtons[1].hidden = !this.ability.can('delete', 'branch');
 
     this.layoutService.setHeaderConfig({
       title: 'Branch Detail',

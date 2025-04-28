@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Ability } from '@casl/ability';
+import { PureAbility } from '@casl/ability';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faLocationDot,
@@ -112,13 +112,13 @@ export class ProductCategoryListComponent {
     private confirmationService: ConfirmationService,
     private dialogService: DialogService,
     private fcFilterDialogService: FcFilterDialogService,
-    private ability: Ability,
+    private ability: PureAbility,
     private messageService: MessageService,
   ) {
-    // this.actionButtons[0].hidden = !this.ability.can(
-    //   'create',
-    //   'product-category',
-    // );
+    this.actionButtons[0].hidden = !this.ability.can(
+      'create',
+      'product-category',
+    );
     this.layoutService.setHeaderConfig({
       title: 'Product Categories',
       icon: '',

@@ -16,7 +16,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { Ability } from '@casl/ability';
+import { PureAbility } from '@casl/ability';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faEye,
@@ -121,10 +121,10 @@ export class WarehouseViewComponent
     private messageService: MessageService,
     private dialogService: DialogService,
     private location: Location,
-    private ability: Ability,
+    private ability: PureAbility,
   ) {
-    // this.actionButtons[0].hidden = !this.ability.can('update', 'warehouse');
-    // this.actionButtons[1].hidden = !this.ability.can('delete', 'warehouse');
+    this.actionButtons[0].hidden = !this.ability.can('update', 'warehouse');
+    this.actionButtons[1].hidden = !this.ability.can('delete', 'warehouse');
     this.warehouse.id = String(this.route.snapshot.paramMap.get('id'));
     this.layoutService.setHeaderConfig({
       title: 'Warehouse Detail',

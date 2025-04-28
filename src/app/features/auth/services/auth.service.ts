@@ -3,7 +3,7 @@ import { BehaviorSubject, map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { User } from '../../user/interfaces/user';
-import { Ability, AbilityBuilder, PureAbility } from '@casl/ability';
+import { AbilityBuilder, PureAbility } from '@casl/ability';
 import { DataListParameter } from '../../../shared/interfaces/data-list-parameter.interface';
 import { environment } from '../../../../environments/environment';
 import { USER_ABILITY } from '../constants/auth.constant';
@@ -58,7 +58,7 @@ export class AuthService {
 
   private updateAbility(user: User) {
     if (!user) return;
-    const { can, rules } = new AbilityBuilder(Ability);
+    const { can, rules } = new AbilityBuilder<PureAbility>(PureAbility);
     const ability = USER_ABILITY.find((ability) =>
       ability.role_enums.includes(user.staff.role),
     );

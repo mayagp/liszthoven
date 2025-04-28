@@ -8,7 +8,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Ability } from '@casl/ability';
+import { PureAbility } from '@casl/ability';
 import {
   faSave,
   faBoxOpen,
@@ -200,7 +200,7 @@ export class StaffAddComponent implements OnInit, AfterContentInit, OnDestroy {
     private layoutService: LayoutService,
     private authService: AuthService,
     private router: Router,
-    private ability: Ability,
+    private ability: PureAbility,
     private messageService: MessageService,
     private fcDirtyStateService: FcDirtyStateService,
   ) {

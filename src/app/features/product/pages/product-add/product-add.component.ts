@@ -15,7 +15,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Ability } from '@casl/ability';
+import { PureAbility } from '@casl/ability';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faCalculator,
@@ -131,8 +131,9 @@ export class ProductAddComponent
     private dialogService: DialogService,
     private router: Router,
     private messageService: MessageService,
-    private ability: Ability,
+    private ability: PureAbility,
   ) {
+    this.actionButtons[0].hidden = !this.ability.can('create', 'product');
     this.layoutService.setHeaderConfig({
       title: 'Add Product',
       icon: '',

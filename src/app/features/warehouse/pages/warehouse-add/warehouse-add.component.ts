@@ -6,7 +6,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { Ability } from '@casl/ability';
+import { PureAbility } from '@casl/ability';
 import {
   faTimes,
   faChevronDown,
@@ -66,9 +66,9 @@ export class WarehouseAddComponent
     private warehouseService: WarehouseService,
     private messageService: MessageService,
     private dialogService: DialogService,
-    private ability: Ability,
+    private ability: PureAbility,
   ) {
-    // this.actionButtons[0].hidden = !this.ability.can('create', 'warehouse');
+    this.actionButtons[0].hidden = !this.ability.can('create', 'warehouse');
     this.layoutService.setHeaderConfig({
       title: 'Add Warehouse',
       icon: '',

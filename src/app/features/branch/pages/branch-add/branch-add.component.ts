@@ -7,7 +7,6 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Ability } from '@casl/ability';
 import { faSave, faRefresh } from '@fortawesome/free-solid-svg-icons';
 import { Subject } from 'rxjs';
 import { LayoutService } from '../../../../layout/services/layout.service';
@@ -20,6 +19,7 @@ import { FcInputTextComponent } from '../../../../shared/components/fc-input-tex
 import { FcTextareaComponent } from '../../../../shared/components/fc-textarea/fc-textarea.component';
 import { ButtonModule } from 'primeng/button';
 import { FcInputTelComponent } from '../../../../shared/components/fc-input-tel/fc-input-tel.component';
+import { PureAbility } from '@casl/ability';
 
 @Component({
   selector: 'app-branch-add',
@@ -68,9 +68,9 @@ export class BranchAddComponent implements OnInit, OnDestroy, AfterContentInit {
     private branchService: BranchService,
     private messageService: MessageService,
     private router: Router,
-    private ability: Ability,
+    private ability: PureAbility,
   ) {
-    // this.actionButtons[0].hidden = !this.ability.can('create', 'branch');
+    this.actionButtons[0].hidden = !this.ability.can('create', 'branch');
     this.layoutService.setHeaderConfig({
       title: 'Add Branch',
       icon: '',
