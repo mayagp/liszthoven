@@ -27,10 +27,10 @@
           placeholder="Enter Your Identification Number"
         />
         <!-- <div
-            class="form-input flex flex-1 cursor-pointer items-center rounded-lg border border-light-lowest bg-light-high p-2 dark:border-dark-lowest dark:bg-dark-low dark:hover:bg-dark-lowest">
+            class="form-input flex flex-1 cursor-pointer items-center rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700">
             <div class="flex flex-1 flex-col" (click)="onSelectTaxCategory()">
               <p
-                class="m-0 block p-0 text-2xs font-medium leading-5 text-dark-lowest dark:text-white/60">
+                class="m-0 block p-0 text-2xs font-medium leading-5 text-zinc-700 dark:text-white/60">
                 Tax Category
               </p>
               <p *ngIf="staffForm.value.tax_category" class="text-xs">
@@ -139,7 +139,7 @@
             [multiple]="true"
             (onInput)="addMultipleFiles($event)">
             <div
-              class="flex h-[200px] flex-col items-center justify-center gap-2 overflow-y-auto rounded-md border bg-light-low p-5 dark:border-dark-low dark:bg-dark-low">
+              class="flex h-[200px] flex-col items-center justify-center gap-2 overflow-y-auto rounded-md border bg-zinc-100/70 p-5 dark:border-zinc-800 dark:bg-zinc-800">
               <fa-icon class="text-3xl" [icon]="faCloudArrowUp" />
               <p>Drag or Upload Documents Here</p>
             </div>
@@ -147,7 +147,7 @@
         </div> -->
       <!-- <div
           *ngIf="documentFilesArray.length"
-          class="flex h-[200px] flex-col gap-2 rounded-md bg-light-low p-2 @xl:col-span-2 dark:bg-dark-low">
+          class="flex h-[200px] flex-col gap-2 rounded-md bg-zinc-100/70 p-2 @xl:col-span-2 dark:bg-zinc-800">
           <div class="h-[180px] flex-1 overflow-y-auto">
             <div class="grid gap-1 @md:grid-cols-2 @3xl:grid-cols-3">
               <ng-container formArrayName="user_documents">
@@ -158,14 +158,14 @@
                   "
                   [formGroupName]="i">
                   <div
-                    class="flex w-full items-center justify-between gap-2 rounded-md bg-light-highest p-2 dark:border-dark-highest dark:bg-dark-highest">
+                    class="flex w-full items-center justify-between gap-2 rounded-md bg-white p-2 dark:border-neutral-900 dark:bg-neutral-900">
                     <div class="flex w-full items-center gap-2">
                       <div
                         *ngIf="
                           fileType(documentFilesArray.value[i].file_type) ==
                           'file'
                         "
-                        class="flex cursor-pointer items-center justify-center rounded-md bg-light-low p-2 hover:bg-light-lowest dark:bg-dark-low dark:hover:bg-dark-lowest">
+                        class="flex cursor-pointer items-center justify-center rounded-md bg-zinc-100/70 p-2 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700">
                         <fa-icon [icon]="faFile" />
                       </div>
                       <ng-container
@@ -183,7 +183,7 @@
                         *ngIf="
                           fileType(documentFilesArray.value[i].file_type) == 'pdf'
                         "
-                        class="flex cursor-pointer items-center justify-center rounded-md bg-light-low p-2 hover:bg-light-lowest dark:bg-dark-low dark:hover:bg-dark-lowest">
+                        class="flex cursor-pointer items-center justify-center rounded-md bg-zinc-100/70 p-2 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700">
                         PDF
                       </div>
                       <div
@@ -201,10 +201,10 @@
                       <div class="space-y-1">
                         <label
                           *ngIf="documentFilesArray.value[i].inputChangeName"
-                          class="form-input flex w-full items-center gap-2 rounded-lg border border-light-lowest bg-light-high p-2 focus-within:border-primary-light/50 dark:border-dark-lowest dark:bg-dark-low focus-within:dark:border-dark-lowest">
+                          class="form-input flex w-full items-center gap-2 rounded-lg border border-zinc-200 bg-white p-2 focus-within:border-sky-600/50 dark:border-zinc-700 dark:bg-zinc-800 focus-within:dark:border-zinc-700">
                           <div class="flex flex-1 flex-col">
                             <input
-                              class="m-0 w-full bg-light-high p-0 text-xs ring-0 focus:outline-none focus:ring-0 dark:bg-dark-low"
+                              class="m-0 w-full bg-white p-0 text-xs ring-0 focus:outline-none focus:ring-0 dark:bg-zinc-800"
                               type="text"
                               formControlName="name"
                               placeholder="Enter Document Name" />
@@ -212,10 +212,10 @@
                         </label>
                         <label
                           *ngIf="documentFilesArray.value[i].inputChangeName"
-                          class="form-input flex w-full items-center gap-2 rounded-lg border border-light-lowest bg-light-high p-2 focus-within:border-primary-light/50 dark:border-dark-lowest dark:bg-dark-low focus-within:dark:border-dark-lowest">
+                          class="form-input flex w-full items-center gap-2 rounded-lg border border-zinc-200 bg-white p-2 focus-within:border-sky-600/50 dark:border-zinc-700 dark:bg-zinc-800 focus-within:dark:border-zinc-700">
                           <div class="flex flex-1 flex-col">
                             <input
-                              class="m-0 w-full bg-light-high p-0 text-xs ring-0 focus:outline-none focus:ring-0 dark:bg-dark-low"
+                              class="m-0 w-full bg-white p-0 text-xs ring-0 focus:outline-none focus:ring-0 dark:bg-zinc-800"
                               type="text"
                               formControlName="note"
                               placeholder="Enter Document Name" />
@@ -227,7 +227,7 @@
                       <button
                         (click)="changeDocumentName(i)"
                         type="button"
-                        class="flex items-center justify-center rounded-md bg-light-low p-2 hover:bg-light-lowest dark:border-dark-low dark:bg-dark-low hover:dark:bg-dark-lowest">
+                        class="flex items-center justify-center rounded-md bg-zinc-100/70 p-2 hover:bg-zinc-200 dark:border-zinc-800 dark:bg-zinc-800 hover:dark:bg-zinc-700">
                         <fa-icon
                           [icon]="
                             documentFilesArray.value[i].inputChangeName
@@ -238,7 +238,7 @@
                       <button
                         (click)="removeDocument(i)"
                         type="button"
-                        class="flex items-center justify-center rounded-md p-2 hover:bg-light-lowest hover:dark:bg-dark-lowest">
+                        class="flex items-center justify-center rounded-md p-2 hover:bg-zinc-200 hover:dark:bg-zinc-700">
                         <fa-icon [icon]="faXmark" />
                       </button>
                     </div>
@@ -249,7 +249,7 @@
           </div>
           <fc-file-input [multiple]="true" (onInput)="addMultipleFiles($event)">
             <div
-              class="flex w-full items-center justify-center gap-2 rounded-md bg-light-highest px-2 py-3 dark:bg-dark-highest">
+              class="flex w-full items-center justify-center gap-2 rounded-md bg-white px-2 py-3 dark:bg-neutral-900">
               <fa-icon
                 class="text-md"
                 [fixedWidth]="true"
@@ -285,7 +285,7 @@
             *ngFor="let businessUnit of businessUnitsForm.value; let i = index"
           >
             <div
-              class="fc-animate-translate-up flex w-full cursor-pointer items-center justify-between rounded-md border border-light-low bg-light-low p-2 hover:border-primary-light dark:border-dark-low dark:bg-dark-low hover:dark:border-primary-light"
+              class="fc-animate-translate-up flex w-full cursor-pointer items-center justify-between rounded-md border border-zinc-100/70 bg-zinc-100/70 p-2 hover:border-sky-600 dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600"
             >
               <div class="flex-1">
                 <div class="flex gap-2">

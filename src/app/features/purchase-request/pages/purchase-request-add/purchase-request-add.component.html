@@ -1,0 +1,249 @@
+<div class="flex h-full flex-col space-y-3">
+  <app-fc-action-bar
+    [isHasBackButton]="true"
+    [actionButtons]="actionButtons"
+    [filterButtons]="filterButtons"
+  ></app-fc-action-bar>
+  <form
+    #purchaseRequestFormElement
+    (scroll)="onScroll($event)"
+    [formGroup]="purchaseRequestForm"
+    class="body relative h-full w-full overflow-y-auto text-xs @container"
+  >
+    <div class="mx-auto mt-2 grid w-full grid-cols-1 gap-3 @xl:grid-cols-2">
+      <div class="flex">
+        <fc-input-text
+          class="flex-1"
+          inputId="purchase_request_no"
+          title="Purchase Request Number"
+          [(ngModel)]="purchaseRequestNumber"
+          [ngModelOptions]="{ standalone: true }"
+          [placeholder]="'Enter Purchase Request Number'"
+          [readonly]="true"
+        />
+        <div class="ml-2 flex items-center justify-center">
+          <button
+            type="button"
+            class="btn btn-high"
+            (click)="generateAutoNumber()"
+            pTooltip="Check Latest"
+            tooltipPosition="bottom"
+          >
+            <fa-icon [fixedWidth]="true" [icon]="faRefresh"></fa-icon>
+          </button>
+        </div>
+      </div>
+      <div class="card w-full">
+        <p-iftalabel>
+          <p-datepicker
+            [style]="{ width: '100%' }"
+            inputId="icondisplay"
+            showIcon
+            iconDisplay="input"
+            [showButtonBar]="true"
+            formControlName="date"
+            placeholder="Date"
+            appendTo="body"
+            dateFormat="dd/mm/yy"
+            [inputStyle]="{
+              'background-color': '#27272a',
+              border: '1px solid #3f3f46',
+              color: '#ffffff',
+              'font-size': '12px',
+              'line-height': '1.7',
+            }"
+          />
+          <label
+            for="date"
+            style="font-weight: 500 !important; color: #ffffff99 !important"
+            >Date</label
+          >
+        </p-iftalabel>
+      </div>
+      <div
+        class="form-input flex cursor-pointer items-center rounded-lg border bg-white p-2 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+        [ngClass]="{
+          'border-red-400':
+            purchaseRequestForm.get('business_unit')?.invalid &&
+            purchaseRequestForm.get('business_unit')?.touched,
+          'border-zinc-200 dark:border-zinc-700':
+            purchaseRequestForm.get('business_unit')?.valid ||
+            !purchaseRequestForm.get('business_unit')?.touched,
+        }"
+      >
+        <div class="flex flex-1 flex-col" (click)="onSelectBusinessUnit()">
+          <p
+            class="m-0 block p-0 text-2xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+          >
+            Branch
+          </p>
+          <p *ngIf="purchaseRequestForm.value.business_unit" class="text-xs">
+            {{ purchaseRequestForm.value.business_unit.branch?.address }}
+            <!-- ({{ purchaseRequestForm.value.business_unit.company.name }}) -->
+          </p>
+          <p
+            *ngIf="!purchaseRequestForm.value.business_unit"
+            class="text-xs dark:text-gray-400"
+          >
+            Select Branch
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button
+            *ngIf="purchaseRequestForm.value.business_unit"
+            type="button"
+            (click)="removeBusinessUnit()"
+          >
+            <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
+          </button>
+          <button type="button" (click)="onSelectBusinessUnit()">
+            <fa-icon [fixedWidth]="true" [icon]="faChevronDown"></fa-icon>
+          </button>
+        </div>
+      </div>
+      <div class="purchase-request-detail @xl:col-span-2">
+        <div class="mt-2 flex w-full items-center">
+          <h3 class="flex-1">Detail</h3>
+          <button
+            type="button"
+            class="flex gap-1 rounded-lg p-2 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+            (click)="onAddPurchaseRequestDetail()"
+          >
+            <fa-icon [icon]="faPlus"></fa-icon>
+            Add New Item
+          </button>
+        </div>
+        <div
+          class="w-full overflow-y-auto py-2 transition-all duration-700 ease-in-out"
+          *ngIf="!loading"
+        >
+          <div
+            class="grid gap-2 @container"
+            *ngIf="purchaseRequestDetails.value.length > 0"
+          >
+            <ng-container
+              *ngFor="
+                let supplierQuotationDetail of purchaseRequestDetails.value;
+                let i = index
+              "
+            >
+              <div
+                class="fc-animate-translate-up grid cursor-pointer grid-cols-1 items-center justify-between rounded-md border border-zinc-100/70 bg-zinc-100/70 p-3 hover:border-sky-600 @lg:flex dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600"
+              >
+                <div
+                  class="flex w-full flex-wrap items-start gap-2 @sm:items-center"
+                >
+                  <div
+                    class="flex flex-1 items-center gap-5 @lg:w-60 @lg:flex-none @xl:w-80 @2xl:w-full @2xl:max-w-sm"
+                  >
+                    <div
+                      class="aspect-square w-12 flex-none rounded-lg bg-white object-cover"
+                    >
+                      <fc-image-preview
+                        [preview]="true"
+                        [src]="
+                          supplierQuotationDetail.product.default_image
+                            ? supplierQuotationDetail.product.default_image.url
+                            : supplierQuotationDetail.product.product_images[0]
+                                  .url
+                              ? supplierQuotationDetail.product
+                                  .product_images[0].url
+                              : 'assets/images/placeholder/placeholder_small.jpg'
+                        "
+                      >
+                      </fc-image-preview>
+                    </div>
+                    <div class="text-xs">
+                      <a
+                        class="mb-2 font-bold capitalize hover:text-sky-900 dark:hover:text-sky-600"
+                        [routerLink]="[
+                          '/product/view',
+                          supplierQuotationDetail.product.id,
+                        ]"
+                        target="_blank"
+                        pTooltip="View Product"
+                      >
+                        {{ supplierQuotationDetail.product.name }}
+                      </a>
+                      <p>
+                        {{
+                          supplierQuotationDetail.product.base_price
+                            | fcCurrency
+                        }}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="w-fit self-center @lg:flex-1">
+                    <p>
+                      {{ supplierQuotationDetail.quantity | number }}
+                      Unit
+                    </p>
+                  </div>
+                  <div class="w-full text-right @lg:flex-1">
+                    <p>
+                      {{
+                        supplierQuotationDetail.quantity *
+                          supplierQuotationDetail.product.base_price
+                          | fcCurrency
+                      }}
+                    </p>
+                  </div>
+                  <div class="flex w-full justify-end gap-1 @lg:w-fit">
+                    <button
+                      type="button"
+                      class="btn btn-high"
+                      (click)="onEditPurchaseRequestDetail(i)"
+                    >
+                      <fa-icon [fixedWidth]="true" [icon]="faPencil"></fa-icon>
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-high"
+                      (click)="onRemovePurchaseRequestDetail(i)"
+                    >
+                      <fa-icon [fixedWidth]="true" [icon]="faTrash"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            <div class="flex justify-end" #purchaseRequestDetailSummary>
+              <div
+                class="w-full rounded-md bg-zinc-100/70 p-3 dark:bg-zinc-800 lg:w-96"
+              >
+                <div class="flex items-center justify-between px-1 font-bold">
+                  <p class="">Grand Total</p>
+                  <p>{{ grandTotalPrice | fcCurrency }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="flex h-full w-full items-center justify-center"
+            *ngIf="purchaseRequestDetails.value.length === 0"
+          >
+            <p class="py-10 text-xs text-zinc-700 dark:text-white/60">
+              No Item Added
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      (click)="scrollToBottom()"
+      #stickyPurchaseRequestDetailSummary
+      class="sticky bottom-0 left-0 mt-2 flex w-full cursor-pointer items-center justify-between gap-4 rounded-md border border-zinc-200 bg-zinc-100/70 p-3 transition duration-300 ease-in-out dark:border-zinc-700 dark:bg-zinc-800"
+      [ngClass]="{
+        invisible: !isShowPurchaseRequestDetailSummary,
+      }"
+    >
+      <div class="flex w-full items-center justify-end gap-2">
+        <div class="text-right">
+          <p class="text-sm">Grand Total</p>
+          <p class="text-lg font-bold">{{ grandTotalPrice | fcCurrency }}</p>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<p-toast></p-toast>

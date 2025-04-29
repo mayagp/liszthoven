@@ -60,6 +60,27 @@ export const layoutRoutes: Routes = [
             (m) => m.supplierRoutes,
           ),
       },
+      {
+        path: 'supplier-quotation',
+        loadChildren: () =>
+          import(
+            '../features/supplier-quotation/supplier-quotation.routes'
+          ).then((m) => m.supplierQuotationRoutes),
+      },
+      {
+        path: 'purchase-request',
+        loadChildren: () =>
+          import('../features/purchase-request/purchase-request.routes').then(
+            (m) => m.purchaseRequestRoutes,
+          ),
+      },
+      {
+        path: 'purchase-order',
+        loadChildren: () =>
+          import('../features/purchase-order/purchase-order.routes').then(
+            (m) => m.purchaseOrderRoutes,
+          ),
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

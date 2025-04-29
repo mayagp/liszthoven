@@ -1,0 +1,511 @@
+<div class="flex h-full flex-col space-y-3">
+  <app-fc-action-bar
+    [isHasBackButton]="true"
+    [actionButtons]="actionButtons"
+  ></app-fc-action-bar>
+  <form
+    #purchaseOrderFormElement
+    (scroll)="onScroll($event)"
+    (change)="setOrderSummaryVisibility()"
+    [formGroup]="purchaseOrderForm"
+    class="body relative h-full w-full overflow-y-auto pt-5 text-xs"
+  >
+    <div class="grid w-full gap-3 @container">
+      <div class="grid gap-3 lg:grid-cols-2">
+        <div class="flex">
+          <fc-input-text
+            class="flex-1"
+            inputId="purchase_order_no"
+            title="Purchase Order Number"
+            [(ngModel)]="purchaseOrderNumber"
+            [ngModelOptions]="{ standalone: true }"
+            [placeholder]="'Enter Purchase Order Number'"
+            [readonly]="true"
+          />
+          <div class="ml-2 flex items-center justify-center">
+            <button
+              type="button"
+              class="btn btn-high"
+              (click)="generateAutoNumber()"
+              pTooltip="Check Latest"
+              tooltipPosition="bottom"
+            >
+              <fa-icon [fixedWidth]="true" [icon]="faRefresh"></fa-icon>
+            </button>
+          </div>
+        </div>
+        <div class="grid w-full gap-2 lg:grid-cols-2">
+          <div class="card w-full">
+            <p-iftalabel>
+              <p-datepicker
+                [style]="{ width: '100%' }"
+                inputId="icondisplay"
+                showIcon
+                iconDisplay="input"
+                [showButtonBar]="true"
+                formControlName="date"
+                placeholder="Order Date"
+                appendTo="body"
+                dateFormat="dd/mm/yy"
+                [inputStyle]="{
+                  'background-color': '#27272a',
+                  border: '1px solid #3f3f46',
+                  color: '#ffffff',
+                  'font-size': '12px',
+                  'line-height': '1.7',
+                }"
+              />
+              <label
+                for="date"
+                style="font-weight: 500 !important; color: #ffffff99 !important"
+                >Order Date</label
+              >
+            </p-iftalabel>
+          </div>
+          <div class="card w-full">
+            <p-iftalabel>
+              <p-datepicker
+                [style]="{ width: '100%' }"
+                inputId="icondisplay"
+                showIcon
+                iconDisplay="input"
+                [showButtonBar]="true"
+                formControlName="expected_delivery_date"
+                placeholder="Expected Delivery"
+                appendTo="body"
+                dateFormat="dd/mm/yy"
+                [inputStyle]="{
+                  'background-color': '#27272a',
+                  border: '1px solid #3f3f46',
+                  color: '#ffffff',
+                  'font-size': '12px',
+                  'line-height': '1.7',
+                }"
+              />
+              <label
+                for="date"
+                style="font-weight: 500 !important; color: #ffffff99 !important"
+                >Expected Delivery</label
+              >
+            </p-iftalabel>
+          </div>
+        </div>
+      </div>
+      <!-- Bussiness Unit and Supplier -->
+      <div class="grid gap-3 lg:grid-cols-2">
+        <div
+          (click)="onSelectBusinessUnit()"
+          class="form-input flex cursor-pointer items-center rounded-lg border bg-white p-2 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+          [ngClass]="{
+            'border-red-400':
+              purchaseOrderForm.get('business_unit')?.invalid &&
+              purchaseOrderForm.get('business_unit')?.touched,
+            'border-zinc-200 dark:border-zinc-700':
+              purchaseOrderForm.get('business_unit')?.valid ||
+              !purchaseOrderForm.get('business_unit')?.touched,
+          }"
+        >
+          <div class="flex flex-1 flex-col">
+            <p
+              class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+            >
+              Branch
+            </p>
+            <p *ngIf="purchaseOrderForm.value.business_unit" class="text-xs">
+              {{ purchaseOrderForm.value.business_unit.branch?.address }}
+              <!-- ({{ purchaseOrderForm.value.business_unit.company.name }}) -->
+            </p>
+            <p
+              *ngIf="!purchaseOrderForm.value.business_unit"
+              class="text-xs dark:text-gray-400"
+            >
+              Select Branch
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button
+              *ngIf="purchaseOrderForm.value.business_unit"
+              type="button"
+              (click)="removeBusinessUnit()"
+            >
+              <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
+            </button>
+            <button type="button">
+              <fa-icon [fixedWidth]="true" [icon]="faChevronDown"></fa-icon>
+            </button>
+          </div>
+        </div>
+        <div
+          class="form-input flex cursor-pointer items-center rounded-lg border bg-white p-2 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+          [ngClass]="{
+            'border-red-400':
+              purchaseOrderForm.get('supplier')?.invalid &&
+              purchaseOrderForm.get('supplier')?.touched,
+            'border-zinc-200 dark:border-zinc-700':
+              purchaseOrderForm.get('supplier')?.valid ||
+              !purchaseOrderForm.get('supplier')?.touched,
+          }"
+        >
+          <div class="flex flex-1 flex-col" (click)="onSelectSupplier()">
+            <p
+              class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+            >
+              Supplier
+            </p>
+            <p *ngIf="purchaseOrderForm.value.supplier" class="text-xs">
+              {{ purchaseOrderForm.value.supplier.name }}
+            </p>
+            <p
+              *ngIf="!purchaseOrderForm.value.supplier"
+              class="text-xs dark:text-gray-400"
+            >
+              Select Supplier
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button
+              *ngIf="purchaseOrderForm.value.supplier"
+              type="button"
+              (click)="removeSupplier()"
+            >
+              <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
+            </button>
+            <button type="button" (click)="onSelectSupplier()">
+              <fa-icon [fixedWidth]="true" [icon]="faChevronDown"></fa-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Upload Document -->
+      <!-- <fc-file-input
+          *ngIf="!documentFilesArray.length"
+          [multiple]="true"
+          (onInput)="addMultipleFiles($event)">
+          <div
+            class="flex h-[200px] flex-col items-center justify-center gap-2 overflow-y-auto rounded-md border bg-zinc-100/70 p-5 dark:border-zinc-800 dark:bg-zinc-800">
+            <fa-icon class="text-3xl" [icon]="faCloudArrowUp" />
+            <p>Drag or Upload Purchase Order Documents Here</p>
+          </div>
+        </fc-file-input> -->
+      <div
+        *ngIf="documentFilesArray.length"
+        class="flex h-[200px] flex-col gap-2 rounded-md bg-zinc-100/70 p-2 dark:bg-zinc-800"
+      >
+        <div class="h-[180px] flex-1 overflow-y-auto">
+          <div class="grid gap-1 @md:grid-cols-2 @3xl:grid-cols-3">
+            <ng-container formArrayName="purchase_order_documents">
+              <ng-container
+                *ngFor="
+                  let document of documentFilesArray.controls;
+                  let i = index
+                "
+                [formGroupName]="i"
+              >
+                <div
+                  class="flex w-full items-center justify-between gap-2 rounded-md bg-white p-2 dark:border-neutral-900 dark:bg-neutral-900"
+                >
+                  <div class="flex w-full items-center gap-2">
+                    <div
+                      *ngIf="
+                        fileType(documentFilesArray.value[i].file_type) ==
+                        'file'
+                      "
+                      class="flex cursor-pointer items-center justify-center rounded-md bg-zinc-100/70 p-2 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+                    >
+                      <fa-icon [icon]="faFile" />
+                    </div>
+                    <ng-container
+                      *ngIf="
+                        fileType(documentFilesArray.value[i].file_type) ==
+                        'image'
+                      "
+                    >
+                      <fc-image-preview
+                        class="w-[70px]"
+                        [preview]="true"
+                        [src]="documentFilesArray.value[i].src"
+                      >
+                      </fc-image-preview>
+                    </ng-container>
+                    <div
+                      *ngIf="
+                        fileType(documentFilesArray.value[i].file_type) == 'pdf'
+                      "
+                      class="flex cursor-pointer items-center justify-center rounded-md bg-zinc-100/70 p-2 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+                    >
+                      PDF
+                    </div>
+                    <p
+                      (dblclick)="changeDocumentName(i)"
+                      *ngIf="
+                        documentFilesArray.value[i].inputChangeName == false
+                      "
+                      class="text-md max-w-[135px] cursor-pointer truncate"
+                    >
+                      {{ documentFilesArray.value[i].original_name }}
+                    </p>
+                    <label
+                      *ngIf="documentFilesArray.value[i].inputChangeName"
+                      class="form-input flex w-full items-center gap-2 rounded-lg border border-zinc-200 bg-white p-2 focus-within:border-sky-600/50 dark:border-zinc-700 dark:bg-zinc-800 focus-within:dark:border-zinc-700"
+                    >
+                      <div class="flex flex-1 flex-col">
+                        <input
+                          class="m-0 w-full bg-white p-0 text-xs ring-0 focus:outline-none focus:ring-0 dark:bg-zinc-800"
+                          type="text"
+                          formControlName="original_name"
+                          placeholder="Enter Document Name"
+                        />
+                      </div>
+                    </label>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <button
+                      (click)="changeDocumentName(i)"
+                      type="button"
+                      class="flex items-center justify-center rounded-md bg-zinc-100/70 p-2 hover:bg-zinc-200 dark:border-zinc-800 dark:bg-zinc-800 hover:dark:bg-zinc-700"
+                    >
+                      <fa-icon
+                        [icon]="
+                          documentFilesArray.value[i].inputChangeName
+                            ? faFloppyDisk
+                            : faPencil
+                        "
+                      />
+                    </button>
+                    <button
+                      (click)="removeDocument(i)"
+                      type="button"
+                      class="flex items-center justify-center rounded-md p-2 hover:bg-zinc-200 hover:dark:bg-zinc-700"
+                    >
+                      <fa-icon [icon]="faXmark" />
+                    </button>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+        <!-- <fc-file-input [multiple]="true" (onInput)="addMultipleFiles($event)">
+            <div
+              class="flex w-full items-center justify-center gap-2 rounded-md bg-white px-2 py-3 dark:bg-neutral-900">
+              <fa-icon
+                class="text-md"
+                [fixedWidth]="true"
+                [icon]="faCloudArrowUp" />
+              Upload More
+            </div>
+          </fc-file-input> -->
+      </div>
+      <!-- Purchase Order Detail -->
+      <div class="mt-6 grid w-full gap-3">
+        <div class="flex-1">
+          <div class="mb-3 flex items-center justify-between">
+            <p>Ordered Items</p>
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                (click)="wizardPurchaseOrder()"
+                class="flex gap-1 rounded-lg p-2 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+              >
+                <p>#Wizard</p>
+              </button>
+              <button
+                type="button"
+                (click)="addPurchaseOrderDetail()"
+                class="flex gap-1 rounded-lg p-2 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+              >
+                <fa-icon [fixedWidth]="true" [icon]="faPlus"></fa-icon>
+                <p>Add Item</p>
+              </button>
+            </div>
+          </div>
+          <div *ngIf="purchaseOrderDetails.value.length" class="grid gap-2">
+            <ng-container
+              *ngFor="let item of purchaseOrderDetails.value; let i = index"
+            >
+              <div
+                class="fc-animate-translate-upgrid cursor-pointer justify-between rounded-md border border-zinc-100/70 bg-zinc-100/70 p-3 @container hover:border-sky-600 dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600"
+              >
+                <div class="grid items-center gap-3 @3xl:flex">
+                  <div class="flex flex-1 items-center gap-3">
+                    <div
+                      class="aspect-square w-12 flex-none rounded-lg bg-white object-cover"
+                    >
+                      <fc-image-preview
+                        [preview]="true"
+                        [src]="
+                          item.product.product_images[0].url
+                            ? item.product.product_images[0].url
+                            : 'assets/images/placeholder/placeholder_small.jpg'
+                        "
+                      >
+                      </fc-image-preview>
+                    </div>
+                    <div class="flex-1">
+                      <a
+                        [routerLink]="['/product/view', item.product.id]"
+                        target="_blank"
+                        pTooltip="View Product"
+                        class="font-bold capitalize hover:text-sky-900 dark:hover:text-sky-600"
+                      >
+                        {{ item.product.name }}
+                      </a>
+                      <div class="items-center gap-1 xl:flex">
+                        <p class="text-xs">
+                          {{ item.expected_delivery_date | date }}
+                        </p>
+                      </div>
+                      <a
+                        *ngIf="item.supplier_quotation && item.quotation_no"
+                        [routerLink]="[
+                          '/supplier-quotation/view',
+                          item.supplier_quotation.supplier_quotation_id,
+                        ]"
+                        target="_blank"
+                        pTooltip="View Supplier Quotation"
+                        class="font-bold capitalize hover:text-sky-900 dark:hover:text-sky-600"
+                      >
+                        {{ item.quotation_no }}
+                      </a>
+                      <p
+                        *ngIf="item.quotation_no && !item.supplier_quotation"
+                        class="text-xs"
+                      >
+                        {{ item.quotation_no }}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="flex-1">
+                    <!-- <div class="flex flex-wrap text-xs">
+                        <ng-container
+                          *ngFor="
+                            let warehouse of item.purchase_order_warehouses
+                          ">
+                          {{ warehouse.warehouse.name }} ({{
+                            warehouse.quantity_ordered
+                          }}),
+                        </ng-container>
+                      </div> -->
+                    <p class="text-xs font-bold">
+                      Total Qty : {{ item.quantity_ordered }}
+                    </p>
+                  </div>
+                  <div class="flex-1 space-y-1 text-right">
+                    <p class="font-bold">
+                      {{
+                        item.price_per_unit * item.quantity_ordered | fcCurrency
+                      }}
+                    </p>
+                    <p class="text-xs">
+                      ( {{ item.price_per_unit | fcCurrency }}/pcs )
+                    </p>
+                  </div>
+                  <div class="flex justify-end gap-2">
+                    <button
+                      (click)="editPurchaseOrderDetail(i)"
+                      type="button"
+                      class="btn-high flex rounded-lg p-2"
+                    >
+                      <fa-icon class="text-xs" [icon]="faPencil"></fa-icon>
+                    </button>
+                    <button
+                      (click)="removePurchaseOrderDetail(i)"
+                      type="button"
+                      class="btn-high flex rounded-lg p-2"
+                    >
+                      <fa-icon class="text-xs" [icon]="faTrash"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            <div class="flex justify-end">
+              <div
+                class="w-full rounded-md bg-zinc-100/70 p-3 dark:bg-zinc-800 lg:w-96"
+              >
+                <div
+                  class="w-full rounded-lg border border-zinc-200 dark:border-zinc-700"
+                >
+                  <fc-input-text
+                    [title]="'Purchase Note'"
+                    [placeholder]="'Enter your note here'"
+                    formControlName="note"
+                  >
+                  </fc-input-text>
+                </div>
+              </div>
+            </div>
+            <div class="flex justify-end" #orderSummary>
+              <div
+                class="w-full rounded-md bg-zinc-100/70 p-3 dark:bg-zinc-800 lg:w-96"
+              >
+                <div class="grid gap-2">
+                  <div class="flex items-center justify-between px-1">
+                    <p class="">Subtotal</p>
+                    <p>{{ subTotalPrice | fcCurrency }}</p>
+                  </div>
+
+                  <div class="card flex justify-center w-full">
+                    <p-iftalabel class="w-full">
+                      <p-inputnumber
+                        class="w-full"
+                        mode="currency"
+                        currency="IDR"
+                        locale="id-ID"
+                        [minFractionDigits]="0"
+                        [maxFractionDigits]="0"
+                        formControlName="tax"
+                        placeholder="Enter Tax"
+                        [inputStyle]="{
+                          'background-color': '#27272a',
+                          border: '1px solid #3f3f46',
+                          color: '#ffffff',
+                          'font-size': '12px',
+                        }"
+                      />
+                      <label
+                        for="tax"
+                        style="
+                          font-weight: 500 !important;
+                          color: #ffffff99 !important;
+                        "
+                        >Tax</label
+                      >
+                    </p-iftalabel>
+                  </div>
+                </div>
+                <div
+                  class="mt-5 flex items-center justify-between px-1 font-bold"
+                >
+                  <p class="">Grand Total</p>
+                  <p>{{ grandTotalPrice | fcCurrency }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            *ngIf="!purchaseOrderDetails.value.length"
+            class="flex h-10 w-full items-center justify-center text-center"
+          >
+            No Purchase Order Detail Data
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      (click)="scrollToBottom()"
+      #stickyPurchaseOrderSummary
+      class="sticky bottom-0 left-0 mt-2 flex w-full cursor-pointer items-center justify-between gap-4 rounded-md border border-zinc-200 bg-zinc-100/70 p-3 transition duration-300 ease-in-out dark:border-zinc-700 dark:bg-zinc-800"
+      [ngClass]="{
+        invisible: !isShowOrderSummary,
+      }"
+    >
+      <div class="flex w-full items-center justify-end gap-2">
+        <div class="text-right">
+          <p class="text-sm">Grand Total</p>
+          <p class="text-lg font-bold">{{ grandTotalPrice | fcCurrency }}</p>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

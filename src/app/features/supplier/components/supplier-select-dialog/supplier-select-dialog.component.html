@@ -1,10 +1,10 @@
 <div
-  class="space-y-3 rounded-lg bg-light-highest p-3 backdrop-blur-sm dark:bg-dark-highest"
+  class="space-y-3 rounded-lg bg-white p-3 backdrop-blur-sm dark:bg-neutral-900"
 >
   <div class="flex items-center">
     <h3 class="flex-1 text-sm font-medium">{{ title }}</h3>
     <button
-      class="rounded-md p-2 hover:bg-light-lowest hover:dark:bg-dark-lowest"
+      class="rounded-md p-2 hover:bg-zinc-200 hover:dark:bg-zinc-700"
       (click)="onClose()"
     >
       <fa-icon [fixedWidth]="true" [icon]="faTimes"></fa-icon>
@@ -43,12 +43,12 @@
       </button>
     </div>
     <div
-      class="customer-list h-[400px] overflow-auto rounded dark:bg-dark-high"
+      class="customer-list h-[400px] overflow-auto rounded dark:bg-neutral-900"
     >
       <div class="space-y-2" *ngIf="!loading">
         <ng-container *ngFor="let supplier of suppliers">
           <button
-            class="grid w-full cursor-pointer items-center gap-2 rounded-md border border-light-low bg-light-low p-2 text-left text-xs hover:border-primary-light dark:border-dark-low dark:bg-dark-low hover:dark:border-primary-light"
+            class="grid w-full cursor-pointer items-center gap-2 rounded-md border border-zinc-100/70 bg-zinc-100/70 p-2 text-left text-xs hover:border-sky-600 dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600"
             (click)="submit(supplier)"
           >
             <div class="grid flex-1 gap-1">

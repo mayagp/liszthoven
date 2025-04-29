@@ -1,0 +1,224 @@
+<div
+  class="space-y-3 rounded-lg bg-white p-3 backdrop-blur-sm dark:bg-neutral-900"
+>
+  <div class="flex items-center">
+    <h3 class="flex-1 text-sm font-medium">{{ title }}</h3>
+    <button
+      class="rounded-md p-2 hover:bg-zinc-200 hover:dark:bg-zinc-700"
+      (click)="onClose()"
+    >
+      <fa-icon [fixedWidth]="true" [icon]="faTimes"></fa-icon>
+    </button>
+  </div>
+  <div class="space-y-3">
+    <form
+      [formGroup]="purchaseOrderDetailForm"
+      class="body w-full overflow-y-auto @container dark:bg-neutral-900"
+    >
+      <div class="grid gap-4">
+        <!-- Select Quotation -->
+        <div
+          class="form-input flex cursor-pointer items-center rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+        >
+          <div
+            class="flex flex-1 flex-col"
+            (click)="onSelectSupplierQuotation()"
+          >
+            <p
+              class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+            >
+              Supplier Quotation
+            </p>
+            <p
+              *ngIf="purchaseOrderDetailForm.value.supplier_quotation"
+              class="text-xs"
+            >
+              {{
+                purchaseOrderDetailForm.value.supplier_quotation.quotation_no
+              }}
+            </p>
+            <p
+              *ngIf="!purchaseOrderDetailForm.value.supplier_quotation"
+              class="text-xs dark:text-gray-400"
+            >
+              Select Supplier Quotation
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button
+              *ngIf="purchaseOrderDetailForm.value.supplier_quotation"
+              type="button"
+              (click)="removeSupplierQuotation()"
+            >
+              <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
+            </button>
+            <button type="button" (click)="onSelectSupplierQuotation()">
+              <fa-icon [fixedWidth]="true" [icon]="faChevronDown"></fa-icon>
+            </button>
+          </div>
+        </div>
+        <fc-input-text
+          [readonly]="purchaseOrderDetailForm.value.supplier_quotation"
+          [title]="'Quotation Number'"
+          [placeholder]="'Enter Quotation Number'"
+          formControlName="quotation_no"
+        >
+        </fc-input-text>
+        <!-- Select Product -->
+        <div
+          (click)="onSelectProduct()"
+          class="form-input flex cursor-pointer items-center rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+        >
+          <div class="flex flex-1 flex-col">
+            <p
+              class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+            >
+              Product
+            </p>
+            <p *ngIf="purchaseOrderDetailForm.value.product" class="text-xs">
+              {{ purchaseOrderDetailForm.value.product.name }}
+            </p>
+            <p
+              *ngIf="!purchaseOrderDetailForm.value.product"
+              class="text-xs dark:text-gray-400"
+            >
+              Select Product
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button
+              *ngIf="
+                purchaseOrderDetailForm.value.product &&
+                !purchaseOrderDetailForm.value.supplier_quotation
+              "
+              type="button"
+              (click)="removeProduct()"
+            >
+              <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
+            </button>
+            <button
+              *ngIf="!purchaseOrderDetailForm.value.supplier_quotation"
+              type="button"
+              (click)="onSelectProduct()"
+            >
+              <fa-icon [fixedWidth]="true" [icon]="faChevronDown"></fa-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="card flex justify-center w-full">
+          <p-iftalabel class="w-full">
+            <p-inputnumber
+              class="w-full"
+              mode="currency"
+              currency="IDR"
+              locale="id-ID"
+              [minFractionDigits]="0"
+              [maxFractionDigits]="0"
+              formControlName="price_per_unit"
+              placeholder="Enter Price"
+              [inputStyle]="{
+                'background-color': '#27272a',
+                border: '1px solid #3f3f46',
+                color: '#ffffff',
+                'font-size': '12px',
+              }"
+            />
+            <label
+              for="price_per_unit"
+              style="font-weight: 500 !important; color: #ffffff99 !important"
+              >Price per Unit</label
+            >
+          </p-iftalabel>
+        </div>
+
+        <div class="card flex justify-center w-full">
+          <p-iftalabel class="w-full">
+            <p-inputnumber
+              class="w-full"
+              formControlName="quantity_ordered"
+              placeholder="Enter Quantity"
+              [inputStyle]="{
+                'background-color': '#27272a',
+                border: '1px solid #3f3f46',
+                color: '#ffffff',
+                'font-size': '12px',
+              }"
+            />
+            <label
+              for="quantity_ordered"
+              style="font-weight: 500 !important; color: #ffffff99 !important"
+              >Quantity</label
+            >
+          </p-iftalabel>
+        </div>
+
+        <!-- <fc-datepicker
+          [placeholder]="'Expected Delivery'"
+          title="Expected Delivery"
+          formControlName="expected_delivery_date">
+        </fc-datepicker> -->
+
+        <!-- <div class="mt-2 text-xs">
+          <div class="flex items-center justify-between">
+            <p>Warehouse</p>
+            <button
+              type="button"
+              (click)="addWarehouseDetail()"
+              class="flex gap-1 rounded-lg p-2 hover:bg-zinc-200 dark:hover:bg-zinc-700">
+              <fa-icon [fixedWidth]="true" [icon]="faPlus"></fa-icon>
+              <p>Add Warehouse</p>
+            </button>
+          </div>
+          <div class="mt-3 h-32 overflow-y-scroll">
+            <div *ngIf="purchaseOrderWarehouse.value.length" class="grid gap-2">
+              <ng-container
+                *ngFor="
+                  let data of purchaseOrderWarehouse.value;
+                  let i = index
+                ">
+                <div
+                  class="fc-animate-translate-up grid cursor-pointer grid-cols-1 items-center justify-between gap-5 rounded-md border border-zinc-100/70 bg-zinc-100/70 p-3 @container hover:border-sky-600 dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600 lg:flex">
+                  <div class="w-full @lg:flex-1">
+                    <p>{{ data.warehouse.name }}</p>
+                    <p>Qty Ordered : {{ data.quantity_ordered }}</p>
+                  </div>
+                  <div class="flex w-full justify-end gap-2 @lg:w-[150px]">
+                    <button
+                      (click)="editPurchaseWarehouseDetail(i)"
+                      type="button"
+                      class="btn-high flex rounded-lg p-2">
+                      <fa-icon class="text-xs" [icon]="faPencil"></fa-icon>
+                    </button>
+                    <button
+                      (click)="removePurchaseWarehouseDetail(i)"
+                      type="button"
+                      class="btn-high flex rounded-lg p-2">
+                      <fa-icon class="text-xs" [icon]="faTrash"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+            <div
+              *ngIf="!purchaseOrderWarehouse.value.length"
+              class="flex h-10 w-full items-center justify-center text-center">
+              No Warehouse Detail Data
+            </div>
+          </div>
+        </div> -->
+      </div>
+    </form>
+  </div>
+  <div class="flex items-center justify-end gap-3 pt-3">
+    <button
+      type="button"
+      [ngClass]="isSubmitAllowed() ? 'opacity-100' : 'opacity-25'"
+      class="fc-animate-translate-up flex items-center gap-2 rounded-md bg-zinc-200 p-2 text-sm dark:bg-zinc-700"
+      (click)="submit()"
+      [disabled]="!isSubmitAllowed()"
+    >
+      Submit
+    </button>
+  </div>
+</div>

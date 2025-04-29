@@ -1,0 +1,178 @@
+<div
+  class="space-y-3 rounded-lg bg-white p-3 backdrop-blur-sm dark:bg-neutral-900"
+>
+  <div class="flex items-center">
+    <h3 class="flex-1 text-sm font-medium">{{ title }}</h3>
+    <button
+      class="rounded-md p-2 hover:bg-zinc-200 hover:dark:bg-zinc-700"
+      (click)="onClose()"
+    >
+      <fa-icon [fixedWidth]="true" [icon]="faTimes"></fa-icon>
+    </button>
+  </div>
+  <form [formGroup]="supplierQuotationForm" class="grid gap-3">
+    <ng-container *ngIf="!selectedProduct">
+      <h2 class="text-sm">Select Product</h2>
+      <div class="search mb-4 flex gap-2">
+        <span class="p-input-icon-left w-full">
+          <input
+            pInputText
+            type="text"
+            class="p-input h-8 w-full text-xs"
+            placeholder="Search Product"
+            [(ngModel)]="searchQuery"
+            fcDebounceKeyup
+            (onEvent)="search()"
+            [ngModelOptions]="{ standalone: true }"
+          />
+          <i class="pi pi-search"></i>
+        </span>
+        <button
+          type="button"
+          [disabled]="loading"
+          class="btn btn-high p-1 text-xs"
+          (click)="loadData()"
+        >
+          <fa-icon [fixedWidth]="true" [icon]="faRefresh"></fa-icon>
+        </button>
+      </div>
+      <div
+        class="customer-list h-[400px] overflow-auto rounded dark:bg-neutral-900"
+      >
+        <div class="space-y-2" *ngIf="!loading">
+          <ng-container *ngFor="let product of products">
+            <button
+              [disabled]="product.isExist == true"
+              class="relative grid w-full cursor-pointer items-center gap-2 rounded-md border border-zinc-100/70 bg-zinc-100/70 p-2 text-left text-xs hover:border-sky-600 dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600"
+              (click)="onSelectProduct(product)"
+            >
+              <div
+                class="flex w-full items-start justify-between"
+                [ngClass]="{
+                  'opacity-50': product.isExist == true,
+                }"
+              >
+                <div class="flex gap-5">
+                  <div
+                    class="aspect-square w-14 flex-none rounded-lg bg-white object-cover"
+                  >
+                    <fc-image-preview
+                      [preview]="true"
+                      [src]="
+                        product.product_images[0].url
+                          ? product.product_images[0].url
+                          : 'assets/images/placeholder/placeholder_small.jpg'
+                      "
+                      [alt]="'liszthoven'"
+                    />
+                  </div>
+                  <div class="text-xs">
+                    <p class="font-bold capitalize">{{ product.name }}</p>
+                    <p>Stock: {{ product.quantity | number }} Pcs</p>
+                    <p class="font-bold">
+                      {{ product.base_price | fcCurrency }}/pcs
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="absolute right-3 top-3 text-xs"
+                *ngIf="product.isExist == true"
+              >
+                Already exsist
+              </div>
+            </button>
+          </ng-container>
+        </div>
+        <div class="py-[15vh] text-center" *ngIf="!products.length && !loading">
+          <img
+            class="mx-auto w-32 rounded-lg object-cover"
+            src="assets/images/bg/empty.png"
+          />
+          <p>No Product Data</p>
+        </div>
+        <div class="py-[20vh] text-center" *ngIf="loading">
+          <!-- <fc-loading></fc-loading> -->
+        </div>
+      </div>
+      <!-- <div>
+        <fc-pagination
+          [rows]="rows"
+          [page]="page"
+          [totalPages]="totalPages"
+          [totalRecords]="totalRecords"
+          (onPageUpdate)="onPageUpdate($event)"></fc-pagination>
+      </div> -->
+    </ng-container>
+    <ng-container *ngIf="selectedProduct">
+      <div
+        class="form-input flex items-center gap-2 rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-800"
+      >
+        <div class="flex flex-1 flex-col">
+          <p
+            class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+          >
+            Selected Product
+          </p>
+          <p class="text-xs">
+            {{ selectedProduct.name }}
+          </p>
+        </div>
+        <button type="button" (click)="onRemoveProduct()">
+          <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
+        </button>
+      </div>
+      <div class="card flex justify-center w-full">
+        <p-iftalabel class="w-full">
+          <p-inputnumber
+            class="w-full"
+            formControlName="quantity"
+            placeholder="Enter Quantity"
+            [inputStyle]="{
+              'background-color': '#27272a',
+              border: '1px solid #3f3f46',
+              color: '#ffffff',
+              'font-size': '12px',
+            }"
+          />
+          <label
+            for="quantity"
+            style="font-weight: 500 !important; color: #ffffff99 !important"
+            >Quotation Quantity</label
+          >
+        </p-iftalabel>
+      </div>
+      <div class="card flex justify-center w-full">
+        <p-iftalabel class="w-full">
+          <p-inputnumber
+            class="w-full"
+            formControlName="price_per_unit"
+            placeholder="Enter Quantity"
+            [inputStyle]="{
+              'background-color': '#27272a',
+              border: '1px solid #3f3f46',
+              color: '#ffffff',
+              'font-size': '12px',
+            }"
+          />
+          <label
+            for="quantity"
+            style="font-weight: 500 !important; color: #ffffff99 !important"
+            >Price Per Unit</label
+          >
+        </p-iftalabel>
+      </div>
+      <div class="flex items-center justify-end gap-2">
+        <button
+          type="button"
+          [ngClass]="isSubmitAllowed() ? 'opacity-100' : 'opacity-25'"
+          class="fc-animate-translate-up flex items-center gap-2 rounded-md bg-zinc-200 p-2 text-sm dark:bg-zinc-700"
+          (click)="submit()"
+          [disabled]="!isSubmitAllowed()"
+        >
+          Submit
+        </button>
+      </div>
+    </ng-container>
+  </form>
+</div>

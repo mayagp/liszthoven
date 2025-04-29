@@ -1,0 +1,66 @@
+<div
+  class="space-y-3 rounded-lg bg-whiteest p-3 backdrop-blur-sm dark:bg-neutral-900"
+>
+  <div class="flex items-center">
+    <h3 class="flex-1 text-sm font-medium">{{ title }}</h3>
+    <button
+      class="rounded-md p-2 hover:bg-zinc-200 hover:dark:bg-zinc-700"
+      (click)="onClose()"
+    >
+      <fa-icon [fixedWidth]="true" [icon]="faTimes"></fa-icon>
+    </button>
+  </div>
+  <form [formGroup]="purchaseRequestDetailForm" class="space-y-3">
+    <div
+      class="form-input dark:border-dark mb-3 flex items-center gap-2 rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-800"
+    >
+      <div class="flex flex-1 flex-col">
+        <p
+          class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+        >
+          Selected Product
+        </p>
+        <p class="text-xs">
+          {{ purchaseRequestDetailForm.value.product.name }}
+        </p>
+      </div>
+    </div>
+    <div class="card flex justify-center w-full">
+      <p-iftalabel class="w-full">
+        <p-inputnumber
+          class="w-full"
+          formControlName="quantity"
+          placeholder="Enter Quantity"
+          [inputStyle]="{
+            'background-color': '#27272a',
+            border: '1px solid #3f3f46',
+            color: '#ffffff',
+            'font-size': '12px',
+          }"
+        />
+        <label
+          for="quantity"
+          style="font-weight: 500 !important; color: #ffffff99 !important"
+          >Request Quantity</label
+        >
+      </p-iftalabel>
+    </div>
+    <div class="flex items-center justify-end gap-2">
+      <button
+        type="button"
+        class="flex gap-1 rounded-lg bg-emerald-500 p-2 text-xs text-white hover:bg-emerald-600 dark:bg-emerald-700 dark:hover:bg-emerald-600"
+        (click)="submit()"
+        [ngClass]="{ 'opacity-50': loading }"
+        [disabled]="loading"
+      >
+        <fa-icon
+          [icon]="faSpinner"
+          [fixedWidth]="true"
+          *ngIf="loading"
+        ></fa-icon>
+        Submit
+      </button>
+    </div>
+  </form>
+</div>
+<p-toast></p-toast>

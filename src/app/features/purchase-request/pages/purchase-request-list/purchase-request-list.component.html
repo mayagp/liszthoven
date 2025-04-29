@@ -1,0 +1,145 @@
+<div class="flex h-full gap-3 @container">
+  <div
+    class="flex h-full w-full flex-col gap-3 transition-all duration-700 ease-in-out @container"
+    [ngClass]="{
+      '@3xl:w-full': !quickView,
+      '@3xl:w-[20rem]': quickView,
+    }"
+  >
+    <app-fc-action-bar
+      [actionButtons]="actionButtons"
+      [filterButtons]="filterButtons"
+    ></app-fc-action-bar>
+    <div class="body flex h-full w-full gap-3 overflow-y-auto text-xs">
+      <!-- Data List -->
+      <ng-container *ngIf="!loading && purchaseRequests.length > 0">
+        <div class="w-full space-y-2 overflow-y-auto py-2">
+          <ng-container *ngFor="let purchaseRequest of purchaseRequests">
+            <div
+              (dblclick)="
+                quickView
+                  ? onChangePurchaseRequest(purchaseRequest)
+                  : navigateToDetail(purchaseRequest)
+              "
+              class="fc-animate-translate-up cursor-pointer items-center rounded-md border border-zinc-100/70 bg-zinc-100/70 @container hover:border-sky-600 dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600"
+            >
+              <div class="hidden items-center gap-3 p-3 @2xl:flex">
+                <div class="w-[100px]">
+                  <p class="text-2xs">
+                    {{ purchaseRequest.date | date: "dd MMMM yyyy" }}
+                  </p>
+                  <p class="mt-1">{{ purchaseRequest.purchase_request_no }}</p>
+                </div>
+                <div class="flex-1">
+                  <div
+                    [ngClass]="getStatusColor(purchaseRequest.status)"
+                    class="w-fit rounded-md p-1 px-2"
+                  >
+                    {{ purchaseRequest.status_name }}
+                  </div>
+                </div>
+                <div class="flex-1">
+                  <!-- {{ purchaseRequest.business_unit.company.name }} -->
+                  Liszthoven
+                </div>
+                <div class="flex-1">
+                  {{
+                    purchaseRequest.business_unit.branch
+                      ? purchaseRequest.business_unit.branch.address
+                      : "-"
+                  }}
+                </div>
+                <div class="flex w-fit justify-end gap-2">
+                  <button
+                    type="button"
+                    class="btn btn-high"
+                    (click)="navigateToDetail(purchaseRequest)"
+                  >
+                    <fa-icon [fixedWidth]="true" [icon]="faEye"></fa-icon>
+                  </button>
+                </div>
+              </div>
+              <div class="gird gap-3 p-2 @2xl:hidden">
+                <div class="flex w-full items-center justify-between">
+                  <div class="flex-1">
+                    <p class="text-2xs">
+                      {{ purchaseRequest.date | date: "dd MMMM yyyy" }}
+                    </p>
+                    <p class="font-bold">
+                      {{ purchaseRequest.purchase_request_no }}
+                    </p>
+                  </div>
+                  <div class="flex items-center justify-end gap-2">
+                    <div
+                      class="w-fit rounded-md px-2 py-1"
+                      [ngClass]="getStatusColor(purchaseRequest.status)"
+                    >
+                      {{ purchaseRequest.status_name }}
+                    </div>
+                    <button
+                      type="button"
+                      class="btn btn-high"
+                      (click)="navigateToDetail(purchaseRequest)"
+                    >
+                      <fa-icon [fixedWidth]="true" [icon]="faEye"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+                <div
+                  class="my-2 h-0.5 w-full bg-zinc-200/50 dark:bg-zinc-700/50"
+                ></div>
+                <div class="w-full gap-3 @sm:flex">
+                  <div class="flex-1">
+                    <p class="text-2xs">Company</p>
+                    <p>
+                      {{ purchaseRequest.business_unit.company.name }}
+                    </p>
+                  </div>
+                  <div class="flex-1">
+                    <p class="text-2xs">Branch</p>
+                    <p>
+                      {{
+                        purchaseRequest.business_unit.branch
+                          ? purchaseRequest.business_unit.branch.address
+                          : "-"
+                      }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="!loading && purchaseRequests.length == 0">
+        <div class="w-full py-[20vh] text-center">
+          <p>No data found</p>
+        </div>
+      </ng-container>
+      <div class="w-full py-[20vh] text-center" *ngIf="loading">
+        <!-- <fc-loading></fc-loading> -->
+      </div>
+    </div>
+    <!-- <div class="flex justify-end gap-3">
+        <div class="w-full @lg:w-96">
+          <fc-pagination
+            [rows]="rows"
+            [page]="page"
+            [totalPages]="totalPages"
+            [totalRecords]="totalRecords"
+            (onPageUpdate)="onPageUpdate($event)"></fc-pagination>
+        </div>
+      </div> -->
+  </div>
+  <div
+    class="hidden flex-1 @3xl:block"
+    *ngIf="selectedPurchaseRequest && quickView && purchaseRequests.length > 0"
+  >
+    <app-purchase-request-view
+      [purchaseRequest]="selectedPurchaseRequest"
+      [quickView]="quickView"
+      (onDeleted)="onDeleted()"
+      (onUpdated)="onUpdated($event)"
+    ></app-purchase-request-view>
+  </div>
+</div>

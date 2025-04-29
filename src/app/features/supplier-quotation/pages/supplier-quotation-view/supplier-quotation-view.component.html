@@ -1,0 +1,299 @@
+<div class="flex h-full flex-col space-y-3">
+  <app-fc-action-bar
+    [isHasBackButton]="!quickView"
+    [actionButtons]="actionButtons"
+    [filterButtons]="filterButtons"
+  ></app-fc-action-bar>
+  <form
+    #supplierQuotationFormElement
+    (scroll)="onScroll($event)"
+    [formGroup]="supplierQuotationForm"
+    class="body h-full w-full overflow-y-auto text-xs @container"
+  >
+    <div
+      *ngIf="!loading"
+      class="mx-auto mt-2 grid w-full grid-cols-1 gap-3 @xl:grid-cols-2"
+    >
+      <fc-input-text
+        [title]="'Quotation Number'"
+        [placeholder]="'Enter Supplier Quotation Number'"
+        formControlName="quotation_no"
+      >
+      </fc-input-text>
+      <!-- Select Supplier -->
+      <div
+        class="form-input flex cursor-pointer items-center rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+      >
+        <div class="flex flex-1 flex-col" (click)="onSelectSupplier()">
+          <p
+            class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+          >
+            Supplier
+          </p>
+          <p *ngIf="selectedSupplier" class="text-xs">
+            {{ selectedSupplier.name }}
+          </p>
+          <p *ngIf="!selectedSupplier" class="text-xs dark:text-gray-400">
+            Select Supplier
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button
+            *ngIf="selectedSupplier"
+            type="button"
+            (click)="removeSupplier()"
+          >
+            <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
+          </button>
+          <button type="button" (click)="onSelectSupplier()">
+            <fa-icon [fixedWidth]="true" [icon]="faChevronDown"></fa-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="card w-full">
+        <p-iftalabel>
+          <p-datepicker
+            [style]="{ width: '100%' }"
+            inputId="icondisplay"
+            showIcon
+            iconDisplay="input"
+            [showButtonBar]="true"
+            formControlName="date"
+            placeholder="Date"
+            appendTo="body"
+            dateFormat="dd/mm/yy"
+            [inputStyle]="{
+              'background-color': '#27272a',
+              border: '1px solid #3f3f46',
+              color: '#ffffff',
+              'font-size': '12px',
+              'line-height': '1.7',
+            }"
+          />
+          <label
+            for="date"
+            style="font-weight: 500 !important; color: #ffffff99 !important"
+            >Date</label
+          >
+        </p-iftalabel>
+      </div>
+      <div class="card w-full">
+        <p-iftalabel>
+          <p-datepicker
+            [style]="{ width: '100%' }"
+            inputId="icondisplay"
+            showIcon
+            iconDisplay="input"
+            [showButtonBar]="true"
+            formControlName="expected_delivery_date"
+            placeholder="Enter Expected Delivery Date"
+            appendTo="body"
+            dateFormat="dd/mm/yy"
+            [inputStyle]="{
+              'background-color': '#27272a',
+              border: '1px solid #3f3f46',
+              color: '#ffffff',
+              'font-size': '12px',
+              'line-height': '1.7',
+            }"
+          />
+          <label
+            for="date"
+            style="font-weight: 500 !important; color: #ffffff99 !important"
+            >Expected Delivery Date</label
+          >
+        </p-iftalabel>
+      </div>
+
+      <div class="supplier-quotation-detail @xl:col-span-2">
+        <div class="mt-2 flex w-full items-center">
+          <h3 class="flex-1">Detail</h3>
+          <ng-container *ngIf="'create'">
+            <button
+              *ngIf="supplierQuotation.status == 0 && 'update'"
+              type="button"
+              class="flex gap-1 rounded-lg p-2 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+              (click)="onAddSupplierQuotationDetail()"
+            >
+              <fa-icon [icon]="faPlus"></fa-icon>
+              Add New Item
+            </button>
+          </ng-container>
+        </div>
+        <div
+          class="w-full overflow-y-auto py-2 transition-all duration-700 ease-in-out"
+          *ngIf="!loading"
+        >
+          <div
+            class="grid gap-2 @container"
+            *ngIf="supplierQuotationDetails.value.length > 0"
+          >
+            <ng-container
+              *ngFor="
+                let supplierQuotationDetail of supplierQuotationDetails.value;
+                let i = index
+              "
+            >
+              <div
+                class="fc-animate-translate-up grid cursor-pointer grid-cols-1 items-center justify-between rounded-md border border-zinc-100/70 bg-zinc-100/70 p-3 hover:border-sky-600 @lg:flex dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600"
+              >
+                <div
+                  class="flex w-full flex-wrap items-start gap-2 @sm:items-center"
+                >
+                  <div
+                    class="flex flex-1 items-center gap-5 @lg:w-60 @lg:flex-none @xl:w-80 @2xl:w-full @2xl:max-w-sm"
+                  >
+                    <div
+                      class="aspect-square w-12 flex-none rounded-lg bg-white object-cover"
+                    >
+                      <fc-image-preview
+                        [preview]="true"
+                        [src]="
+                          supplierQuotationDetail.product.default_image
+                            ? supplierQuotationDetail.product.default_image.url
+                            : supplierQuotationDetail.product.product_images[0]
+                                  .url
+                              ? supplierQuotationDetail.product
+                                  .product_images[0].url
+                              : 'assets/images/placeholder/placeholder_small.jpg'
+                        "
+                      >
+                      </fc-image-preview>
+                    </div>
+                    <div class="text-xs">
+                      <a
+                        class="mb-2 font-bold capitalize hover:text-sky-900 dark:hover:text-sky-600"
+                        [routerLink]="[
+                          '/product/view',
+                          supplierQuotationDetail.product.id,
+                        ]"
+                        target="_blank"
+                        pTooltip="View Product"
+                      >
+                        {{ supplierQuotationDetail.product.name }}
+                      </a>
+                      <p>
+                        {{
+                          supplierQuotationDetail.price_per_unit | fcCurrency
+                        }}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="w-fit self-center @lg:flex-1">
+                    <p>
+                      {{ supplierQuotationDetail.quantity | number }}
+                      Unit
+                    </p>
+                  </div>
+                  <div class="w-full text-right @lg:flex-1">
+                    <p>
+                      {{
+                        supplierQuotationDetail.quantity *
+                          supplierQuotationDetail.price_per_unit | fcCurrency
+                      }}
+                    </p>
+                  </div>
+                  <div
+                    class="flex w-full justify-end gap-1 @lg:w-fit"
+                    *ngIf="supplierQuotation.status == 0 && 'update'"
+                  >
+                    <button
+                      type="button"
+                      class="btn btn-high"
+                      (click)="onEditSupplierQuotationDetail(i)"
+                    >
+                      <fa-icon [fixedWidth]="true" [icon]="faPencil"></fa-icon>
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-high"
+                      (click)="
+                        onRemoveSupplierQuotationDetail(
+                          i,
+                          supplierQuotationDetail.id
+                        )
+                      "
+                    >
+                      <fa-icon [fixedWidth]="true" [icon]="faTrash"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            <div class="flex justify-end">
+              <div
+                class="w-full rounded-md bg-zinc-100/70 p-3 dark:bg-zinc-800 lg:w-96"
+              >
+                <div
+                  class="w-full rounded-lg border border-zinc-200 dark:border-zinc-700"
+                >
+                  <fc-input-text
+                    [title]="'Quotation Note'"
+                    [placeholder]="'Enter your note here'"
+                    formControlName="note"
+                  >
+                  </fc-input-text>
+                </div>
+              </div>
+            </div>
+            <div class="flex justify-end" #detailSummary>
+              <div
+                class="w-full rounded-md bg-zinc-100/70 p-3 dark:bg-zinc-800 lg:w-96"
+              >
+                <div class="grid gap-2">
+                  <div class="flex items-center justify-between px-1">
+                    <p class="">Subtotal</p>
+                    <p>{{ subTotalPrice | fcCurrency }}</p>
+                  </div>
+                  <div
+                    class="w-full rounded-lg border border-zinc-200 dark:border-zinc-700"
+                  >
+                    <!-- <fc-input-number
+                      title="Tax"
+                      formControlName="tax"
+                      placeholder="Enter Tax"
+                    ></fc-input-number> -->
+                  </div>
+                </div>
+                <div
+                  class="mt-5 flex items-center justify-between px-1 font-bold"
+                >
+                  <p class="">Grand Total</p>
+                  <p>{{ grandTotalPrice | fcCurrency }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="flex h-full w-full items-center justify-center"
+            *ngIf="supplierQuotationDetails.value.length === 0"
+          >
+            <p class="py-10 text-xs text-zinc-700 dark:text-white/60">
+              No Item Added
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      *ngIf="!loading"
+      (click)="scrollToBottom()"
+      #stickyDetailSummary
+      class="sticky bottom-0 left-0 mt-2 flex w-full cursor-pointer items-center justify-between gap-4 rounded-md border border-zinc-200 bg-zinc-100/70 p-3 transition duration-300 ease-in-out dark:border-zinc-700 dark:bg-zinc-800"
+      [ngClass]="{
+        invisible: !isShowDetailSummary,
+      }"
+    >
+      <div class="flex w-full items-center justify-end gap-2">
+        <div class="text-right">
+          <p class="text-sm">Grand Total</p>
+          <p class="text-lg font-bold">{{ grandTotalPrice | fcCurrency }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="py-[20vh] text-center" *ngIf="loading">
+      <!-- <fc-loading></fc-loading> -->
+    </div>
+  </form>
+</div>

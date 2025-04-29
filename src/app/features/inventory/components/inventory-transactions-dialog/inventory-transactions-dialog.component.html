@@ -1,10 +1,10 @@
 <div
-  class="space-y-3 rounded-lg bg-light-highest p-3 backdrop-blur-sm dark:bg-dark-highest"
+  class="space-y-3 rounded-lg bg-white p-3 backdrop-blur-sm dark:bg-neutral-900"
 >
   <div class="flex items-center">
     <h3 class="flex-1 text-sm font-medium">{{ title }}</h3>
     <button
-      class="rounded-md p-2 hover:bg-light-lowest hover:dark:bg-dark-lowest"
+      class="rounded-md p-2 hover:bg-zinc-200 hover:dark:bg-zinc-700"
       (click)="onClose()"
     >
       <fa-icon [fixedWidth]="true" [icon]="faTimes"></fa-icon>
@@ -18,7 +18,7 @@
         <ng-container *ngFor="let inventory of inventories; let i = index">
           <div
             (click)="showDetail(i)"
-            class="flex cursor-pointer items-center justify-between rounded-lg bg-light-lowest p-2 dark:bg-dark-low dark:hover:bg-dark-lowest"
+            class="flex cursor-pointer items-center justify-between rounded-lg bg-zinc-200 p-2 dark:bg-zinc-800 dark:hover:bg-zinc-700"
           >
             <div class="flex items-center gap-2">
               <fa-icon [fixedWidth]="true" [icon]="faBoxesStocked"></fa-icon>
@@ -56,7 +56,7 @@
                 "
               >
                 <div
-                  class="ml-4 flex cursor-pointer items-center justify-between rounded-lg bg-light-lowest px-2 py-1 text-2xs dark:bg-dark-low dark:hover:bg-dark-lowest"
+                  class="ml-4 flex cursor-pointer items-center justify-between rounded-lg bg-zinc-200 px-2 py-1 text-2xs dark:bg-zinc-800 dark:hover:bg-zinc-700"
                 >
                   <div class="flex items-center gap-3">
                     <fa-icon [fixedWidth]="true" [icon]="faBoxOpen"></fa-icon>

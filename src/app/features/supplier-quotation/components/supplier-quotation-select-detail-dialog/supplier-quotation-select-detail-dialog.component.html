@@ -1,0 +1,162 @@
+<div
+  class="space-y-3 rounded-lg bg-white p-3 backdrop-blur-sm dark:bg-neutral-900"
+>
+  <div class="flex items-center">
+    <h3 class="flex-1 text-sm font-medium">{{ title }}</h3>
+    <button
+      class="rounded-md p-2 hover:bg-zinc-200 hover:dark:bg-zinc-700"
+      (click)="onClose()"
+    >
+      <fa-icon [fixedWidth]="true" [icon]="faTimes"></fa-icon>
+    </button>
+  </div>
+  <div class="space-y-3">
+    <div class="branch-search mb-4 flex gap-2">
+      <span class="p-input-icon-left w-full">
+        <input
+          pInputText
+          type="text"
+          class="p-input h-8 w-full text-xs"
+          placeholder="Search Supplier Quotation"
+          [(ngModel)]="searchQuery"
+          fcDebounceKeyup
+          (onEvent)="search()"
+        />
+        <i class="pi pi-search"></i>
+      </span>
+      <a
+        title="Add Supplier Quotation"
+        class="btn btn-high p-1 text-xs"
+        [routerLink]="['/supplier-quotation/add']"
+        target="_blank"
+      >
+        <fa-icon [fixedWidth]="true" [icon]="faPlus"></fa-icon>
+      </a>
+      <button
+        title="Refresh"
+        type="button"
+        [disabled]="loading"
+        class="btn btn-high p-1 text-xs"
+        (click)="loadData()"
+      >
+        <fa-icon [fixedWidth]="true" [icon]="faRefresh"></fa-icon>
+      </button>
+    </div>
+    <div
+      class="customer-list h-[400px] overflow-auto rounded dark:bg-neutral-900"
+    >
+      <div class="space-y-2" *ngIf="!loading">
+        <ng-container
+          *ngFor="let supplierQuotation of supplierQuotations; let i = index"
+        >
+          <button
+            type="button"
+            class="flex w-full cursor-pointer items-center justify-between gap-2 rounded-md border border-zinc-100/70 bg-zinc-100/70 p-2 text-left text-xs hover:border-sky-600 dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600"
+            [ngClass]="{
+              'border-sky-600 dark:border-sky-600':
+                supplierQuotation.showDetail == true,
+            }"
+            (click)="showDetail(i)"
+          >
+            <p>{{ supplierQuotation.quotation_no }}</p>
+            <fa-icon
+              [fixedWidth]="true"
+              [icon]="
+                supplierQuotation.showDetail == true
+                  ? faChevronUp
+                  : faChevronDown
+              "
+            ></fa-icon>
+          </button>
+          <div *ngIf="supplierQuotation.showDetail" class="ml-4 grid gap-2">
+            <div class="py-[2vh] text-center" *ngIf="supplierQuotation.loading">
+              <!-- <fc-loading></fc-loading> -->
+            </div>
+            <div
+              class="grid gap-1"
+              *ngIf="
+                !supplierQuotation.loading &&
+                supplierQuotation.supplier_quotation_details
+              "
+            >
+              <ng-container
+                *ngFor="
+                  let detail of supplierQuotation.supplier_quotation_details
+                "
+              >
+                <button
+                  [disabled]="detail.exist"
+                  [ngClass]="{
+                    'cursor-default opacity-50 ': detail.exist,
+                  }"
+                  type="button"
+                  class="grid w-full cursor-pointer items-center gap-2 rounded-md border border-zinc-100/70 bg-zinc-100/70 p-2 text-left text-xs hover:border-sky-600 dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600"
+                  (click)="
+                    submit(
+                      detail,
+                      supplierQuotation.quotation_no,
+                      supplierQuotation.expected_delivery_date
+                    )
+                  "
+                >
+                  <div class="flex gap-2">
+                    <div
+                      class="aspect-square w-12 flex-none rounded-lg bg-white object-cover"
+                    >
+                      <img
+                        [src]="
+                          detail.product.default_image
+                            ? detail.product.default_image.url
+                            : detail.product.product_images[0].url
+                              ? detail.product.product_images[0].url
+                              : 'assets/images/placeholder/placeholder_small.jpg'
+                        "
+                      />
+                    </div>
+                    <div class="text-xs">
+                      <a class="mb-2 font-bold capitalize">
+                        {{ detail.product.name }}
+                      </a>
+                      <p>{{ detail.price_per_unit | fcCurrency }}</p>
+                      <p>{{ detail.quantity | number }} Pcs</p>
+                    </div>
+                  </div>
+                </button>
+              </ng-container>
+            </div>
+            <p
+              *ngIf="
+                !supplierQuotation.loading &&
+                !supplierQuotation.supplier_quotation_details.length
+              "
+              class="text-center text-xs"
+            >
+              No Data
+            </p>
+          </div>
+        </ng-container>
+      </div>
+      <div
+        class="py-[15vh] text-center"
+        *ngIf="!supplierQuotations.length && !loading"
+      >
+        <img
+          class="mx-auto w-32 rounded-lg object-cover"
+          src="assets/images/bg/empty.png"
+        />
+        <p>No Data</p>
+      </div>
+      <div class="py-[20vh] text-center" *ngIf="loading">
+        <!-- <fc-loading></fc-loading> -->
+      </div>
+    </div>
+    <!-- <div>
+      <fc-pagination
+        [rows]="rows"
+        [page]="page"
+        [totalPages]="totalPages"
+        [totalRecords]="totalRecords"
+        (onPageUpdate)="onPageUpdate($event)"></fc-pagination>
+    </div> -->
+  </div>
+</div>
