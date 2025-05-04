@@ -1,0 +1,430 @@
+<div class="flex h-full flex-col space-y-3">
+  <app-fc-action-bar
+    [isHasBackButton]="true"
+    [actionButtons]="actionButtons"
+    [filterButtons]="filterButtons"
+  ></app-fc-action-bar>
+  <form
+    [formGroup]="purchasePaymentForm"
+    class="body h-full w-full overflow-y-auto text-xs @container"
+  >
+    <div
+      class="mx-auto mb-3 mt-2 grid w-full grid-cols-1 gap-3 @xl:grid-cols-2"
+    >
+      <fc-input-text
+        title="Payment Method"
+        formControlName="payment_method"
+        placeholder="Enter Payment Method"
+      ></fc-input-text>
+      <div
+        class="form-input flex cursor-pointer items-center rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+        [ngClass]="{
+          'border-red-400':
+            purchasePaymentForm.get('supplier')?.invalid &&
+            purchasePaymentForm.get('supplier')?.touched,
+          'border-zinc-200 dark:border-zinc-700':
+            purchasePaymentForm.get('supplier')?.valid ||
+            !purchasePaymentForm.get('supplier')?.touched,
+        }"
+      >
+        <div class="flex flex-1 flex-col" (click)="onSelectSupplier()">
+          <p
+            class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+          >
+            Supplier
+          </p>
+          <p *ngIf="purchasePaymentForm.value.supplier" class="text-xs">
+            {{ purchasePaymentForm.value.supplier.name }}
+          </p>
+          <p
+            *ngIf="!purchasePaymentForm.value.supplier"
+            class="text-xs dark:text-gray-400"
+          >
+            Select Supplier
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button
+            *ngIf="purchasePaymentForm.value.supplier"
+            type="button"
+            (click)="removeSupplier()"
+          >
+            <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
+          </button>
+          <button type="button" (click)="onSelectSupplier()">
+            <fa-icon [fixedWidth]="true" [icon]="faChevronDown"></fa-icon>
+          </button>
+        </div>
+      </div>
+      <div class="card w-full">
+        <p-iftalabel>
+          <p-datepicker
+            [style]="{ width: '100%' }"
+            inputId="icondisplay"
+            showIcon
+            iconDisplay="input"
+            [showButtonBar]="true"
+            formControlName="date"
+            placeholder="Select Date"
+            appendTo="body"
+            dateFormat="dd/mm/yy"
+            [inputStyle]="{
+              'background-color': '#27272a',
+              border: '1px solid #3f3f46',
+              color: '#ffffff',
+              'font-size': '12px',
+              'line-height': '1.7',
+            }"
+          />
+          <label
+            for="date"
+            style="font-weight: 500 !important; color: #ffffff99 !important"
+            >Date</label
+          >
+        </p-iftalabel>
+      </div>
+    </div>
+    <!-- Upload Document -->
+    <!-- <fc-file-input
+        *ngIf="!documentFilesArray.length"
+        [multiple]="true"
+        (onInput)="addMultipleFiles($event)">
+        <div
+          class="flex h-[200px] flex-col items-center justify-center gap-2 overflow-y-auto rounded-md border bg-zinc-100/70 p-5 dark:border-zinc-800 dark:bg-zinc-800">
+          <fa-icon class="text-3xl" [icon]="faCloudArrowUp" />
+          <p>Drag or Upload Purchase Payment Documents Here</p>
+        </div>
+      </fc-file-input> -->
+    <div
+      *ngIf="documentFilesArray.length"
+      class="flex h-[200px] flex-col gap-2 rounded-md bg-zinc-100/70 p-2 dark:bg-zinc-800"
+    >
+      <div class="h-[180px] flex-1 overflow-y-auto">
+        <div class="grid gap-1 @md:grid-cols-2 @3xl:grid-cols-3">
+          <ng-container formArrayName="purchase_payment_documents">
+            <ng-container
+              *ngFor="
+                let document of documentFilesArray.controls;
+                let i = index
+              "
+              [formGroupName]="i"
+            >
+              <div
+                class="flex w-full items-center justify-between gap-2 rounded-md bg-white p-2 dark:border-neutral-900 dark:bg-neutral-900"
+              >
+                <div class="flex w-full items-center gap-2">
+                  <div
+                    *ngIf="
+                      fileType(documentFilesArray.value[i].file_type) == 'file'
+                    "
+                    class="flex cursor-pointer items-center justify-center rounded-md bg-zinc-100/70 p-2 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+                  >
+                    <fa-icon [icon]="faFile" />
+                  </div>
+                  <ng-container
+                    *ngIf="
+                      fileType(documentFilesArray.value[i].file_type) == 'image'
+                    "
+                  >
+                    <fc-image-preview
+                      class="w-[70px]"
+                      [preview]="true"
+                      [src]="documentFilesArray.value[i].src"
+                    >
+                    </fc-image-preview>
+                  </ng-container>
+                  <div
+                    *ngIf="
+                      fileType(documentFilesArray.value[i].file_type) == 'pdf'
+                    "
+                    class="flex cursor-pointer items-center justify-center rounded-md bg-zinc-100/70 p-2 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+                  >
+                    PDF
+                  </div>
+                  <p
+                    (dblclick)="changeDocumentName(i)"
+                    *ngIf="documentFilesArray.value[i].inputChangeName == false"
+                    class="text-md max-w-[135px] cursor-pointer truncate"
+                  >
+                    {{ documentFilesArray.value[i].original_name }}
+                  </p>
+                  <label
+                    *ngIf="documentFilesArray.value[i].inputChangeName"
+                    class="form-input flex w-full items-center gap-2 rounded-lg border border-zinc-200 bg-white p-2 focus-within:border-sky-600/50 dark:border-zinc-700 dark:bg-zinc-800 focus-within:dark:border-zinc-700"
+                  >
+                    <div class="flex flex-1 flex-col">
+                      <input
+                        class="m-0 w-full bg-white p-0 text-xs ring-0 focus:outline-none focus:ring-0 dark:bg-zinc-800"
+                        type="text"
+                        formControlName="original_name"
+                        placeholder="Enter Document Name"
+                      />
+                    </div>
+                  </label>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button
+                    (click)="changeDocumentName(i)"
+                    type="button"
+                    class="flex items-center justify-center rounded-md bg-zinc-100/70 p-2 hover:bg-zinc-200 dark:border-zinc-800 dark:bg-zinc-800 hover:dark:bg-zinc-700"
+                  >
+                    <fa-icon
+                      [icon]="
+                        documentFilesArray.value[i].inputChangeName
+                          ? faFloppyDisk
+                          : faPencil
+                      "
+                    />
+                  </button>
+                  <button
+                    (click)="removeDocument(i)"
+                    type="button"
+                    class="flex items-center justify-center rounded-md p-2 hover:bg-zinc-200 hover:dark:bg-zinc-700"
+                  >
+                    <fa-icon [icon]="faXmark" />
+                  </button>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+      <!-- <fc-file-input [multiple]="true" (onInput)="addMultipleFiles($event)">
+          <div
+            class="flex w-full items-center justify-center gap-2 rounded-md bg-white px-2 py-3 dark:bg-neutral-900">
+            <fa-icon
+              class="text-md"
+              [fixedWidth]="true"
+              [icon]="faCloudArrowUp" />
+            Upload More
+          </div>
+        </fc-file-input> -->
+    </div>
+    <!-- Purchase Payment Detail -->
+    <div
+      class="mt-6 grid w-full gap-3"
+      (change)="setPaymentSummaryVisibility()"
+    >
+      <div class="flex-1">
+        <div class="mb-3 flex items-center justify-between">
+          <p>Purchase Payment Allocations</p>
+          <div>
+            <button
+              type="button"
+              (click)="addPurchasePaymentDetail()"
+              class="flex items-center gap-1 rounded-md text-xs text-gray-800 dark:text-white"
+            >
+              <fa-icon [fixedWidth]="true" [icon]="faPlus"></fa-icon>
+              <p>Add Item</p>
+            </button>
+          </div>
+        </div>
+        <div *ngIf="purchasePaymentDetails.value.length" class="grid gap-2">
+          <ng-container
+            *ngFor="
+              let purchasePaymentDetail of purchasePaymentDetails.value;
+              let i = index
+            "
+          >
+            <div class="@container">
+              <div
+                class="fc-animate-translate-up grid grid-cols-1 items-center justify-between gap-5 rounded-md border border-zinc-100/70 bg-zinc-100/70 p-3 hover:border-sky-600 @lg:flex dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600"
+              >
+                <div class="w-full @lg:w-[150px]">
+                  <p class="text-xs">Invoice No.</p>
+                  <p class="mt-1">
+                    {{ purchasePaymentDetail.purchase_invoice.invoice_no }}
+                  </p>
+                </div>
+                <div class="flex-1">
+                  <p class="text-xs">Date</p>
+                  <p class="mt-1">
+                    {{
+                      purchasePaymentDetail.purchase_invoice.date
+                        | date: "dd MMMM yyyy"
+                    }}
+                  </p>
+                </div>
+                <div class="flex-1">
+                  <p class="text-xs">Due Date</p>
+                  <p class="mt-1">
+                    {{
+                      purchasePaymentDetail.purchase_invoice.due_date
+                        | date: "dd MMMM yyyy"
+                    }}
+                  </p>
+                </div>
+                <div class="space-y-1 @xl:flex-1 @xl:text-right">
+                  <p>
+                    {{ purchasePaymentDetail.amount_allocated | fcCurrency }}
+                  </p>
+                </div>
+                <div class="flex justify-end gap-2">
+                  <button
+                    (click)="editPurchasePaymentDetail(i)"
+                    type="button"
+                    class="btn-high flex rounded-lg p-2"
+                  >
+                    <fa-icon class="text-xs" [icon]="faPencil"></fa-icon>
+                  </button>
+                  <button
+                    (click)="deletePurchasePaymentDetail(i)"
+                    type="button"
+                    class="btn-high flex rounded-lg p-2"
+                  >
+                    <fa-icon class="text-xs" [icon]="faTrash"></fa-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <!-- <div class="@containe flex justify-end">
+              <div
+                class="w-full rounded-md bg-zinc-100/70 p-3 @xl:w-96 dark:bg-zinc-800">
+                <div
+                  class="w-full rounded-lg border border-zinc-200 dark:border-zinc-700">
+                  <fc-input-text
+                    [title]="'Note'"
+                    [placeholder]="'Enter your note here'"
+                    formControlName="note">
+                  </fc-input-text>
+                </div>
+              </div>
+            </div>
+            <div class="flex justify-end @container" #orderSummary>
+              <div
+                class="w-full rounded-md bg-zinc-100/70 p-3 @xl:w-96 dark:bg-zinc-800">
+                <div
+                  class="mt-5 flex items-center justify-between px-1 font-bold">
+                  <p class="">Grand Total</p>
+                  <p>{{ grandTotalPrice | fcCurrency }}</p>
+                </div>
+              </div>
+            </div> -->
+        </div>
+        <div
+          *ngIf="!purchasePaymentDetails.value.length"
+          class="flex h-10 w-full items-center justify-center text-center"
+        >
+          No Purchase Payment Allocations Data
+        </div>
+      </div>
+    </div>
+    <!-- Purchase Payment Coa -->
+    <!-- <div
+        class="mt-6 grid w-full gap-3"
+        (change)="setPaymentSummaryVisibility()">
+        <div class="flex-1">
+          <div class="mb-3 flex items-center justify-between">
+            <p>Purchase Payment Coa</p>
+            <div>
+              <button
+                type="button"
+                (click)="addPurchasePaymentCoa()"
+                class="flex items-center gap-1 rounded-md text-xs text-gray-800 dark:text-white">
+                <fa-icon [fixedWidth]="true" [icon]="faPlus"></fa-icon>
+                <p>Add Item</p>
+              </button>
+            </div>
+          </div>
+          <div *ngIf="coaFilesArray.value.length" class="grid gap-2">
+            <ng-container
+              *ngFor="
+                let purchasePaymentCoa of coaFilesArray.value;
+                let i = index
+              ">
+              <div class="@container">
+                <div
+                  class="fc-animate-translate-up grid grid-cols-1 items-center justify-between gap-5 rounded-md border border-zinc-100/70 bg-zinc-100/70 p-3 hover:border-sky-600 @lg:flex dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600">
+                  <div class="w-full @lg:w-[150px]">
+                    <p class="text-xs">Amount</p>
+                    <p class="mt-1">
+                      {{ purchasePaymentCoa.amount | fcCurrency }}
+                    </p>
+                  </div>
+                  <div class="w-full @lg:w-[250px]">
+                    <p class="text-xs">Description</p>
+                    <p class="mt-1">
+                      {{ purchasePaymentCoa.description }}
+                    </p>
+                  </div>
+                  <div class="space-y-1 text-left @xl:flex-1">
+                    <p>
+                      {{
+                        purchasePaymentCoa.chart_of_account.business_unit.branch
+                          .address
+                      }}
+                      ({{
+                        purchasePaymentCoa.chart_of_account.business_unit.company
+                          .name
+                      }}
+                      )
+                    </p>
+                  </div>
+                  <div class="flex justify-end gap-2">
+                    <button
+                      (click)="editPurchasePaymentCoa(i)"
+                      type="button"
+                      class="btn-high flex rounded-lg p-2">
+                      <fa-icon class="text-xs" [icon]="faPencil"></fa-icon>
+                    </button>
+                    <button
+                      (click)="deletePurchasePaymentCoa(i)"
+                      type="button"
+                      class="btn-high flex rounded-lg p-2">
+                      <fa-icon class="text-xs" [icon]="faTrash"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            <div class="flex justify-end @container">
+              <div
+                class="w-full rounded-md bg-zinc-100/70 p-3 @xl:w-96 dark:bg-zinc-800">
+                <div
+                  class="w-full rounded-lg border border-zinc-200 dark:border-zinc-700">
+                  <fc-input-text
+                    [title]="'Note'"
+                    [placeholder]="'Enter your note here'"
+                    formControlName="note">
+                  </fc-input-text>
+                </div>
+              </div>
+            </div>
+            <div class="flex justify-end @container" #orderSummary>
+              <div
+                class="w-full rounded-md bg-zinc-100/70 p-3 @xl:w-96 dark:bg-zinc-800">
+                <div
+                  class="mt-5 flex items-center justify-between px-1 font-bold">
+                  <p class="">Grand Total</p>
+                  <p>{{ grandTotalPrice | fcCurrency }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            *ngIf="!coaFilesArray.value.length"
+            class="flex h-10 w-full items-center justify-center text-center">
+            No Purchase Payment Coa Data
+          </div>
+        </div>
+      </div> -->
+    <div
+      (click)="scrollToBottom()"
+      #stickyPurchasePaymentSummary
+      class="sticky bottom-0 left-0 mt-2 flex w-full cursor-pointer items-center justify-between gap-4 rounded-md border border-zinc-200 bg-zinc-100/70 p-3 transition duration-300 ease-in-out dark:border-zinc-700 dark:bg-zinc-800"
+      [ngClass]="{
+        invisible: !isShowPaymentSummary,
+      }"
+    >
+      <div class="flex w-full items-center justify-end gap-2">
+        <div class="text-right">
+          <p class="text-sm">Grand Total</p>
+          <p class="text-lg font-bold">{{ grandTotalPrice | fcCurrency }}</p>
+        </div>
+      </div>
+    </div>
+  </form>
+  <p-toast></p-toast>
+  <p-confirmDialog></p-confirmDialog>
+</div>

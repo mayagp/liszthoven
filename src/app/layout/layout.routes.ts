@@ -81,6 +81,27 @@ export const layoutRoutes: Routes = [
             (m) => m.purchaseOrderRoutes,
           ),
       },
+      {
+        path: 'purchase-invoice',
+        loadChildren: () =>
+          import('../features/purchase-invoice/purchase-invoice.routes').then(
+            (m) => m.purchaseInvoiceRoutes,
+          ),
+      },
+      {
+        path: 'purchase-payment',
+        loadChildren: () =>
+          import('../features/purchase-payment/purchase-payment.routes').then(
+            (m) => m.purchasePaymentRoutes,
+          ),
+      },
+      {
+        path: 'purchase-return',
+        loadChildren: () =>
+          import('../features/purchase-return/purchase-return.routes').then(
+            (m) => m.purchaseReturnRoutes,
+          ),
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

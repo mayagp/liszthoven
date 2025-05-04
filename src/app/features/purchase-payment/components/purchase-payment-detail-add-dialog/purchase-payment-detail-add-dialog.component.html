@@ -1,0 +1,179 @@
+<div
+  class="space-y-3 rounded-lg bg-white p-3 backdrop-blur-sm dark:bg-neutral-900"
+>
+  <div class="flex items-center">
+    <h3 class="flex-1 text-sm font-medium">{{ title }}</h3>
+    <button
+      class="rounded-md p-2 hover:bg-zinc-200 hover:dark:bg-zinc-700"
+      (click)="onClose()"
+    >
+      <fa-icon [fixedWidth]="true" [icon]="faTimes"></fa-icon>
+    </button>
+  </div>
+  <ng-container *ngIf="!purchasePaymentDetailForm.value.purchase_invoice">
+    <div class="space-y-3">
+      <div class="purhcase-invoice-search mb-4 flex gap-2">
+        <span class="p-input-icon-left w-full">
+          <input
+            pInputText
+            type="text"
+            class="p-input h-8 w-full text-xs"
+            placeholder="Search Purchase Invoice"
+            [(ngModel)]="searchQuery"
+            fcDebounceKeyup
+            (onEvent)="search()"
+          />
+          <i class="pi pi-search"></i>
+        </span>
+        <button
+          type="button"
+          [disabled]="loading"
+          class="btn btn-high p-1 text-xs"
+          (click)="loadData()"
+        >
+          <fa-icon [fixedWidth]="true" [icon]="faRefresh"></fa-icon>
+        </button>
+      </div>
+      <div
+        class="customer-list h-[400px] overflow-auto rounded @container dark:bg-neutral-900"
+        (scroll)="onScroll($event)"
+      >
+        <div *ngIf="loading" class="space-y-4">
+          <p-skeleton width="100%" height="50px" styleClass="mb-2"></p-skeleton>
+          <p-skeleton width="100%" height="50px" styleClass="mb-2"></p-skeleton>
+          <p-skeleton width="100%" height="50px" styleClass="mb-2"></p-skeleton>
+        </div>
+
+        <div class="space-y-2" *ngIf="!loading">
+          <ng-container *ngFor="let purchaseInvoice of purchaseInvoices">
+            <button
+              [disabled]="
+                purchaseInvoice.remaining_amount <= 0 || purchaseInvoice.exist
+              "
+              [ngClass]="{
+                'opacity-50':
+                  purchaseInvoice.remaining_amount <= 0 ||
+                  purchaseInvoice.exist,
+              }"
+              class="flex w-full items-center gap-2 rounded-md border border-zinc-100/70 bg-zinc-100/70 p-2 text-left text-xs hover:border-sky-600 dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600"
+              (click)="onSelectPurchaseInvoice(purchaseInvoice)"
+            >
+              <div class="w-full @lg:w-[100px]">
+                <p class="text-xs">
+                  {{ purchaseInvoice.date | date: "dd MMMM yyyy" }}
+                </p>
+                <p class="mt-1">{{ purchaseInvoice.invoice_no }}</p>
+              </div>
+
+              <div class="w-full @lg:w-[100px]">
+                <p>{{ purchaseInvoice.supplier.name }}</p>
+              </div>
+              <div class="w-full text-right @lg:w-[100px]">
+                <p
+                  *ngIf="
+                    purchaseInvoice.remaining_amount > 0 &&
+                    !purchaseInvoice.exist
+                  "
+                >
+                  {{ purchaseInvoice.remaining_amount | fcCurrency }}
+                </p>
+                <p
+                  *ngIf="
+                    purchaseInvoice.remaining_amount <= 0 &&
+                    !purchaseInvoice.exist
+                  "
+                >
+                  Paid off
+                </p>
+                <p *ngIf="purchaseInvoice.exist">Already Exist</p>
+              </div>
+            </button>
+          </ng-container>
+        </div>
+        <div
+          class="py-[15vh] text-center"
+          *ngIf="!purchaseInvoices.length && !loading"
+        >
+          <img
+            class="mx-auto w-32 rounded-lg object-cover"
+            src="assets/images/bg/empty.png"
+          />
+          <p>No Supplier Data</p>
+        </div>
+      </div>
+      <!-- <div class="card flex justify-between gap-3">
+        <div class="flex text-sm dark:text-white text-gray-700 items-center px-2">
+          Showing {{ (page - 1) * rows + 1 }} -
+          {{ Math.min(page * rows, totalRecords) }} of {{ totalRecords }}
+        </div>
+        <p-paginator
+          [rows]="rows"
+          [first]="(page - 1) * rows"
+          [rowsPerPageOptions]="[5, 10, 50, 100]"
+          [totalRecords]="totalRecords"
+          (onPageChange)="onPageUpdate($event)"
+          [showFirstLastIcon]="false"
+        />
+      </div> -->
+    </div>
+  </ng-container>
+  <ng-container *ngIf="purchasePaymentDetailForm.value.purchase_invoice">
+    <form [formGroup]="purchasePaymentDetailForm" class="grid gap-3">
+      <!-- Select Purchase Invoice -->
+      <div
+        class="form-input flex cursor-pointer items-center rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+      >
+        <div class="flex flex-1 flex-col">
+          <p
+            class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+          >
+            Purchase Invoice
+          </p>
+          <p class="text-xs">
+            {{ purchasePaymentDetailForm.value.purchase_invoice.invoice_no }}
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" (click)="onRemovePurchaseInvoice()">
+            <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="card flex justify-center w-full">
+        <p-iftalabel class="w-full">
+          <p-inputnumber
+            class="w-full"
+            mode="currency"
+            currency="IDR"
+            locale="id-ID"
+            [minFractionDigits]="0"
+            [maxFractionDigits]="0"
+            formControlName="amount_allocated"
+            placeholder="Enter Amount Allocated"
+            [inputStyle]="{
+              'background-color': '#27272a',
+              border: '1px solid #3f3f46',
+              color: '#ffffff',
+              'font-size': '12px',
+            }"
+          />
+          <label
+            for="amount_allocated"
+            style="font-weight: 500 !important; color: #ffffff99 !important"
+            >Amount Allocated</label
+          >
+        </p-iftalabel>
+      </div>
+      <div class="flex items-center justify-end gap-3 pt-3">
+        <button
+          type="button"
+          class="fc-animate-translate-up flex items-center gap-2 rounded-md bg-zinc-200 p-2 text-sm dark:bg-zinc-700"
+          (click)="submit()"
+        >
+          Submit
+        </button>
+      </div>
+    </form>
+  </ng-container>
+</div>

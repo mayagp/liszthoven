@@ -1,0 +1,201 @@
+<div class="flex h-full gap-3 @container">
+  <div
+    class="flex h-full w-full flex-col gap-3 transition-all duration-700 ease-in-out @container"
+    [ngClass]="{
+      '@3xl:w-full': !quickView,
+      '@3xl:w-[20rem]': quickView,
+    }"
+  >
+    <app-fc-action-bar
+      [actionButtons]="actionButtons"
+      [filterButtons]="filterButtons"
+    ></app-fc-action-bar>
+    <div class="body flex h-full w-full gap-3 overflow-y-auto text-xs">
+      <!-- Data List -->
+      <ng-container *ngIf="!loading && purchasePayments.length > 0">
+        <div class="w-full space-y-2 overflow-y-auto py-2">
+          <ng-container
+            *ngFor="let purchasePayment of purchasePayments; let i = index"
+          >
+            <div
+              (dblclick)="
+                quickView
+                  ? onChangePurchasePayment(purchasePayment)
+                  : navigateToDetail(purchasePayment)
+              "
+              class="fc-animate-translate-up cursor-pointer items-center rounded-md border border-zinc-100/70 bg-zinc-100/70 @container hover:border-sky-600 dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600"
+            >
+              <div class="hidden items-center gap-3 p-3 @2xl:flex">
+                <div class="w-[200px]">
+                  <p class="text-xs">Supplier</p>
+                  <div class="line-clamp-1 w-fit rounded-md">
+                    {{ purchasePayment.supplier.name }}
+                  </div>
+                </div>
+                <div class="w-[150px]">
+                  <p>
+                    {{ purchasePayment.created_at | date: "dd MMMM yyyy" }}
+                  </p>
+                </div>
+                <div class="w-full @lg:w-[100px]">
+                  <div
+                    class="w-fit rounded-md px-2 py-1"
+                    [ngClass]="getStatusColor(purchasePayment.status)"
+                  >
+                    {{ purchasePayment.status_name }}
+                  </div>
+                </div>
+
+                <div class="w-full @lg:w-[100px]">
+                  <p class="text-xs">Payment Method</p>
+                  <div class="w-fit rounded-md">
+                    {{ purchasePayment.payment_method }}
+                  </div>
+                </div>
+                <div class="flex-1 text-left">
+                  <p class="text-xs">
+                    Invoice Total: {{ purchasePayment.count_invoice }}
+                  </p>
+                  <p>
+                    <span
+                      class="text-indigo-500"
+                      (click)="
+                        loadPaymentAlocation(purchasePayment, i);
+                        op.toggle($event)
+                      "
+                      >view</span
+                    >
+                  </p>
+                  <p-overlayPanel
+                    #op
+                    styleClass="bg-zinc-100/70  dark:bg-zinc-800 shadow-md dark:text-slate-300"
+                  >
+                    <ng-template pTemplate>
+                      <div
+                        class="flex max-h-32 max-w-[150px] flex-wrap gap-1 overflow-auto bg-white p-1 dark:bg-zinc-800"
+                        *ngIf="purchasePayment.purchase_payment_allocations"
+                      >
+                        <span
+                          class="text-xs"
+                          *ngFor="
+                            let paymentAllocation of purchasePayment.purchase_payment_allocations;
+                            let i = index
+                          "
+                        >
+                          {{ paymentAllocation.purchase_invoice.invoice_no
+                          }}{{
+                            i + 1 <
+                            purchasePayment.purchase_payment_allocations.length
+                              ? ","
+                              : ""
+                          }}
+                        </span>
+                      </div>
+                      <div
+                        class="bg-white p-1 text-xs dark:bg-zinc-800"
+                        *ngIf="!purchasePayment.purchase_payment_allocations"
+                      >
+                        <fa-icon
+                          [icon]="faSpinner"
+                          [fixedWidth]="true"
+                        ></fa-icon>
+                      </div>
+                    </ng-template>
+                  </p-overlayPanel>
+                </div>
+                <div class="flex-1 text-right">
+                  <p>{{ purchasePayment.amount_paid | fcCurrency }}</p>
+                </div>
+                <div class="flex justify-end gap-1">
+                  <button
+                    type="button"
+                    class="btn btn-high"
+                    (click)="navigateToDetail(purchasePayment)"
+                  >
+                    <fa-icon [fixedWidth]="true" [icon]="faEye"></fa-icon>
+                  </button>
+                </div>
+              </div>
+              <div class="gird gap-3 p-2 @2xl:hidden">
+                <div class="flex w-full items-center justify-between">
+                  <div class="flex-1">
+                    <p class="text-xs">
+                      {{ purchasePayment.date | date: "dd MMMM yyyy" }}
+                    </p>
+                    <p class="font-bold">
+                      {{ purchasePayment.supplier.name }}
+                    </p>
+                  </div>
+                  <div class="flex items-center justify-end gap-2">
+                    <div
+                      class="w-fit rounded-md px-2 py-1"
+                      [ngClass]="getStatusColor(purchasePayment.status)"
+                    >
+                      {{ purchasePayment.status_name }}
+                    </div>
+                    <button
+                      type="button"
+                      class="btn btn-high"
+                      (click)="navigateToDetail(purchasePayment)"
+                    >
+                      <fa-icon [fixedWidth]="true" [icon]="faEye"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+                <div
+                  class="my-2 h-0.5 w-full bg-zinc-200/50 dark:bg-zinc-700/50"
+                ></div>
+                <div class="flex w-full gap-3">
+                  <div class="flex-1">
+                    <p class="text-xs">Payment Method</p>
+                    <p>
+                      {{ purchasePayment.payment_method }}
+                    </p>
+                  </div>
+                </div>
+                <div class="flex-1">
+                  <p class="text-right text-base">
+                    {{ purchasePayment.amount_paid | fcCurrency }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="!loading && purchasePayments.length == 0">
+        <div class="w-full py-[20vh] text-center">
+          <p>No data found</p>
+        </div>
+      </ng-container>
+      <div class="w-full py-[20vh] text-center" *ngIf="loading">
+        <p-progress-spinner ariaLabel="loading" />
+      </div>
+    </div>
+    <div class="card flex justify-between gap-3">
+      <div class="flex text-sm dark:text-white text-gray-700 items-center px-2">
+        Showing {{ (page - 1) * rows + 1 }} -
+        {{ Math.min(page * rows, totalRecords) }} of {{ totalRecords }}
+      </div>
+      <p-paginator
+        [rows]="rows"
+        [first]="(page - 1) * rows"
+        [rowsPerPageOptions]="[5, 10, 50, 100]"
+        [totalRecords]="totalRecords"
+        (onPageChange)="onPageUpdate($event)"
+        [showFirstLastIcon]="false"
+      />
+    </div>
+  </div>
+  <div
+    class="hidden flex-1 @3xl:block"
+    *ngIf="selectedPurchasePayment && quickView && purchasePayments.length > 0"
+  >
+    <app-purchase-payment-view
+      [purchasePayment]="selectedPurchasePayment"
+      [quickView]="quickView"
+      (onDeleted)="onDeleted()"
+      (onUpdated)="onUpdated($event)"
+    ></app-purchase-payment-view>
+  </div>
+</div>

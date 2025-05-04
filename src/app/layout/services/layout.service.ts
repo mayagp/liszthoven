@@ -169,26 +169,26 @@ export class LayoutService {
             route: '/purchase-order',
             visible: this.ability.can('read', 'purchase-order'),
           },
-          // {
-          //   name: 'Purchase Invoice',
-          //   route: '/purchase-invoice',
-          //   visible: this.ability.can('read', 'purchase-invoice'),
-          // },
+          {
+            name: 'Purchase Invoice',
+            route: '/purchase-invoice',
+            visible: this.ability.can('read', 'purchase-invoice'),
+          },
           // {
           //   name: 'Goods Receipt',
           //   route: '/goods-receipt',
           //   visible: this.ability.can('read', 'goods-receipt'),
           // },
-          // {
-          //   name: 'Purchase Payment',
-          //   route: '/purchase-payment',
-          //   visible: this.ability.can('read', 'purchase-payment'),
-          // },
-          // {
-          //   name: 'Purchase Return',
-          //   route: '/purchase-return',
-          //   visible: this.ability.can('read', 'purchase-return'),
-          // },
+          {
+            name: 'Purchase Payment',
+            route: '/purchase-payment',
+            visible: this.ability.can('read', 'purchase-payment'),
+          },
+          {
+            name: 'Purchase Return',
+            route: '/purchase-return',
+            visible: this.ability.can('read', 'purchase-return'),
+          },
           // {
           //   name: 'Purchase Note',
           //   route: '/purchase-note',

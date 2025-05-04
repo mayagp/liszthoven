@@ -1,0 +1,149 @@
+<div
+  class="space-y-3 rounded-lg bg-white p-3 backdrop-blur-sm dark:bg-neutral-900"
+>
+  <div class="flex items-center">
+    <h3 class="flex-1 text-sm font-medium">{{ title }}</h3>
+    <button
+      class="rounded-md p-2 hover:bg-zinc-200 hover:dark:bg-zinc-700"
+      (click)="onClose()"
+    >
+      <fa-icon [fixedWidth]="true" [icon]="faTimes"></fa-icon>
+    </button>
+  </div>
+  <form [formGroup]="purchaseReturnDetailForm" class="grid gap-3">
+    <!-- Select Goods Receipt -->
+    <div
+      *ngIf="showGoodsReceipt"
+      class="form-input flex cursor-pointer items-center rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+    >
+      <div class="flex flex-1 flex-col" (click)="onSelectGoodsReceipt()">
+        <p
+          class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+        >
+          Goods Receipt Detail
+        </p>
+        <p *ngIf="purchaseReturnDetailForm.value.purchaseable" class="text-xs">
+          {{ purchaseReturnDetailForm.value.purchaseable.product.name }}
+        </p>
+        <p
+          *ngIf="!purchaseReturnDetailForm.value.purchaseable"
+          class="text-xs dark:text-gray-400"
+        >
+          Select Goods Receipt Detail
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button
+          *ngIf="purchaseReturnDetailForm.value.purchaseable"
+          type="button"
+          (click)="removeGoodsReceipt()"
+        >
+          <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
+        </button>
+        <button type="button" (click)="onSelectGoodsReceipt()">
+          <fa-icon [fixedWidth]="true" [icon]="faChevronDown"></fa-icon>
+        </button>
+      </div>
+    </div>
+    <!-- Select Purchase Invoice -->
+    <div
+      *ngIf="!showGoodsReceipt"
+      class="form-input flex cursor-pointer items-center rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+    >
+      <div class="flex flex-1 flex-col" (click)="onSelectPurchaseInvoice()">
+        <p
+          class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+        >
+          Purchase Invoice Detail
+        </p>
+        <p *ngIf="purchaseReturnDetailForm.value.purchaseable" class="text-xs">
+          {{ purchaseReturnDetailForm.value.purchaseable.product.name }}
+        </p>
+        <p
+          *ngIf="!purchaseReturnDetailForm.value.purchaseable"
+          class="text-xs dark:text-gray-400"
+        >
+          Select Purchase Invoice Detail
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button
+          *ngIf="purchaseReturnDetailForm.value.purchaseable"
+          type="button"
+          (click)="removePurchaseInvoice()"
+        >
+          <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
+        </button>
+        <button type="button" (click)="onSelectPurchaseInvoice()">
+          <fa-icon [fixedWidth]="true" [icon]="faChevronDown"></fa-icon>
+        </button>
+      </div>
+    </div>
+    <div class="card flex justify-center w-full">
+      <p-iftalabel class="w-full">
+        <p-inputnumber
+          class="w-full"
+          formControlName="quantity"
+          placeholder="Enter Quantity"
+          [disabled]="!purchaseReturnDetailForm.value.purchaseable"
+          [inputStyle]="{
+            'background-color': '#27272a',
+            border: '1px solid #3f3f46',
+            color: '#ffffff',
+            'font-size': '12px',
+          }"
+        />
+        <label
+          for="quantity"
+          style="font-weight: 500 !important; color: #ffffff99 !important"
+        >
+          Quantity (Max {{ quantityAllowed }} Pcs)</label
+        >
+      </p-iftalabel>
+    </div>
+
+    <div class="card flex justify-center w-full">
+      <p-iftalabel class="w-full">
+        <p-inputnumber
+          class="w-full"
+          mode="currency"
+          currency="IDR"
+          locale="id-ID"
+          [minFractionDigits]="0"
+          [maxFractionDigits]="0"
+          formControlName="amount"
+          placeholder="Enter Amount"
+          [inputStyle]="{
+            'background-color': '#27272a',
+            border: '1px solid #3f3f46',
+            color: '#ffffff',
+            'font-size': '12px',
+          }"
+        />
+        <label
+          for="amount"
+          style="font-weight: 500 !important; color: #ffffff99 !important"
+          >Amount</label
+        >
+      </p-iftalabel>
+    </div>
+
+    <div class="flex items-center justify-end gap-2">
+      <button
+        type="button"
+        [ngClass]="isSubmitAllowed() ? 'opacity-100' : 'opacity-25'"
+        class="fc-animate-translate-up flex items-center gap-2 rounded-md bg-zinc-200 p-2 text-sm dark:bg-zinc-700"
+        (click)="submit()"
+        [disabled]="!isSubmitAllowed()"
+      >
+        <fa-icon
+          [icon]="faSpinner"
+          [fixedWidth]="true"
+          *ngIf="loadingButton"
+        ></fa-icon>
+        Submit
+      </button>
+    </div>
+  </form>
+  <p-toast></p-toast>
+</div>

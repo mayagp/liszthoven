@@ -112,7 +112,7 @@
       <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
     </button>
     <button
-      class="text-primary-md-dark hidden lg:block"
+      class="text-sky-700-md-dark hidden lg:block"
       [ngClass]="{ invisible: disabled || readonly }"
       type="button"
       (click)="op.toggle($event, dateInput)"
@@ -120,7 +120,7 @@
       <fa-icon [fixedWidth]="true" [icon]="faCalendarDay"></fa-icon>
     </button>
     <button
-      class="text-primary-md-dark lg:hidden"
+      class="text-sky-700-md-dark lg:hidden"
       [ngClass]="{ invisible: disabled || readonly }"
       type="button"
       (click)="$event.stopPropagation(); openMobileDatepicker()"

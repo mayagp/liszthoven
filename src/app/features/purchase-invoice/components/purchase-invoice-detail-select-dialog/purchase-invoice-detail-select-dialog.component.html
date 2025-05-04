@@ -1,0 +1,174 @@
+<div
+  class="space-y-3 rounded-lg bg-white p-3 backdrop-blur-sm dark:bg-neutral-900"
+>
+  <div class="flex items-center">
+    <h3 class="flex-1 text-sm font-medium">{{ title }}</h3>
+    <button
+      class="rounded-md p-2 hover:bg-zinc-200 hover:dark:bg-zinc-700"
+      (click)="onClose()"
+    >
+      <fa-icon [fixedWidth]="true" [icon]="faTimes"></fa-icon>
+    </button>
+  </div>
+  <div class="space-y-3">
+    <div class="purchase-invoice-detail-search mb-4 flex gap-2">
+      <span class="p-input-icon-left w-full">
+        <label
+          for="searchInput"
+          class="relative flex w-full items-center gap-1 rounded-md bg-zinc-100/70 px-2 text-xs dark:bg-zinc-800"
+        >
+          <fa-icon [fixedWidth]="true" [icon]="faSearch"></fa-icon>
+          <input
+            pInputText
+            type="text"
+            class="p-input h-8 w-full text-xs"
+            placeholder="Search Purchase Invoice"
+            [(ngModel)]="searchQuery"
+            fcDebounceKeyup
+            (onEvent)="search()"
+          />
+        </label>
+      </span>
+      <a
+        title="Add Purchase Invoice"
+        class="btn btn-high p-1 text-xs"
+        [routerLink]="['/purchase-invoice/add']"
+        target="_blank"
+      >
+        <fa-icon [fixedWidth]="true" [icon]="faPlus"></fa-icon>
+      </a>
+      <button
+        title="Refresh"
+        type="button"
+        [disabled]="loading"
+        class="btn btn-high p-1 text-xs"
+        (click)="loadData()"
+      >
+        <fa-icon [fixedWidth]="true" [icon]="faRefresh"></fa-icon>
+      </button>
+    </div>
+    <div
+      class="customer-list h-[400px] overflow-auto rounded dark:bg-neutral-900"
+    >
+      <div class="space-y-2" *ngIf="!loading">
+        <ng-container
+          *ngFor="let purchaseInvoice of purchaseInvoices; let i = index"
+        >
+          <button
+            type="button"
+            class="flex w-full cursor-pointer items-center justify-between gap-2 rounded-md border border-zinc-100/70 bg-zinc-100/70 p-2 text-left text-xs hover:border-sky-600 dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600"
+            [ngClass]="{
+              'border-sky-600 dark:border-sky-600':
+                purchaseInvoice.showDetail == true,
+            }"
+            (click)="showDetail(i)"
+          >
+            <p>{{ purchaseInvoice.invoice_no }}</p>
+            <fa-icon
+              [fixedWidth]="true"
+              [icon]="
+                purchaseInvoice.showDetail == true ? faChevronUp : faChevronDown
+              "
+            ></fa-icon>
+          </button>
+          <div *ngIf="purchaseInvoice.showDetail" class="ml-4 grid gap-2">
+            <div class="py-[2vh] text-center" *ngIf="purchaseInvoice.loading">
+              <p-progress-spinner ariaLabel="loading" />
+            </div>
+            <div
+              class="grid gap-1"
+              *ngIf="
+                !purchaseInvoice.loading &&
+                purchaseInvoice.purchase_invoice_details
+              "
+            >
+              <ng-container
+                *ngFor="let detail of purchaseInvoice.purchase_invoice_details"
+              >
+                <button
+                  [disabled]="detail.product.isExist == true"
+                  class="relative grid w-full cursor-pointer items-center gap-2 rounded-md border border-zinc-100/70 bg-zinc-100/70 p-2 text-left text-xs hover:border-sky-600 dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600"
+                  (click)="submit(detail)"
+                >
+                  <div
+                    class="flex w-full items-start justify-between"
+                    [ngClass]="{
+                      'opacity-50': detail.product.isExist == true,
+                    }"
+                  >
+                    <div class="flex gap-5">
+                      <div
+                        class="aspect-square w-14 flex-none rounded-lg bg-white object-cover"
+                      >
+                        <fc-image-preview
+                          [preview]="true"
+                          [src]="
+                            detail.product.product_images[0].url
+                              ? detail.product.product_images[0].url
+                              : 'assets/images/placeholder/placeholder_small.jpg'
+                          "
+                          [alt]="'liszthoven'"
+                        />
+                      </div>
+                      <div class="text-xs">
+                        <p class="font-bold capitalize">
+                          {{ detail.product.name }}
+                        </p>
+                        <p>Stock: {{ detail.product.quantity | number }} Pcs</p>
+                        <p class="font-bold">
+                          {{ detail.product.base_price | fcCurrency }}/pcs
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="absolute right-3 top-3 text-xs"
+                    *ngIf="detail.product.isExist == true"
+                  >
+                    Already exsist
+                  </div>
+                </button>
+              </ng-container>
+            </div>
+            <p
+              *ngIf="
+                !purchaseInvoice.loading &&
+                !purchaseInvoice.purchase_invoice_details
+              "
+              class="text-center text-xs"
+            >
+              No Data
+            </p>
+          </div>
+        </ng-container>
+      </div>
+      <div
+        class="py-[15vh] text-center"
+        *ngIf="!purchaseInvoices.length && !loading"
+      >
+        <img
+          class="mx-auto w-32 rounded-lg object-cover"
+          src="assets/images/bg/empty.png"
+        />
+        <p>No Supplier Data</p>
+      </div>
+      <div class="py-[20vh] text-center" *ngIf="loading">
+        <p-progress-spinner ariaLabel="loading" />
+      </div>
+    </div>
+    <!-- <div class="card flex justify-between gap-3">
+      <div class="flex text-sm dark:text-white text-gray-700 items-center px-2">
+        Showing {{ (page - 1) * rows + 1 }} -
+        {{ Math.min(page * rows, totalRecords) }} of {{ totalRecords }}
+      </div>
+      <p-paginator
+        [rows]="rows"
+        [first]="(page - 1) * rows"
+        [rowsPerPageOptions]="[5, 10, 50, 100]"
+        [totalRecords]="totalRecords"
+        (onPageChange)="onPageUpdate($event)"
+        [showFirstLastIcon]="false"
+      />
+    </div> -->
+  </div>
+</div>

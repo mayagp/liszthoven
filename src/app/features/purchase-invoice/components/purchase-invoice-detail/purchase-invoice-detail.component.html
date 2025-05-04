@@ -1,0 +1,61 @@
+<div class="@container">
+  <div
+    class="fc-animate-translate-up grid grid-cols-1 items-center justify-between gap-5 rounded-md border border-zinc-100/70 bg-zinc-100/70 p-3 hover:border-sky-600 @2xl:flex dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600"
+  >
+    <div class="flex w-full items-center gap-1 @xl:gap-3 @2xl:flex-1">
+      <div
+        class="aspect-square w-12 flex-none overflow-hidden rounded-lg bg-white object-cover"
+      >
+        <fc-image-preview
+          [src]="
+            purchaseInvoiceDetail.product.product_images[0]
+              ? purchaseInvoiceDetail.product.product_images[0].url
+              : 'assets/images/placeholder/placeholder_small.jpg'
+          "
+          [preview]="true"
+        >
+        </fc-image-preview>
+      </div>
+      <div>
+        <a
+          [routerLink]="['/product/view', purchaseInvoiceDetail.product.id]"
+          target="_blank"
+          pTooltip="View Product"
+          class="font-bold capitalize hover:text-sky-900 dark:hover:text-sky-600"
+        >
+          {{ purchaseInvoiceDetail.product.name }}
+        </a>
+        <p>Qty Order : {{ purchaseInvoiceDetail.quantity | number }} Pcs</p>
+      </div>
+    </div>
+    <div class="space-y-1 text-right @2xl:flex-1">
+      <p>
+        {{
+          purchaseInvoiceDetail.unit_price * purchaseInvoiceDetail.quantity
+            | fcCurrency
+        }}
+      </p>
+      <p class="text-xs">
+        ( {{ purchaseInvoiceDetail.unit_price | fcCurrency }}/pcs )
+      </p>
+    </div>
+    <div class="flex justify-end gap-2" *ngIf="canEdit">
+      <button
+        [ngClass]="{ 'opacity-50': loadPurchaseOrder }"
+        [disabled]="loadPurchaseOrder"
+        (click)="editPurchaseInvoiceDetail()"
+        type="button"
+        class="btn-high flex rounded-lg p-2"
+      >
+        <fa-icon class="text-xs" [icon]="faPencil"></fa-icon>
+      </button>
+      <button
+        (click)="deletePurchaseInvoiceDetail()"
+        type="button"
+        class="btn-high flex rounded-lg p-2"
+      >
+        <fa-icon class="text-xs" [icon]="faTrash"></fa-icon>
+      </button>
+    </div>
+  </div>
+</div>

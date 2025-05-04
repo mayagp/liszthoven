@@ -1,0 +1,359 @@
+<div class="flex h-full flex-col space-y-3">
+  <app-fc-action-bar [isHasBackButton]="true" [actionButtons]="actionButtons">
+  </app-fc-action-bar>
+  <div class="body h-full w-full overflow-y-auto text-xs @container">
+    <form
+      class="mx-auto mt-2 grid w-full grid-cols-1 gap-3 @xl:grid-cols-2"
+      [formGroup]="purchaseReturnForm"
+    >
+      <div class="flex">
+        <fc-input-text
+          class="flex-1"
+          inputId="invoice_no"
+          title="Purchase Return Number"
+          [(ngModel)]="purchaseReturnNumber"
+          [ngModelOptions]="{ standalone: true }"
+          [placeholder]="'Enter Purchase Return Number'"
+          [readonly]="true"
+        />
+        <div class="ml-2 flex items-center justify-center">
+          <button
+            type="button"
+            class="btn btn-high"
+            (click)="generateAutoNumber()"
+            pTooltip="Check Latest"
+            tooltipPosition="bottom"
+          >
+            <fa-icon [fixedWidth]="true" [icon]="faRefresh"></fa-icon>
+          </button>
+        </div>
+      </div>
+      <div class="grid gap-3 @xl:grid-cols-2">
+        <!-- Select Destination -->
+        <!-- <fc-select-option
+            (onSelect)="changeDestination()"
+            (onRemove)="removeDestination()"
+            [options]="purchaseReturnDestination"
+            formControlName="destination"
+            [optionValue]="'id'"
+            [optionLabel]="'name'"
+            title="Destination"
+            [placeholder]="'Select Destination'"
+            [desktopView]="'overlay'"
+            [mobileView]="'dialog'">
+          </fc-select-option> -->
+        <!-- Select Purchase Return Type -->
+        <!-- <fc-select-option
+            [options]="purchaseReturnTypes"
+            formControlName="type"
+            [optionValue]="'id'"
+            [optionLabel]="'name'"
+            title="Type"
+            [placeholder]="'Select Type'"
+            [desktopView]="'overlay'"
+            [mobileView]="'dialog'">
+          </fc-select-option> -->
+      </div>
+      <div class="card w-full">
+        <p-iftalabel>
+          <p-datepicker
+            [style]="{ width: '100%' }"
+            inputId="icondisplay"
+            showIcon
+            iconDisplay="input"
+            [showButtonBar]="true"
+            formControlName="date"
+            placeholder="Select Date"
+            appendTo="body"
+            dateFormat="dd/mm/yy"
+            [inputStyle]="{
+              'background-color': '#27272a',
+              border: '1px solid #3f3f46',
+              color: '#ffffff',
+              'font-size': '12px',
+              'line-height': '1.7',
+            }"
+          />
+          <label
+            for="date"
+            style="font-weight: 500 !important; color: #ffffff99 !important"
+            >Date</label
+          >
+        </p-iftalabel>
+      </div>
+
+      <!-- Select Supplier -->
+      <div
+        class="form-input flex cursor-pointer items-center rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+        [ngClass]="{
+          'border-red-400':
+            purchaseReturnForm.get('supplier')?.invalid &&
+            purchaseReturnForm.get('supplier')?.touched,
+          'border-zinc-200 dark:border-zinc-700':
+            purchaseReturnForm.get('supplier')?.valid ||
+            !purchaseReturnForm.get('supplier')?.touched,
+        }"
+      >
+        <div class="flex flex-1 flex-col" (click)="onSelectSupplier()">
+          <p
+            class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+          >
+            Supplier
+          </p>
+          <p *ngIf="purchaseReturnForm.value.supplier" class="text-xs">
+            {{ purchaseReturnForm.value.supplier.name }}
+          </p>
+          <p
+            *ngIf="!purchaseReturnForm.value.supplier"
+            class="text-xs dark:text-gray-400"
+          >
+            Select Supplier
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button
+            *ngIf="purchaseReturnForm.value.supplier"
+            type="button"
+            (click)="removeSupplier()"
+          >
+            <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
+          </button>
+          <button type="button" (click)="onSelectSupplier()">
+            <fa-icon [fixedWidth]="true" [icon]="faChevronDown"></fa-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="@xl:col-span-2">
+        <fc-input-text
+          [title]="'Note'"
+          [placeholder]="'Enter Note'"
+          formControlName="note"
+        />
+      </div>
+
+      <div class="@xl:col-span-2">
+        <!-- Upload Document -->
+        <!-- <fc-file-input
+            *ngIf="!documentFilesArray.length"
+            [multiple]="true"
+            (onInput)="addMultipleFiles($event)">
+            <div
+              class="flex h-[200px] flex-col items-center justify-center gap-2 overflow-y-auto rounded-md border bg-zinc-100/70 p-5 dark:border-zinc-800 dark:bg-zinc-800">
+              <fa-icon class="text-3xl" [icon]="faCloudArrowUp" />
+              <p>Drag or Upload Purchase Return Documents Here</p>
+            </div>
+          </fc-file-input> -->
+        <div
+          *ngIf="documentFilesArray.length"
+          class="flex h-[200px] flex-col gap-2 rounded-md bg-zinc-100/70 p-2 dark:bg-zinc-800"
+        >
+          <div class="h-[180px] flex-1 overflow-y-auto">
+            <div class="grid gap-1 @md:grid-cols-2 @3xl:grid-cols-3">
+              <ng-container formArrayName="purchase_return_documents">
+                <ng-container
+                  *ngFor="
+                    let document of documentFilesArray.controls;
+                    let i = index
+                  "
+                  [formGroupName]="i"
+                >
+                  <div
+                    class="flex w-full items-center justify-between gap-2 rounded-md bg-white p-2 dark:border-neutral-900 dark:bg-neutral-900"
+                  >
+                    <div class="flex w-full items-center gap-2">
+                      <div
+                        *ngIf="
+                          fileType(documentFilesArray.value[i].file_type) ==
+                          'file'
+                        "
+                        class="flex cursor-pointer items-center justify-center rounded-md bg-zinc-100/70 p-2 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+                      >
+                        <fa-icon [icon]="faFile" />
+                      </div>
+                      <ng-container
+                        *ngIf="
+                          fileType(documentFilesArray.value[i].file_type) ==
+                          'image'
+                        "
+                      >
+                        <fc-image-preview
+                          class="w-[70px]"
+                          [preview]="true"
+                          [src]="documentFilesArray.value[i].src"
+                        >
+                        </fc-image-preview>
+                      </ng-container>
+                      <div
+                        *ngIf="
+                          fileType(documentFilesArray.value[i].file_type) ==
+                          'pdf'
+                        "
+                        class="flex cursor-pointer items-center justify-center rounded-md bg-zinc-100/70 p-2 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+                      >
+                        PDF
+                      </div>
+                      <p
+                        (dblclick)="changeDocumentName(i)"
+                        *ngIf="
+                          documentFilesArray.value[i].inputChangeName == false
+                        "
+                        class="text-md max-w-[135px] cursor-pointer truncate"
+                      >
+                        {{ documentFilesArray.value[i].original_name }}
+                      </p>
+                      <label
+                        *ngIf="documentFilesArray.value[i].inputChangeName"
+                        class="form-input flex w-full items-center gap-2 rounded-lg border border-zinc-200 bg-white p-2 focus-within:border-sky-600/50 dark:border-zinc-700 dark:bg-zinc-800 focus-within:dark:border-zinc-700"
+                      >
+                        <div class="flex flex-1 flex-col">
+                          <input
+                            class="m-0 w-full bg-white p-0 text-xs ring-0 focus:outline-none focus:ring-0 dark:bg-zinc-800"
+                            type="text"
+                            formControlName="original_name"
+                            placeholder="Enter Document Name"
+                          />
+                        </div>
+                      </label>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <button
+                        (click)="changeDocumentName(i)"
+                        type="button"
+                        class="flex items-center justify-center rounded-md bg-zinc-100/70 p-2 hover:bg-zinc-200 dark:border-zinc-800 dark:bg-zinc-800 hover:dark:bg-zinc-700"
+                      >
+                        <fa-icon
+                          [icon]="
+                            documentFilesArray.value[i].inputChangeName
+                              ? faFloppyDisk
+                              : faPencil
+                          "
+                        />
+                      </button>
+                      <button
+                        (click)="removeDocument(i)"
+                        type="button"
+                        class="flex items-center justify-center rounded-md p-2 hover:bg-zinc-200 hover:dark:bg-zinc-700"
+                      >
+                        <fa-icon [icon]="faXmark" />
+                      </button>
+                    </div>
+                  </div>
+                </ng-container>
+              </ng-container>
+            </div>
+          </div>
+          <!-- <fc-file-input [multiple]="true" (onInput)="addMultipleFiles($event)">
+              <div
+                class="flex w-full items-center justify-center gap-2 rounded-md bg-white px-2 py-3 dark:bg-neutral-900">
+                <fa-icon
+                  class="text-md"
+                  [fixedWidth]="true"
+                  [icon]="faCloudArrowUp" />
+                Upload More
+              </div>
+            </fc-file-input> -->
+        </div>
+      </div>
+
+      <div class="purchase-return-detail @xl:col-span-2">
+        <div class="mt-2 flex w-full items-center">
+          <h3 class="flex-1">Detail</h3>
+          <button
+            [ngClass]="{
+              'opacity-30': purchaseReturnForm.value.destination == null,
+            }"
+            [disabled]="purchaseReturnForm.value.destination == null"
+            type="button"
+            class="flex gap-1 rounded-lg p-2 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+            (click)="onAddPurchaseReturnDetail()"
+          >
+            <fa-icon [icon]="faPlus"></fa-icon>
+            Add New Item
+          </button>
+        </div>
+        <div
+          class="w-full overflow-y-auto py-2 transition-all duration-700 ease-in-out"
+        >
+          <div
+            class="grid gap-2 @lg:grid-cols-2"
+            *ngIf="purchaseReturnDetails.value.length > 0"
+          >
+            <ng-container
+              *ngFor="
+                let purchaseReturnDetail of purchaseReturnDetails.value;
+                let i = index
+              "
+            >
+              <div
+                class="fc-animate-translate-up grid cursor-pointer grid-cols-1 items-center justify-between rounded-md border border-zinc-100/70 bg-zinc-100/70 p-3 hover:border-sky-600 dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600 lg:flex"
+              >
+                <div class="grid w-full items-center gap-3 @xl:flex">
+                  <div class="flex flex-1 items-center gap-3">
+                    <!-- <div
+                        class="bg-white flex-none object-cover w-20 aspect-square rounded-lg">
+                        <fc-image-preview
+                          [preview]="true"
+                          [src]="
+                            purchaseReturnDetail.purchaseable.product
+                              .product_images[0].url
+                              ? purchaseReturnDetail.purchaseable.product
+                                  .product_images[0].url
+                              : 'assets/images/placeholder/placeholder_small.jpg'
+                          ">
+                        </fc-image-preview>
+                      </div> -->
+                    <div class="space-y-1">
+                      <a
+                        [routerLink]="[
+                          '/product/view',
+                          purchaseReturnDetail.purchaseable.product.id,
+                        ]"
+                        target="_blank"
+                        pTooltip="View Product"
+                        class="font-bold capitalize hover:text-sky-900 dark:hover:text-sky-600"
+                      >
+                        {{ purchaseReturnDetail.purchaseable.product.name }}
+                      </a>
+                      <p>{{ purchaseReturnDetail.quantity }} Pcs</p>
+                      <p>
+                        {{ purchaseReturnDetail.amount | fcCurrency }}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="flex justify-end gap-1">
+                    <button
+                      type="button"
+                      class="btn btn-high"
+                      (click)="onEditPurchaseReturnDetail(i)"
+                    >
+                      <fa-icon [fixedWidth]="true" [icon]="faPencil"></fa-icon>
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-high"
+                      (click)="onRemovePurchaseReturnDetail(i)"
+                    >
+                      <fa-icon [fixedWidth]="true" [icon]="faTrash"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+          <div
+            class="flex h-full w-full items-center justify-center"
+            *ngIf="purchaseReturnDetails.value.length === 0"
+          >
+            <p class="py-10 text-xs text-zinc-700 dark:text-white/60">
+              No Item Added
+            </p>
+          </div>
+        </div>
+      </div>
+    </form>
+    <p-toast></p-toast>
+    <p-confirmDialog></p-confirmDialog>
+  </div>
+</div>
