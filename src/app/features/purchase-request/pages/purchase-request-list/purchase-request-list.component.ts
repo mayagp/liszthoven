@@ -25,6 +25,8 @@ import { DataListParameter } from '../../../../shared/interfaces/data-list-param
 import { PurchaseRequest } from '../../interfaces/purchase-request';
 import { PurchaseRequestService } from '../../services/purchase-request.service';
 import { PurchaseRequestViewComponent } from '../purchase-request-view/purchase-request-view.component';
+import { PaginatorModule } from 'primeng/paginator';
+import { ProgressSpinner } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-purchase-request-list',
@@ -33,6 +35,8 @@ import { PurchaseRequestViewComponent } from '../purchase-request-view/purchase-
     FontAwesomeModule,
     FcActionBarComponent,
     PurchaseRequestViewComponent,
+    PaginatorModule,
+    ProgressSpinner,
   ],
   templateUrl: './purchase-request-list.component.html',
   styleUrl: './purchase-request-list.component.css',
@@ -111,6 +115,7 @@ export class PurchaseRequestListComponent {
   page = 1;
   rows = 10;
   searchQuery: string = '';
+  Math = Math;
 
   purchaseRequests: PurchaseRequest[] = [];
   selectedPurchaseRequest: PurchaseRequest | undefined;
@@ -294,15 +299,9 @@ export class PurchaseRequestListComponent {
       });
   }
 
-  onPageUpdate(pagination: any) {
-    let page = pagination.page;
-    let rows = pagination.rows;
-    this.rows = rows;
-    if (page > 0) {
-      this.page = page;
-    } else {
-      this.page = 1;
-    }
+  onPageUpdate(event: any) {
+    this.rows = event.rows;
+    this.page = Math.floor(event.first / event.rows) + 1;
     this.loadData();
   }
 

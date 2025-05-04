@@ -30,6 +30,8 @@ import { ProductCategoryEditDialogComponent } from '../../components/product-cat
 import { FcActionBarComponent } from '../../../../shared/components/fc-action-bar/fc-action-bar.component';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
+import { PaginatorModule } from 'primeng/paginator';
+import { ProgressSpinner } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-product-category-list',
@@ -40,6 +42,8 @@ import { ToastModule } from 'primeng/toast';
     FcActionBarComponent,
     SharedModule,
     ConfirmDialogModule,
+    PaginatorModule,
+    ProgressSpinner,
   ],
   templateUrl: './product-category-list.component.html',
   styleUrl: './product-category-list.component.css',
@@ -100,6 +104,7 @@ export class ProductCategoryListComponent {
   page = 1;
   rows = 10;
   searchQuery: string = '';
+  Math = Math;
 
   productCategories: ProductCategory[] = [];
   selectedProductCategory: ProductCategory | undefined;
@@ -272,15 +277,9 @@ export class ProductCategoryListComponent {
     );
   }
 
-  onPageUpdate(pagination: any) {
-    let page = pagination.page;
-    let rows = pagination.rows;
-    this.rows = rows;
-    if (page > 0) {
-      this.page = page;
-    } else {
-      this.page = 1;
-    }
+  onPageUpdate(event: any) {
+    this.rows = event.rows;
+    this.page = Math.floor(event.first / event.rows) + 1;
     this.loadData();
   }
 

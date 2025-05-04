@@ -28,17 +28,21 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { FcActionBarComponent } from '../../../../shared/components/fc-action-bar/fc-action-bar.component';
 import { FcCurrencyPipe } from '../../../../shared/pipes/fc-currency.pipe';
 import { FcInputTextComponent } from '../../../../shared/components/fc-input-text/fc-input-text.component';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-product-category-view',
   imports: [
     CommonModule,
     FontAwesomeModule,
+    ToastModule,
     FcActionBarComponent,
     FormsModule,
     ReactiveFormsModule,
     FcCurrencyPipe,
     FcInputTextComponent,
+    ConfirmDialogModule,
   ],
   templateUrl: './product-category-view.component.html',
   styleUrl: './product-category-view.component.css',

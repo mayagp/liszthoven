@@ -3,7 +3,12 @@ import { Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faTimes, faRefresh, faPlus } from '@fortawesome/free-solid-svg-icons';
+import {
+  faTimes,
+  faRefresh,
+  faPlus,
+  faSearch,
+} from '@fortawesome/free-solid-svg-icons';
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { Subject, takeUntil } from 'rxjs';
 import { FcFilterConfig } from '../../../../shared/components/fc-filter-dialog/interfaces/fc-filter-config';
@@ -32,6 +37,7 @@ export class PurchaseOrderSelectDialogComponent {
   faTimes = faTimes;
   faRefresh = faRefresh;
   faPlus = faPlus;
+  faSearch = faSearch;
 
   purchaseOrders: PurchaseOrder[] = [];
 

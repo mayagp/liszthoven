@@ -60,19 +60,23 @@
         </div>
       </ng-container>
       <div class="w-full py-[20vh] text-center" *ngIf="loading">
-        <!-- <fc-loading></fc-loading> -->
+        <p-progress-spinner ariaLabel="loading" />
       </div>
     </div>
-    <!-- <div class="flex justify-end gap-3">
-        <div class="w-full @lg:w-96">
-          <fc-pagination
-            [rows]="rows"
-            [page]="page"
-            [totalPages]="totalPages"
-            [totalRecords]="totalRecords"
-            (onPageUpdate)="onPageUpdate($event)"></fc-pagination>
-        </div>
-      </div> -->
+    <div class="card flex justify-between gap-3">
+      <div class="flex text-sm dark:text-white text-gray-700 items-center px-2">
+        Showing {{ (page - 1) * rows + 1 }} -
+        {{ Math.min(page * rows, totalRecords) }} of {{ totalRecords }}
+      </div>
+      <p-paginator
+        [rows]="rows"
+        [first]="(page - 1) * rows"
+        [rowsPerPageOptions]="[5, 10, 50, 100]"
+        [totalRecords]="totalRecords"
+        (onPageChange)="onPageUpdate($event)"
+        [showFirstLastIcon]="false"
+      />
+    </div>
   </div>
   <div
     class="hidden flex-1 @3xl:block"

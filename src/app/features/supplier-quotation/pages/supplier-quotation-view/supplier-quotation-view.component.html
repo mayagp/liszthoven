@@ -249,11 +249,34 @@
                   <div
                     class="w-full rounded-lg border border-zinc-200 dark:border-zinc-700"
                   >
-                    <!-- <fc-input-number
-                      title="Tax"
-                      formControlName="tax"
-                      placeholder="Enter Tax"
-                    ></fc-input-number> -->
+                    <div class="card flex justify-center w-full">
+                      <p-iftalabel class="w-full">
+                        <p-inputnumber
+                          class="w-full"
+                          mode="currency"
+                          currency="IDR"
+                          locale="id-ID"
+                          [minFractionDigits]="0"
+                          [maxFractionDigits]="0"
+                          formControlName="tax"
+                          placeholder="Enter Tax"
+                          [inputStyle]="{
+                            'background-color': '#27272a',
+                            border: '1px solid #3f3f46',
+                            color: '#ffffff',
+                            'font-size': '12px',
+                          }"
+                        />
+                        <label
+                          for="tax"
+                          style="
+                            font-weight: 500 !important;
+                            color: #ffffff99 !important;
+                          "
+                          >Tax</label
+                        >
+                      </p-iftalabel>
+                    </div>
                   </div>
                 </div>
                 <div
@@ -296,4 +319,6 @@
       <!-- <fc-loading></fc-loading> -->
     </div>
   </form>
+  <p-toast></p-toast>
+  <p-confirmDialog></p-confirmDialog>
 </div>

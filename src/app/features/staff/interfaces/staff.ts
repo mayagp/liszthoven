@@ -1,3 +1,4 @@
+import { BusinessUnit } from '../../branch/interfaces/branch';
 import { User } from '../../user/interfaces/user';
 
 export interface Staff {
@@ -10,7 +11,7 @@ export interface Staff {
   updated_at: string;
   deleted_at: any;
   user: User;
-  // business_units: BusinessUnit[];
+  business_units: BusinessUnit[];
   // teacher: Teacher;
   birth_date: string;
   working_since: string;

@@ -26,6 +26,8 @@ import { WarehouseService } from '../../services/warehouse.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FcActionBarComponent } from '../../../../shared/components/fc-action-bar/fc-action-bar.component';
 import { WarehouseViewComponent } from '../warehouse-view/warehouse-view.component';
+import { PaginatorModule } from 'primeng/paginator';
+import { ProgressSpinner } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-warehouse-list',
@@ -34,6 +36,8 @@ import { WarehouseViewComponent } from '../warehouse-view/warehouse-view.compone
     FontAwesomeModule,
     FcActionBarComponent,
     WarehouseViewComponent,
+    PaginatorModule,
+    ProgressSpinner,
   ],
   templateUrl: './warehouse-list.component.html',
   styleUrl: './warehouse-list.component.css',
@@ -100,6 +104,7 @@ export class WarehouseListComponent {
   page = 1;
   rows = 10;
   searchQuery: string = '';
+  Math = Math;
 
   warehouses: Warehouse[] = [];
   selectedWarehouse: Warehouse | undefined;
@@ -281,17 +286,12 @@ export class WarehouseListComponent {
       loading: state,
     });
   }
-  onPageUpdate(pagination: any) {
-    let page = pagination.page;
-    let rows = pagination.rows;
-    this.rows = rows;
-    if (page > 0) {
-      this.page = page;
-    } else {
-      this.page = 1;
-    }
-    this.loadData(this.page);
+  onPageUpdate(event: any) {
+    this.rows = event.rows;
+    this.page = Math.floor(event.first / event.rows) + 1;
+    this.loadData();
   }
+
   navigateToDetail(warehouse: Warehouse) {
     this.router.navigate(['/warehouse/view/', warehouse.id]);
   }

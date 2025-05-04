@@ -22,6 +22,7 @@ import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FcActionBarComponent } from '../../../../shared/components/fc-action-bar/fc-action-bar.component';
 import { FcInputTextComponent } from '../../../../shared/components/fc-input-text/fc-input-text.component';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-warehouse-add',
@@ -32,10 +33,11 @@ import { FcInputTextComponent } from '../../../../shared/components/fc-input-tex
     FcInputTextComponent,
     FormsModule,
     ReactiveFormsModule,
+    ToastModule,
   ],
   templateUrl: './warehouse-add.component.html',
   styleUrl: './warehouse-add.component.css',
-  providers: [DialogService],
+  providers: [DialogService, MessageService],
 })
 export class WarehouseAddComponent
   implements OnInit, OnDestroy, AfterContentInit

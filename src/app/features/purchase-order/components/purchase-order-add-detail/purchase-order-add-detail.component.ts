@@ -24,8 +24,6 @@ import { IftaLabelModule } from 'primeng/iftalabel';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ToastModule } from 'primeng/toast';
 import { Subject } from 'rxjs';
-import { FcImagePreviewComponent } from '../../../../shared/components/fc-image-preview/fc-image-preview.component';
-import { FcCurrencyPipe } from '../../../../shared/pipes/fc-currency.pipe';
 import { SupplierQuotationSelectDetailDialogComponent } from '../../../supplier-quotation/components/supplier-quotation-select-detail-dialog/supplier-quotation-select-detail-dialog.component';
 import { ProductSelectDialogComponent } from '../../../product/components/product-select-dialog/product-select-dialog.component';
 import { ConfirmationService } from 'primeng/api';

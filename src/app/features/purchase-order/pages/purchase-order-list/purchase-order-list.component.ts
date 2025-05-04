@@ -26,6 +26,8 @@ import { PurchaseOrder } from '../../interfaces/purchase-order';
 import { PurchaseOrderService } from '../../services/purchase-order.service';
 import { FcCurrencyPipe } from '../../../../shared/pipes/fc-currency.pipe';
 import { PurchaseOrderViewComponent } from '../purchase-order-view/purchase-order-view.component';
+import { PaginatorModule } from 'primeng/paginator';
+import { ProgressSpinner } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-purchase-order-list',
@@ -35,6 +37,8 @@ import { PurchaseOrderViewComponent } from '../purchase-order-view/purchase-orde
     FcActionBarComponent,
     FcCurrencyPipe,
     PurchaseOrderViewComponent,
+    PaginatorModule,
+    ProgressSpinner,
   ],
   templateUrl: './purchase-order-list.component.html',
   styleUrl: './purchase-order-list.component.css',
@@ -112,6 +116,7 @@ export class PurchaseOrderListComponent {
   page = 1;
   rows = 10;
   searchQuery: string = '';
+  Math = Math;
 
   purchaseOrders: PurchaseOrder[] = [];
   selectedPurchaseOrder: PurchaseOrder | undefined;
@@ -293,17 +298,12 @@ export class PurchaseOrderListComponent {
       });
   }
 
-  onPageUpdate(pagination: any) {
-    let page = pagination.page;
-    let rows = pagination.rows;
-    this.rows = rows;
-    if (page > 0) {
-      this.page = page;
-    } else {
-      this.page = 1;
-    }
+  onPageUpdate(event: any) {
+    this.rows = event.rows;
+    this.page = Math.floor(event.first / event.rows) + 1;
     this.loadData();
   }
+
   navigateToDetail(purchaseOrder: any) {
     this.router.navigate(['/purchase-order/view/', purchaseOrder.id]);
   }

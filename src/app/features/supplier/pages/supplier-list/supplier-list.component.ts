@@ -27,6 +27,8 @@ import { DataListParameter } from '../../../../shared/interfaces/data-list-param
 import { Supplier } from '../../interfaces/supplier';
 import { SupplierService } from '../../services/supplier.service';
 import { SupplierViewComponent } from '../supplier-view/supplier-view.component';
+import { PaginatorModule } from 'primeng/paginator';
+import { ProgressSpinner } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-supplier-list',
@@ -36,6 +38,8 @@ import { SupplierViewComponent } from '../supplier-view/supplier-view.component'
     FcActionBarComponent,
     FontAwesomeModule,
     SupplierViewComponent,
+    PaginatorModule,
+    ProgressSpinner,
   ],
   templateUrl: './supplier-list.component.html',
   styleUrl: './supplier-list.component.css',
@@ -102,6 +106,7 @@ export class SupplierListComponent {
   page = 1;
   rows = 10;
   searchQuery: string = '';
+  Math = Math;
 
   suppliers: Supplier[] = [];
   selectedSupplier: Supplier | undefined;
@@ -283,17 +288,12 @@ export class SupplierListComponent {
       loading: state,
     });
   }
-  onPageUpdate(pagination: any) {
-    let page = pagination.page;
-    let rows = pagination.rows;
-    this.rows = rows;
-    if (page > 0) {
-      this.page = page;
-    } else {
-      this.page = 1;
-    }
-    this.loadData(this.page);
+  onPageUpdate(event: any) {
+    this.rows = event.rows;
+    this.page = Math.floor(event.first / event.rows) + 1;
+    this.loadData();
   }
+
   navigateToDetail(supplier: Supplier) {
     this.router.navigate(['/supplier/view/', supplier.id]);
   }

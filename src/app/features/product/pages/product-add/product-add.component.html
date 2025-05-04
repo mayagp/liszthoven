@@ -13,11 +13,6 @@
             formControlName="name"
             placeholder="Enter Product Name"
           ></fc-input-text>
-          <!-- <fc-input-number
-              title="Base price"
-              formControlName="base_price"
-              [currency]="true"
-              placeholder="Enter price"></fc-input-number> -->
           <div class="card flex justify-center w-full">
             <p-iftalabel class="w-full">
               <p-inputnumber
@@ -43,10 +38,27 @@
               >
             </p-iftalabel>
           </div>
-          <!-- <fc-input-number
-              title="Quantity"
-              formControlName="quantity"
-              placeholder="Enter quantity"></fc-input-number> -->
+          <div class="card flex justify-center w-full">
+            <p-iftalabel class="w-full">
+              <p-inputnumber
+                class="w-full"
+                formControlName="quantity"
+                placeholder="Enter Quantity"
+                [inputStyle]="{
+                  'background-color': '#27272a',
+                  border: '1px solid #3f3f46',
+                  color: '#ffffff',
+                  'font-size': '12px',
+                }"
+              />
+              <label
+                for="quantity"
+                style="font-weight: 500 !important; color: #ffffff99 !important"
+                >Quantity</label
+              >
+            </p-iftalabel>
+          </div>
+
           <div class="grid gap-2 lg:grid-cols-3">
             <div class="card flex justify-center">
               <p-iftalabel class="w-full md:w-56">
@@ -271,5 +283,6 @@
         </div>
       </div>
     </form>
+    <p-toast></p-toast>
   </div>
 </div>

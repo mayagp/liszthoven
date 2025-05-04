@@ -29,6 +29,8 @@ import { FcInputTextComponent } from '../../../../shared/components/fc-input-tex
 import { DatePickerModule } from 'primeng/datepicker';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { InventorySelectDialogComponent } from '../../../inventory/components/inventory-select-dialog/inventory-select-dialog.component';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-stock-movement-add',
@@ -41,6 +43,8 @@ import { InventorySelectDialogComponent } from '../../../inventory/components/in
     FcInputTextComponent,
     DatePickerModule,
     IftaLabelModule,
+    InputNumberModule,
+    ToastModule,
   ],
   templateUrl: './stock-movement-add.component.html',
   styleUrl: './stock-movement-add.component.css',

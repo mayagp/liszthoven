@@ -37,6 +37,7 @@ import { FcCurrencyPipe } from '../../../../shared/pipes/fc-currency.pipe';
 import { SupplierSelectDialogComponent } from '../../../supplier/components/supplier-select-dialog/supplier-select-dialog.component';
 import { DatePickerModule } from 'primeng/datepicker';
 import { IftaLabelModule } from 'primeng/iftalabel';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 @Component({
   selector: 'app-supplier-quotation-add',
@@ -54,6 +55,7 @@ import { IftaLabelModule } from 'primeng/iftalabel';
     RouterModule,
     DatePickerModule,
     IftaLabelModule,
+    InputNumberModule,
   ],
   templateUrl: './supplier-quotation-add.component.html',
   styleUrl: './supplier-quotation-add.component.css',
@@ -288,8 +290,17 @@ export class SupplierQuotationAddComponent {
     this.confirmationService.confirm({
       header: 'Confirmation',
       message: 'Are you sure to delete this data?',
+      acceptLabel: 'Yes',
+      rejectLabel: 'No',
       accept: () => {
         this.supplierQuotationDetails.removeAt(index);
+      },
+      reject: () => {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Cancelled',
+          detail: 'Delete operation was cancelled',
+        });
       },
     });
   }

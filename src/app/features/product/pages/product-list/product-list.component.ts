@@ -27,6 +27,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ProductViewComponent } from '../product-view/product-view.component';
 import { FcCurrencyPipe } from '../../../../shared/pipes/fc-currency.pipe';
 import { FcImagePreviewComponent } from '../../../../shared/components/fc-image-preview/fc-image-preview.component';
+import { PaginatorModule } from 'primeng/paginator';
+import { ProgressSpinner } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-product-list',
@@ -38,6 +40,8 @@ import { FcImagePreviewComponent } from '../../../../shared/components/fc-image-
     ProductViewComponent,
     FcCurrencyPipe,
     FcImagePreviewComponent,
+    PaginatorModule,
+    ProgressSpinner,
   ],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css',
@@ -104,6 +108,7 @@ export class ProductListComponent
   page = 1;
   rows = 10;
   searchQuery: string = '';
+  Math = Math;
   quickView = false;
 
   products: Product[] = [];
@@ -302,15 +307,9 @@ export class ProductListComponent
     this.products[productIndex] = product;
   }
 
-  onPageUpdate(pagination: any) {
-    let page = pagination.page;
-    let rows = pagination.rows;
-    this.rows = rows;
-    if (page > 0) {
-      this.page = page;
-    } else {
-      this.page = 1;
-    }
-    this.loadData(this.page);
+  onPageUpdate(event: any) {
+    this.rows = event.rows;
+    this.page = Math.floor(event.first / event.rows) + 1;
+    this.loadData();
   }
 }

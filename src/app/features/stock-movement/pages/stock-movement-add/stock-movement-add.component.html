@@ -80,13 +80,30 @@
               </button>
             </div>
           </div>
-          <fc-input-number
+          <div
+            class="card flex justify-center w-full"
             *ngIf="stockMovementForm.value.product"
-            [title]="'Quantity' + ' (Max ' + allowedQuantity + ' Pcs)'"
-            formControlName="quantity"
-            placeholder="Enter Quantity"
           >
-          </fc-input-number>
+            <p-iftalabel class="w-full">
+              <p-inputnumber
+                class="w-full"
+                formControlName="quantity"
+                placeholder="Enter Quantity"
+                [inputStyle]="{
+                  'background-color': '#27272a',
+                  border: '1px solid #3f3f46',
+                  color: '#ffffff',
+                  'font-size': '12px',
+                }"
+              />
+              <label
+                for="quantity"
+                style="font-weight: 500 !important; color: #ffffff99 !important"
+              >
+                Quantity (Max {{ allowedQuantity }} Pcs)</label
+              >
+            </p-iftalabel>
+          </div>
         </div>
       </div>
       <div class="w-full space-y-3">
@@ -161,4 +178,5 @@
       </div>
     </form>
   </div>
+  <p-toast></p-toast>
 </div>

@@ -26,6 +26,8 @@ import { SupplierQuotation } from '../../interfaces/supplier-quotation';
 import { SupplierQuotationService } from '../../services/supplier-quotation.service';
 import { FcCurrencyPipe } from '../../../../shared/pipes/fc-currency.pipe';
 import { SupplierQuotationViewComponent } from '../supplier-quotation-view/supplier-quotation-view.component';
+import { PaginatorModule } from 'primeng/paginator';
+import { ProgressSpinner } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-supplier-quotation-list',
@@ -35,6 +37,8 @@ import { SupplierQuotationViewComponent } from '../supplier-quotation-view/suppl
     FcActionBarComponent,
     FcCurrencyPipe,
     SupplierQuotationViewComponent,
+    PaginatorModule,
+    ProgressSpinner,
   ],
   templateUrl: './supplier-quotation-list.component.html',
   styleUrl: './supplier-quotation-list.component.css',
@@ -112,6 +116,7 @@ export class SupplierQuotationListComponent {
   page = 1;
   rows = 10;
   searchQuery: string = '';
+  Math = Math;
 
   supplierQuotations: SupplierQuotation[] = [];
   selectedSupplierQuotation: SupplierQuotation | undefined;
@@ -295,15 +300,9 @@ export class SupplierQuotationListComponent {
       });
   }
 
-  onPageUpdate(pagination: any) {
-    let page = pagination.page;
-    let rows = pagination.rows;
-    this.rows = rows;
-    if (page > 0) {
-      this.page = page;
-    } else {
-      this.page = 1;
-    }
+  onPageUpdate(event: any) {
+    this.rows = event.rows;
+    this.page = Math.floor(event.first / event.rows) + 1;
     this.loadData();
   }
 

@@ -21,20 +21,6 @@
           [placeholder]="'Enter Purchase Order Number'"
           [readonly]="true"
         />
-        <!-- <div class="grid w-full gap-2 @lg:grid-cols-2">
-          <fc-datepicker
-            [placeholder]="'Order Date'"
-            title="Order Date"
-            formControlName="date"
-          >
-          </fc-datepicker>
-          <fc-datepicker
-            [placeholder]="'Expected Delivery'"
-            title="Expected Delivery"
-            formControlName="expected_delivery_date"
-          >
-          </fc-datepicker>
-        </div> -->
         <div class="grid w-full gap-2 lg:grid-cols-2">
           <div class="card w-full">
             <p-iftalabel>
@@ -546,4 +532,6 @@
       <!-- <fc-loading></fc-loading> -->
     </div>
   </form>
+  <p-toast></p-toast>
+  <p-confirmDialog></p-confirmDialog>
 </div>

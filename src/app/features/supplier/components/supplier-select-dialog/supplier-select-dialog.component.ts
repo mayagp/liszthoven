@@ -8,6 +8,7 @@ import {
   faPhone,
   faLocationDot,
   faPlus,
+  faSearch,
 } from '@fortawesome/free-solid-svg-icons';
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { Subject, takeUntil } from 'rxjs';
@@ -42,6 +43,7 @@ export class SupplierSelectDialogComponent
   faPhone = faPhone;
   faLocationDot = faLocationDot;
   faPlus = faPlus;
+  faSearch = faSearch;
 
   suppliers: Supplier[] = [];
 

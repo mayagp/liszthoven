@@ -46,6 +46,7 @@ import { SupplierQuotationService } from '../../services/supplier-quotation.serv
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DatePickerModule } from 'primeng/datepicker';
 import { IftaLabelModule } from 'primeng/iftalabel';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 @Component({
   selector: 'app-supplier-quotation-view',
@@ -63,6 +64,7 @@ import { IftaLabelModule } from 'primeng/iftalabel';
     RouterModule,
     DatePickerModule,
     IftaLabelModule,
+    InputNumberModule,
   ],
   templateUrl: './supplier-quotation-view.component.html',
   styleUrl: './supplier-quotation-view.component.css',

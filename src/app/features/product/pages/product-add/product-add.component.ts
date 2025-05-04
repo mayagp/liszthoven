@@ -41,11 +41,13 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { SelectModule } from 'primeng/select';
 import { FcTextareaComponent } from '../../../../shared/components/fc-textarea/fc-textarea.component';
 import { FcInputTextComponent } from '../../../../shared/components/fc-input-text/fc-input-text.component';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-product-add',
   imports: [
     CommonModule,
+    ToastModule,
     FormsModule,
     FontAwesomeModule,
     ReactiveFormsModule,
@@ -58,7 +60,7 @@ import { FcInputTextComponent } from '../../../../shared/components/fc-input-tex
   ],
   templateUrl: './product-add.component.html',
   styleUrl: './product-add.component.css',
-  providers: [DialogService],
+  providers: [DialogService, MessageService],
 })
 export class ProductAddComponent
   implements OnInit, OnDestroy, AfterContentInit

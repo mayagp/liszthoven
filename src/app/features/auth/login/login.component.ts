@@ -22,6 +22,7 @@ import {
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { CommonModule } from '@angular/common';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-login',
@@ -35,6 +36,7 @@ import { CommonModule } from '@angular/common';
     InputGroupAddonModule,
     PasswordModule,
     FontAwesomeModule,
+    ToastModule,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',

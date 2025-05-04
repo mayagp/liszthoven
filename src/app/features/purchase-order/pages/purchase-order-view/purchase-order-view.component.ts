@@ -578,6 +578,8 @@ export class PurchaseOrderViewComponent {
     this.confirmationService.confirm({
       header: 'Confirmation',
       message: 'Are you sure to delete this data?',
+      acceptLabel: 'Yes',
+      rejectLabel: 'No',
       accept: () => {
         this.purchaseOrderService
           .deletePurchaseOrderDetail(
@@ -602,6 +604,13 @@ export class PurchaseOrderViewComponent {
             },
           });
       },
+      reject: () => {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Cancelled',
+          detail: 'Delete operation was cancelled',
+        });
+      },
     });
   }
 
@@ -609,6 +618,8 @@ export class PurchaseOrderViewComponent {
     this.confirmationService.confirm({
       header: 'Confirmation',
       message: 'Are you sure to cancel this purchase order?',
+      acceptLabel: 'Yes',
+      rejectLabel: 'No',
       accept: () => {
         this.purchaseOrderService
           .cancelPurchaseOrder(this.purchaseOrder.id)
@@ -636,6 +647,13 @@ export class PurchaseOrderViewComponent {
             },
           });
       },
+      reject: () => {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Cancelled',
+          detail: 'Delete operation was cancelled',
+        });
+      },
     });
   }
 
@@ -643,6 +661,8 @@ export class PurchaseOrderViewComponent {
     this.confirmationService.confirm({
       header: 'Confirmation',
       message: 'Are you sure to delete this purchase order?',
+      acceptLabel: 'Yes',
+      rejectLabel: 'No',
       accept: () => {
         this.purchaseOrderService
           .deletePurchaseOrder(this.purchaseOrder.id)
@@ -668,6 +688,13 @@ export class PurchaseOrderViewComponent {
             },
           });
       },
+      reject: () => {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Cancelled',
+          detail: 'Delete operation was cancelled',
+        });
+      },
     });
   }
 
@@ -675,6 +702,8 @@ export class PurchaseOrderViewComponent {
     this.confirmationService.confirm({
       header: 'Confirmation',
       message: 'Are you sure to approve this purchase order?',
+      acceptLabel: 'Yes',
+      rejectLabel: 'No',
       accept: () => {
         this.actionButtons[1].loading = true;
         this.purchaseOrderService
@@ -704,6 +733,13 @@ export class PurchaseOrderViewComponent {
               });
             },
           });
+      },
+      reject: () => {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Cancelled',
+          detail: 'Delete operation was cancelled',
+        });
       },
     });
   }
@@ -769,6 +805,8 @@ export class PurchaseOrderViewComponent {
     this.confirmationService.confirm({
       header: 'Confirmation',
       message: 'Are you sure to delete this purchase order document?',
+      acceptLabel: 'Yes',
+      rejectLabel: 'No',
       accept: () => {
         this.purchaseOrderService
           .deletePurchaseOrderDocument(this.purchaseOrder.id, id)
@@ -790,6 +828,13 @@ export class PurchaseOrderViewComponent {
             },
           });
       },
+      reject: () => {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Cancelled',
+          detail: 'Delete operation was cancelled',
+        });
+      },
     });
   }
 
@@ -801,6 +846,8 @@ export class PurchaseOrderViewComponent {
       this.confirmationService.confirm({
         header: 'Confirmation',
         message: 'Are you sure to update this purchase order document name?',
+        acceptLabel: 'Yes',
+        rejectLabel: 'No',
         accept: () => {
           let bodyReq = new FormGroup({
             original_name: new FormControl(
@@ -834,6 +881,13 @@ export class PurchaseOrderViewComponent {
                 });
               },
             });
+        },
+        reject: () => {
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Cancelled',
+            detail: 'Delete operation was cancelled',
+          });
         },
       });
     } else {

@@ -102,7 +102,6 @@ export class PurchaseOrderAddComponent {
     private dialogService: DialogService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
-    // private messageService: FcToastService,
     private router: Router,
     private autoNumberService: AutoNumberService,
     private fcDirtyStateService: FcDirtyStateService,
@@ -350,8 +349,17 @@ export class PurchaseOrderAddComponent {
     this.confirmationService.confirm({
       header: 'Confirmation',
       message: 'Are you sure to delete this data?',
+      acceptLabel: 'Yes',
+      rejectLabel: 'No',
       accept: () => {
         this.purchaseOrderDetails.removeAt(index);
+      },
+      reject: () => {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Cancelled',
+          detail: 'Delete operation was cancelled',
+        });
       },
     });
   }
@@ -461,8 +469,17 @@ export class PurchaseOrderAddComponent {
     this.confirmationService.confirm({
       header: 'Confirmation',
       message: 'Are you sure to delete this document?',
+      acceptLabel: 'Yes',
+      rejectLabel: 'No',
       accept: () => {
         this.documentFilesArray.removeAt(index);
+      },
+      reject: () => {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Cancelled',
+          detail: 'Delete operation was cancelled',
+        });
       },
     });
   }

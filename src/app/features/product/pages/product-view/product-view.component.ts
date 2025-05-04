@@ -44,12 +44,14 @@ import { FcActionBarComponent } from '../../../../shared/components/fc-action-ba
 import { FcImagePreviewComponent } from '../../../../shared/components/fc-image-preview/fc-image-preview.component';
 import { FcInputTextComponent } from '../../../../shared/components/fc-input-text/fc-input-text.component';
 import { FcTextareaComponent } from '../../../../shared/components/fc-textarea/fc-textarea.component';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-product-view',
   imports: [
     CommonModule,
     FontAwesomeModule,
+    ToastModule,
     FormsModule,
     ReactiveFormsModule,
     ConfirmDialogModule,

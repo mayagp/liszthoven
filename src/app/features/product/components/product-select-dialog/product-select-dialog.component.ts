@@ -3,7 +3,12 @@ import { AfterContentInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faTimes, faRefresh, faPlus } from '@fortawesome/free-solid-svg-icons';
+import {
+  faTimes,
+  faRefresh,
+  faPlus,
+  faSearch,
+} from '@fortawesome/free-solid-svg-icons';
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { Subject, takeUntil } from 'rxjs';
 import { FcFilterConfig } from '../../../../shared/components/fc-filter-dialog/interfaces/fc-filter-config';
@@ -13,6 +18,8 @@ import { Product } from '../../interfaces/product';
 import { ProductService } from '../../services/product.service';
 import { FcImagePreviewComponent } from '../../../../shared/components/fc-image-preview/fc-image-preview.component';
 import { FcCurrencyPipe } from '../../../../shared/pipes/fc-currency.pipe';
+import { SkeletonModule } from 'primeng/skeleton';
+import { ScrollerModule } from 'primeng/scroller';
 
 @Component({
   selector: 'app-product-select-dialog',
@@ -24,6 +31,8 @@ import { FcCurrencyPipe } from '../../../../shared/pipes/fc-currency.pipe';
     RouterModule,
     FcImagePreviewComponent,
     FcCurrencyPipe,
+    SkeletonModule,
+    ScrollerModule,
   ],
   templateUrl: './product-select-dialog.component.html',
   styleUrl: './product-select-dialog.component.css',
@@ -36,6 +45,7 @@ export class ProductSelectDialogComponent
   faTimes = faTimes;
   faRefresh = faRefresh;
   faPlus = faPlus;
+  faSearch = faSearch;
 
   products: Product[] = [];
 
@@ -119,6 +129,7 @@ export class ProductSelectDialogComponent
     sortBy: string = this.fcFilterDialogService.getSortString(
       this.fcFilterConfig,
     ),
+    append: boolean = false,
   ) {
     this.setParam();
     this.loading = true;
@@ -129,28 +140,52 @@ export class ProductSelectDialogComponent
     dataListParameter.sortBy = sortBy;
     dataListParameter.filterObj = filterObj;
     dataListParameter.searchQuery = searchQuery;
+
     this.productService
       .getProducts(dataListParameter)
       .pipe(takeUntil(this.destroy$))
       .subscribe((res: any) => {
         this.loading = false;
         this.totalRecords = res.data.count;
+        this.totalPages = Math.ceil(this.totalRecords / this.rows);
 
-        this.totalPages =
-          this.totalRecords > this.rows
-            ? Math.ceil(this.totalRecords / this.rows)
-            : 1;
-        this.products = res.data.products;
-        // check existing data
+        // Jika append true, gabungkan data baru dengan data lama
+        if (append) {
+          this.products = [...this.products, ...res.data.products];
+        } else {
+          // Jika append false, update dengan data baru (misalnya pada halaman pertama)
+          this.products = res.data.products;
+        }
+
+        // Cek apakah produk sudah ada di data lama
         this.existingProduct.forEach((existProduct) => {
           let productData = this.products.find(
-            (data: any) => data.id == existProduct.product.id,
+            (data: any) => data.id === existProduct.product.id,
           );
           if (productData) {
             productData.isExist = true;
           }
         });
       });
+  }
+
+  onScroll(event: any) {
+    const bottom =
+      event.target.scrollHeight - event.target.scrollTop <=
+      event.target.clientHeight + 10; // Menambahkan margin untuk lebih sensitif
+
+    if (bottom && !this.loading && this.page < this.totalPages) {
+      console.log('Loading more data...');
+      console.log('New Page:', this.page + 1); // Log page yang baru
+      this.page++; // Menambah halaman
+      this.loadData(
+        this.page, // Gunakan page yang baru
+        this.searchQuery,
+        this.fcFilterDialogService.getFilterString(this.fcFilterConfig),
+        this.fcFilterDialogService.getSortString(this.fcFilterConfig),
+        true, // append = true, data baru ditambahkan
+      );
+    }
   }
 
   onPageUpdate(pagination: any) {

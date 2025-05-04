@@ -23,10 +23,19 @@ import { FcFilterDialogService } from '../../../../shared/components/fc-filter-d
 import { DataListParameter } from '../../../../shared/interfaces/data-list-parameter.interface';
 import { StockMovement } from '../../interfaces/stock-movement';
 import { StockMovementService } from '../../services/stock-movement.service';
+import { PaginatorModule } from 'primeng/paginator';
+import { ProgressSpinner } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-stock-movement-list',
-  imports: [CommonModule, FormsModule, FcActionBarComponent, FontAwesomeModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    FcActionBarComponent,
+    FontAwesomeModule,
+    PaginatorModule,
+    ProgressSpinner,
+  ],
   templateUrl: './stock-movement-list.component.html',
   styleUrl: './stock-movement-list.component.css',
   providers: [DialogService],
@@ -84,6 +93,7 @@ export class StockMovementListComponent {
   page = 1;
   rows = 10;
   searchQuery: string = '';
+  Math = Math;
 
   stockMovements: StockMovement[] = [];
 
@@ -216,16 +226,10 @@ export class StockMovementListComponent {
     this.router.navigate(['/stock-movement/view/' + id]);
   }
 
-  onPageUpdate(pagination: any) {
-    let page = pagination.page;
-    let rows = pagination.rows;
-    this.rows = rows;
-    if (page > 0) {
-      this.page = page;
-    } else {
-      this.page = 1;
-    }
-    this.loadData(this.page);
+  onPageUpdate(event: any) {
+    this.rows = event.rows;
+    this.page = Math.floor(event.first / event.rows) + 1;
+    this.loadData();
   }
 
   onFilter() {
