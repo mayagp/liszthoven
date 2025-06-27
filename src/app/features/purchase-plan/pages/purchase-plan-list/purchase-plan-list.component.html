@@ -1,0 +1,185 @@
+<div class="flex h-full gap-3 @container">
+  <div
+    class="flex h-full w-full flex-col gap-3 transition-all duration-700 ease-in-out @container"
+    [ngClass]="{
+      '@3xl:w-full': !quickView,
+      '@3xl:w-[20rem]': quickView,
+    }"
+  >
+    <app-fc-action-bar
+      [actionButtons]="actionButtons"
+      [filterButtons]="filterButtons"
+    ></app-fc-action-bar>
+    <div class="body flex h-full w-full gap-3 overflow-y-auto text-xs">
+      <!-- Data List -->
+      <ng-container *ngIf="!loading && purchasePlans.length > 0">
+        <div class="w-full space-y-2 overflow-y-auto py-2">
+          <ng-container *ngFor="let purchasePlan of purchasePlans">
+            <div
+              (dblclick)="
+                quickView
+                  ? onChangePurchasePlan(purchasePlan)
+                  : navigateToDetail(purchasePlan)
+              "
+              class="fc-animate-translate-up cursor-pointer items-center rounded-md border border-light-low bg-light-low @container hover:border-primary-light dark:border-dark-low dark:bg-dark-low hover:dark:border-primary-light"
+            >
+              <div class="hidden items-center gap-3 p-3 @2xl:flex">
+                <div class="w-[100px]">
+                  <p>
+                    {{ purchasePlan.created_at | date: "dd MMMM yyyy" }}
+                  </p>
+                </div>
+                <div class="w-full @lg:w-[100px]">
+                  <div
+                    class="w-fit rounded-md px-2 py-1"
+                    [ngClass]="getStatusColor(purchasePlan.status)"
+                  >
+                    {{ purchasePlan.status_name }}
+                  </div>
+                </div>
+                <div class="@lg:w-[200px]">
+                  <p class="text-2xs">Warehouse</p>
+                  <div class="w-fit rounded-md py-1">
+                    {{
+                      purchasePlan.warehouse ? purchasePlan.warehouse.name : "-"
+                    }}
+                  </div>
+                </div>
+                <div class="flex flex-1 gap-2">
+                  <div
+                    class="aspect-square w-12 flex-none overflow-hidden rounded-lg bg-white object-cover"
+                  >
+                    <fc-image-preview
+                      [src]="
+                        purchasePlan.product.product_images[0]
+                          ? purchasePlan.product.product_images[0].url
+                          : 'assets/images/placeholder/placeholder_small.jpg'
+                      "
+                      [preview]="true"
+                    >
+                    </fc-image-preview>
+                  </div>
+                  <div>
+                    <a
+                      [routerLink]="['/product/view', purchasePlan.product.id]"
+                      target="_blank"
+                      pTooltip="View Product"
+                      class="font-bold capitalize hover:text-primary-dark dark:hover:text-primary-light"
+                    >
+                      {{ purchasePlan.product.name }}
+                    </a>
+                    <p>Qty : {{ purchasePlan.quantity | number }} Pcs</p>
+                  </div>
+                </div>
+
+                <div class="flex justify-end gap-1">
+                  <button
+                    type="button"
+                    class="btn btn-high"
+                    (click)="navigateToDetail(purchasePlan)"
+                  >
+                    <fa-icon [fixedWidth]="true" [icon]="faEye"></fa-icon>
+                  </button>
+                </div>
+              </div>
+              <div class="gird gap-3 p-2 @2xl:hidden">
+                <div class="flex w-full items-center justify-between">
+                  <div class="flex-1">
+                    <p class="text-2xs">
+                      {{ purchasePlan.date | date: "dd MMMM yyyy" }}
+                    </p>
+                    <p class="font-bold">
+                      {{
+                        purchasePlan.warehouse
+                          ? purchasePlan.warehouse.name
+                          : "-"
+                      }}
+                    </p>
+                  </div>
+                  <div class="flex items-center justify-end gap-2">
+                    <div
+                      class="w-fit rounded-md px-2 py-1"
+                      [ngClass]="getStatusColor(purchasePlan.status)"
+                    >
+                      {{ purchasePlan.status_name }}
+                    </div>
+                    <button
+                      type="button"
+                      class="btn btn-high"
+                      (click)="navigateToDetail(purchasePlan)"
+                    >
+                      <fa-icon [fixedWidth]="true" [icon]="faEye"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+                <div
+                  class="my-2 h-0.5 w-full bg-light-lowest/50 dark:bg-dark-lowest/50"
+                ></div>
+
+                <div class="flex flex-1 gap-2">
+                  <div
+                    class="aspect-square w-12 flex-none overflow-hidden rounded-lg bg-white object-cover"
+                  >
+                    <fc-image-preview
+                      [src]="
+                        purchasePlan.product.product_images[0]
+                          ? purchasePlan.product.product_images[0].url
+                          : 'assets/images/placeholder/placeholder_small.jpg'
+                      "
+                      [preview]="true"
+                    >
+                    </fc-image-preview>
+                  </div>
+                  <div>
+                    <a
+                      [routerLink]="['/product/view', purchasePlan.product.id]"
+                      target="_blank"
+                      pTooltip="View Product"
+                      class="font-bold capitalize hover:text-primary-dark dark:hover:text-primary-light"
+                    >
+                      {{ purchasePlan.product.name }}
+                    </a>
+                    <p>Qty : {{ purchasePlan.quantity | number }} Pcs</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="!loading && purchasePlans.length == 0">
+        <div class="w-full py-[20vh] text-center">
+          <p>No data found</p>
+        </div>
+      </ng-container>
+      <div class="w-full py-[20vh] text-center" *ngIf="loading">
+        <p-progress-spinner ariaLabel="loading" />
+      </div>
+    </div>
+    <div class="card flex justify-between gap-3">
+      <div class="flex text-sm dark:text-white text-gray-700 items-center px-2">
+        Showing {{ (page - 1) * rows + 1 }} -
+        {{ Math.min(page * rows, totalRecords) }} of {{ totalRecords }}
+      </div>
+      <p-paginator
+        [rows]="rows"
+        [first]="(page - 1) * rows"
+        [rowsPerPageOptions]="[5, 10, 50, 100]"
+        [totalRecords]="totalRecords"
+        (onPageChange)="onPageUpdate($event)"
+        [showFirstLastIcon]="false"
+      />
+    </div>
+  </div>
+  <div
+    class="hidden flex-1 @3xl:block"
+    *ngIf="selectedPurchasePlan && quickView && purchasePlans.length > 0"
+  >
+    <app-purchase-plan-view
+      [purchasePlan]="selectedPurchasePlan"
+      [quickView]="quickView"
+      (onDeleted)="onDeleted()"
+      (onUpdated)="onUpdated($event)"
+    ></app-purchase-plan-view>
+  </div>
+</div>

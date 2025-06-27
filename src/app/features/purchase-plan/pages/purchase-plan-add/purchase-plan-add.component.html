@@ -1,0 +1,139 @@
+<div class="flex h-full flex-col space-y-3">
+  <app-fc-action-bar [isHasBackButton]="true" [actionButtons]="actionButtons">
+  </app-fc-action-bar>
+  <div class="body h-full w-full overflow-y-auto text-xs @container">
+    <form
+      class="mx-auto mt-2 grid w-full grid-cols-1 gap-3 @xl:grid-cols-2"
+      [formGroup]="purchasePlanForm"
+    >
+      <div
+        (click)="onSelectProduct()"
+        class="form-input flex cursor-pointer items-center rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+        [ngClass]="{
+          'border-red-400':
+            purchasePlanForm.get('product')?.invalid &&
+            purchasePlanForm.get('product')?.touched,
+          'border-zinc-200 dark:border-zinc-700':
+            purchasePlanForm.get('product')?.valid ||
+            !purchasePlanForm.get('product')?.touched,
+        }"
+      >
+        <div class="flex flex-1 flex-col">
+          <p
+            class="m-0 block p-0 text-2xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+          >
+            Product
+          </p>
+          <p *ngIf="purchasePlanForm.value.product" class="text-xs">
+            {{ purchasePlanForm.value.product.name }}
+          </p>
+          <p
+            *ngIf="!purchasePlanForm.value.product"
+            class="text-xs dark:text-gray-400"
+          >
+            Select Product
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button
+            *ngIf="purchasePlanForm.value.product"
+            type="button"
+            (click)="removeProduct()"
+          >
+            <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
+          </button>
+          <button type="button">
+            <fa-icon [fixedWidth]="true" [icon]="faChevronDown"></fa-icon>
+          </button>
+        </div>
+      </div>
+      <div
+        class="form-input flex cursor-pointer items-center rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+        [ngClass]="{
+          'border-red-400':
+            purchasePlanForm.get('warehouse')?.invalid &&
+            purchasePlanForm.get('warehouse')?.touched,
+          'border-zinc-200 dark:border-zinc-700':
+            purchasePlanForm.get('warehouse')?.valid ||
+            !purchasePlanForm.get('warehouse')?.touched,
+        }"
+      >
+        <div class="flex flex-1 flex-col" (click)="onSelectWarehouse()">
+          <p
+            class="m-0 block p-0 text-2xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+          >
+            Warehouse
+          </p>
+          <p *ngIf="purchasePlanForm.value.warehouse" class="text-xs">
+            {{ purchasePlanForm.value.warehouse.name }}
+          </p>
+          <p
+            *ngIf="!purchasePlanForm.value.warehouse"
+            class="text-xs dark:text-gray-400"
+          >
+            Select Warehouse
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button
+            *ngIf="purchasePlanForm.value.warehouse"
+            type="button"
+            (click)="removeWarehouse()"
+          >
+            <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
+          </button>
+          <button type="button" (click)="onSelectWarehouse()">
+            <fa-icon [fixedWidth]="true" [icon]="faChevronDown"></fa-icon>
+          </button>
+        </div>
+      </div>
+      <div class="card flex justify-center w-full">
+        <p-iftalabel class="w-full">
+          <p-inputnumber
+            class="w-full"
+            formControlName="quantity"
+            placeholder="Enter Quantity"
+            [inputStyle]="{
+              'background-color': '#27272a',
+              border: '1px solid #3f3f46',
+              color: '#ffffff',
+              'font-size': '12px',
+            }"
+          />
+          <label
+            for="quantity"
+            style="font-weight: 500 !important; color: #ffffff99 !important"
+            >Quantity</label
+          >
+        </p-iftalabel>
+      </div>
+      <div class="card w-full">
+        <p-iftalabel>
+          <p-datepicker
+            [style]="{ width: '100%' }"
+            inputId="icondisplay"
+            showIcon
+            iconDisplay="input"
+            [showButtonBar]="true"
+            formControlName="date"
+            placeholder="Select Date"
+            appendTo="body"
+            dateFormat="dd/mm/yy"
+            [inputStyle]="{
+              'background-color': '#27272a',
+              border: '1px solid #3f3f46',
+              color: '#ffffff',
+              'font-size': '12px',
+              'line-height': '1.7',
+            }"
+          />
+          <label
+            for="date"
+            style="font-weight: 500 !important; color: #ffffff99 !important"
+            >Date</label
+          >
+        </p-iftalabel>
+      </div>
+    </form>
+  </div>
+</div>
