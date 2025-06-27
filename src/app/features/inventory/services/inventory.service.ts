@@ -33,11 +33,11 @@ export class InventoryServices {
         param = param.concat('&q=' + dataListParameter.searchQuery);
       }
     }
-    return this.http.get(`${ROOT_API}/admin/inventories${param}`);
+    return this.http.get(`${ROOT_API}/inventories${param}`);
   }
 
   getInventory(id: any) {
-    return this.http.get(`${ROOT_API}/admin/inventories/${id}`);
+    return this.http.get(`${ROOT_API}/inventories/${id}`);
   }
 
   getInventoryTransactions(
@@ -63,14 +63,14 @@ export class InventoryServices {
         param = param.concat('&q=' + dataListParameter.searchQuery);
       }
     }
-    return this.http.get(`${ROOT_API}/admin/inventory-transactions${param}`);
+    return this.http.get(`${ROOT_API}/inventory-transactions${param}`);
   }
 
   getInventoryTransaction(id: any) {
-    return this.http.get(`${ROOT_API}/admin/inventory-transactions/${id}`);
+    return this.http.get(`${ROOT_API}/inventory-transactions/${id}`);
   }
 
   createInventory(data: any) {
-    return this.http.post(`${ROOT_API}/admin/stock-movements`, data);
+    return this.http.post(`${ROOT_API}/stock-movements`, data);
   }
 }

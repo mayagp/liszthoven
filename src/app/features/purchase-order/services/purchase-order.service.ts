@@ -34,39 +34,36 @@ export class PurchaseOrderService {
         param = param.concat('&q=' + dataListParameter.searchQuery);
       }
     }
-    return this.http.get(`${ROOT_API}/admin/purchase-orders${param}`);
+    return this.http.get(`${ROOT_API}/purchase-orders${param}`);
   }
 
   getPurchaseOrder(id: string) {
-    return this.http.get(`${ROOT_API}/admin/purchase-orders/${id}`);
+    return this.http.get(`${ROOT_API}/purchase-orders/${id}`);
   }
 
   addPurchaseOrder(purchaseOrder: any) {
-    return this.http.post(`${ROOT_API}/admin/purchase-orders`, purchaseOrder);
+    return this.http.post(`${ROOT_API}/purchase-orders`, purchaseOrder);
   }
 
   updatePurchaseOrder(id: string, purchaseOrder: any) {
-    return this.http.put(
-      `${ROOT_API}/admin/purchase-orders/${id}`,
-      purchaseOrder,
-    );
+    return this.http.put(`${ROOT_API}/purchase-orders/${id}`, purchaseOrder);
   }
 
   deletePurchaseOrder(id: string) {
-    return this.http.delete(`${ROOT_API}/admin/purchase-orders/${id}`);
+    return this.http.delete(`${ROOT_API}/purchase-orders/${id}`);
   }
 
   cancelPurchaseOrder(id: string) {
-    return this.http.put(`${ROOT_API}/admin/purchase-orders/${id}/cancel`, {});
+    return this.http.put(`${ROOT_API}/purchase-orders/${id}/cancel`, {});
   }
   approvePurchaseOrder(id: string) {
-    return this.http.put(`${ROOT_API}/admin/purchase-orders/${id}/approve`, {});
+    return this.http.put(`${ROOT_API}/purchase-orders/${id}/approve`, {});
   }
 
   // Purchase Order Detail Services
   addPurchaseOrderDetail(id: string, purchaseOrder: any) {
     return this.http.post(
-      `${ROOT_API}/admin/purchase-orders/${id}/details`,
+      `${ROOT_API}/purchase-orders/${id}/details`,
       purchaseOrder,
     );
   }
@@ -77,14 +74,14 @@ export class PurchaseOrderService {
     purchaseOrderDetailId: string,
   ) {
     return this.http.put(
-      `${ROOT_API}/admin/purchase-orders/${id}/details/${purchaseOrderDetailId}`,
+      `${ROOT_API}/purchase-orders/${id}/details/${purchaseOrderDetailId}`,
       purchaseOrder,
     );
   }
 
   deletePurchaseOrderDetail(id: string, purchaseOrderDetailId: string) {
     return this.http.delete(
-      `${ROOT_API}/admin/purchase-orders/${id}/details/${purchaseOrderDetailId}`,
+      `${ROOT_API}/purchase-orders/${id}/details/${purchaseOrderDetailId}`,
     );
   }
 
@@ -95,7 +92,7 @@ export class PurchaseOrderService {
     purchaseOrderWarehouse: any,
   ) {
     return this.http.post(
-      `${ROOT_API}/admin/purchase-orders/${id}/details/${purchaseOrderDetailId}/warehouses`,
+      `${ROOT_API}/purchase-orders/${id}/details/${purchaseOrderDetailId}/warehouses`,
       purchaseOrderWarehouse,
     );
   }
@@ -106,7 +103,7 @@ export class PurchaseOrderService {
     purchaseOrderWarehouse: any,
   ) {
     return this.http.put(
-      `${ROOT_API}/admin/purchase-orders/${id}/details/${purchaseOrderDetailId}/warehouses/${purchaseOrderWarehouseId}`,
+      `${ROOT_API}/purchase-orders/${id}/details/${purchaseOrderDetailId}/warehouses/${purchaseOrderWarehouseId}`,
       purchaseOrderWarehouse,
     );
   }
@@ -116,28 +113,28 @@ export class PurchaseOrderService {
     purchaseOrderWarehouseId: string,
   ) {
     return this.http.delete(
-      `${ROOT_API}/admin/purchase-orders/${id}/details/${purchaseOrderDetailId}/warehouses/${purchaseOrderWarehouseId}`,
+      `${ROOT_API}/purchase-orders/${id}/details/${purchaseOrderDetailId}/warehouses/${purchaseOrderWarehouseId}`,
     );
   }
 
   // Purchase Order Document Services
   addPurchaseOrderDocument(id: string, documents: any) {
     return this.http.post(
-      `${ROOT_API}/admin/purchase-orders/${id}/documents`,
+      `${ROOT_API}/purchase-orders/${id}/documents`,
       documents,
     );
   }
 
   updatePurchaseOrderDocument(id: string, documentId: string, documents: any) {
     return this.http.put(
-      `${ROOT_API}/admin/purchase-orders/${id}/documents/${documentId}`,
+      `${ROOT_API}/purchase-orders/${id}/documents/${documentId}`,
       documents,
     );
   }
 
   deletePurchaseOrderDocument(id: string, documentId: string) {
     return this.http.delete(
-      `${ROOT_API}/admin/purchase-orders/${id}/documents/${documentId}`,
+      `${ROOT_API}/purchase-orders/${id}/documents/${documentId}`,
     );
   }
 }

@@ -1,4 +1,4 @@
-import { BusinessUnit } from '../../branch/interfaces/branch';
+import { Branch } from '../../branch/interfaces/branch';
 import { Product } from '../../product/interfaces/product';
 
 export interface PurchaseRequest {
@@ -7,12 +7,12 @@ export interface PurchaseRequest {
   date: Date;
   status: PurchaseRequestEnum;
   status_name: string;
-  business_unit_id: string;
+  branch_id: string;
   created_by: string;
   created_date: Date;
   approved_by: string;
   approved_at: Date;
-  business_unit: BusinessUnit;
+  branch: Branch;
   purchase_request_details: PurchaseRequestDetail[];
 }
 export interface PurchaseRequestDetail {

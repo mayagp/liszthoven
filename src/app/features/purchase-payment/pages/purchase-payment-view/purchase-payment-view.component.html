@@ -35,7 +35,7 @@
             Supplier
           </p>
           <p *ngIf="purchasePaymentForm.value.supplier" class="text-xs">
-            {{ purchasePaymentForm.value.supplier.name }}
+            {{ purchasePaymentForm.value.supplier.user.name }}
           </p>
           <p
             *ngIf="!purchasePaymentForm.value.supplier"
@@ -81,39 +81,34 @@
       </fc-input-text>
       <div class="@xl:col-span-2">
         <!-- Upload Document -->
-        <!-- <fc-file-input
-            *ngIf="!documentFilesArray.length"
-            [multiple]="true"
-            [disabled]="
-              loadingDocument ||
-              !!purchasePayment.status ||
-              !('update' | able: 'purchase-payment')
-            "
-            (onInput)="addMultipleFiles($event)">
-            <div
-              class="flex h-[200px] flex-col items-center justify-center gap-2 overflow-y-auto rounded-md border bg-zinc-100/70 p-5 dark:border-zinc-800 dark:bg-zinc-800">
-              <ng-container *ngIf="!purchasePayment.status">
-                <ng-container *ngIf="loadingDocument">
-                               <p-progress-spinner ariaLabel="loading" />
-                </ng-container>
-                <ng-container *ngIf="!loadingDocument">
-                  <fa-icon
-                    class="text-3xl"
-                    [icon]="
-                      ('update' | able: 'purchase-payment')
-                        ? faCloudArrowUp
-                        : faExclamationCircle
-                    " />
-                  <p *ngIf="'update' | able: 'purchase-payment'">
-                    Drag or Upload Purchase Payment Documents Here
-                  </p>
-                  <p *ngIf="!('update' | able: 'purchase-payment')">
-                    You don't have permission to modify this document
-                  </p>
-                </ng-container>
+        <fc-file-input
+          *ngIf="!documentFilesArray.length"
+          [multiple]="true"
+          [disabled]="loadingDocument || !!purchasePayment.status"
+          (onInput)="addMultipleFiles($event)"
+        >
+          <div
+            class="flex h-[200px] flex-col items-center justify-center gap-2 overflow-y-auto rounded-md border bg-zinc-100/70 p-5 dark:border-zinc-800 dark:bg-zinc-800"
+          >
+            <ng-container *ngIf="!purchasePayment.status">
+              <ng-container *ngIf="loadingDocument">
+                <p-progress-spinner ariaLabel="loading" />
               </ng-container>
-            </div>
-          </fc-file-input> -->
+
+              <ng-container *ngIf="!loadingDocument">
+                <fa-icon class="text-3xl" [icon]="faCloudArrowUp" />
+                <p>Drag or Upload Purchase Payment Documents Here</p>
+              </ng-container>
+            </ng-container>
+
+            <!-- Optional: Tambahkan ini jika ingin memberi tahu user kalau sudah finalized -->
+            <ng-container *ngIf="purchasePayment.status">
+              <fa-icon class="text-3xl" [icon]="faExclamationCircle" />
+              <p>You can't modify this document</p>
+            </ng-container>
+          </div>
+        </fc-file-input>
+
         <div
           *ngIf="documentFilesArray.length"
           class="flex h-[200px] flex-col gap-2 rounded-md bg-zinc-100/70 p-2 dark:bg-zinc-800"
@@ -228,25 +223,27 @@
               </ng-container>
             </div>
           </div>
-          <!-- <fc-file-input
-              *ngIf="'update' | able: 'purchase-payment'"
-              [disabled]="loadingDocument"
-              [multiple]="true"
-              (onInput)="addMultipleFiles($event)">
-              <div
-                *ngIf="!purchasePayment.status"
-                [ngClass]="{
-                  'opacity-50': loadingDocument
-                }"
-                class="flex w-full items-center justify-center gap-2 rounded-md bg-white px-2 py-3 dark:bg-neutral-900">
-                <fa-icon
-                  class="text-md"
-                  [fixedWidth]="true"
-                  [spin]="loadingDocument"
-                  [icon]="loadingDocument ? faSpinner : faCloudArrowUp" />
-                Upload More
-              </div>
-            </fc-file-input> -->
+          <fc-file-input
+            *ngIf="'update'"
+            [disabled]="loadingDocument"
+            [multiple]="true"
+            (onInput)="addMultipleFiles($event)"
+          >
+            <div
+              *ngIf="!purchasePayment.status"
+              [ngClass]="{
+                'opacity-50': loadingDocument,
+              }"
+              class="flex w-full items-center justify-center gap-2 rounded-md bg-white px-2 py-3 dark:bg-neutral-900"
+            >
+              <fa-icon
+                class="text-md"
+                [fixedWidth]="true"
+                [icon]="loadingDocument ? faSpinner : faCloudArrowUp"
+              />
+              Upload More
+            </div>
+          </fc-file-input>
         </div>
       </div>
       <!-- Purchase Payment Detail -->

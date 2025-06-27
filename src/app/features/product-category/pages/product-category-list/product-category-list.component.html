@@ -24,6 +24,7 @@
             <ng-container *ngFor="let productCategory of productCategories">
               <!-- category card -->
               <div
+                *ngIf="productCategory.category_parent_id === null"
                 class="flip-card h-64 w-full bg-transparent [perspective:1000px]"
               >
                 <div
@@ -40,7 +41,7 @@
                   >
                     <div class="header px-3 pt-3">
                       <div class="flex items-center gap-2">
-                        <h3 class="flex-1 text-2xs">Category</h3>
+                        <h3 class="flex-1 text-xs">Category</h3>
                         <div class="action flex justify-end gap-2">
                           <button
                             type="button"
@@ -82,7 +83,7 @@
                     </div>
                     <div class="subcategories space-y-1 px-3">
                       <div class="header flex items-center justify-between">
-                        <h5 class="flex items-center text-2xs">
+                        <h5 class="flex items-center text-xs">
                           Subcategories ({{
                             productCategory.subcategories.length
                           }})
@@ -114,7 +115,7 @@
                           let productSubcategory of productCategory.subcategories
                         "
                       >
-                        <p class="flex-1 text-2xs">
+                        <p class="flex-1 text-xs">
                           {{ productSubcategory.name }}
                         </p>
                         <div
@@ -227,7 +228,7 @@
                       </div>
                       <div class="subcategories space-y-1 px-3">
                         <div class="header flex items-center justify-between">
-                          <h5 class="flex items-center text-2xs">
+                          <h5 class="flex items-center text-xs">
                             Subcategories ({{
                               productCategory.selectedSubcategory.subcategories
                                 .length
@@ -261,7 +262,7 @@
                               .selectedSubcategory.subcategories
                           "
                         >
-                          <p class="flex-1 text-2xs">
+                          <p class="flex-1 text-xs">
                             {{ productSubcategory.name }}
                           </p>
                           <div

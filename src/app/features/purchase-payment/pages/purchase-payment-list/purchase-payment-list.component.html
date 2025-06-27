@@ -29,7 +29,7 @@
                 <div class="w-[200px]">
                   <p class="text-xs">Supplier</p>
                   <div class="line-clamp-1 w-fit rounded-md">
-                    {{ purchasePayment.supplier.name }}
+                    {{ purchasePayment.supplier.user.name }}
                   </div>
                 </div>
                 <div class="w-[150px]">
@@ -123,7 +123,7 @@
                       {{ purchasePayment.date | date: "dd MMMM yyyy" }}
                     </p>
                     <p class="font-bold">
-                      {{ purchasePayment.supplier.name }}
+                      {{ purchasePayment.supplier.user.name }}
                     </p>
                   </div>
                   <div class="flex items-center justify-end gap-2">

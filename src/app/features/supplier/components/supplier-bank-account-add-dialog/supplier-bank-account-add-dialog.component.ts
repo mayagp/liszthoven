@@ -45,7 +45,6 @@ export class SupplierBankAccountAddDialogComponent {
     this.supplierBankAccountForm = new FormGroup({
       account_no: new FormControl(''),
       bank: new FormControl(''),
-      swift_code: new FormControl(''),
     });
   }
 

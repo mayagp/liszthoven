@@ -40,6 +40,10 @@ import { FcInputTextComponent } from '../../../../shared/components/fc-input-tex
 import { FcTextareaComponent } from '../../../../shared/components/fc-textarea/fc-textarea.component';
 import { FcDatepickerComponent } from '../../../../shared/components/fc-datepicker/fc-datepicker.component';
 import { FcInputTelComponent } from '../../../../shared/components/fc-input-tel/fc-input-tel.component';
+import { IftaLabelModule } from 'primeng/iftalabel';
+import { SelectModule } from 'primeng/select';
+import { DatePickerModule } from 'primeng/datepicker';
+import { BranchSelectDialogComponent } from '../../../branch/components/branch-select-dialog/branch-select-dialog.component';
 
 @Component({
   selector: 'app-staff-add',
@@ -56,9 +60,13 @@ import { FcInputTelComponent } from '../../../../shared/components/fc-input-tel/
     FcTextareaComponent,
     // FcDatepickerComponent,
     FcInputTelComponent,
+    IftaLabelModule,
+    SelectModule,
+    DatePickerModule,
   ],
   templateUrl: './staff-add.component.html',
   styleUrl: './staff-add.component.css',
+  providers: [DialogService, MessageService],
 })
 export class StaffAddComponent implements OnInit, AfterContentInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
@@ -70,7 +78,7 @@ export class StaffAddComponent implements OnInit, AfterContentInit, OnDestroy {
       action: () => {
         this.submit();
       },
-      hidden: true,
+      hidden: false,
     },
   ];
   faBoxOpen = faBoxOpen;
@@ -87,124 +95,36 @@ export class StaffAddComponent implements OnInit, AfterContentInit, OnDestroy {
   faChevronDown = faChevronDown;
   faMusic = faMusic;
 
-  teacherTypes = [
-    {
-      label: 'Permanent',
-      value: 0,
-    },
-    {
-      label: 'Part Time',
-      value: 1,
-    },
-  ];
-  maritalStatus = [
-    {
-      id: 0,
-      label: 'TK0',
-    },
-    {
-      id: 1,
-      label: 'TK1',
-    },
-    {
-      id: 2,
-      label: 'TK2',
-    },
-    {
-      id: 3,
-      label: 'TK3',
-    },
-    {
-      id: 4,
-      label: 'K0',
-    },
-    {
-      id: 5,
-      label: 'K1',
-    },
-    {
-      id: 6,
-      label: 'K2',
-    },
-    {
-      id: 7,
-      label: 'K3',
-    },
-  ];
-
   roles = [
-    {
-      id: 0,
-      label: 'Developer',
-    },
-    {
-      id: 1,
-      label: 'Teacher',
-    },
+    // {
+    //   id: 0,
+    //   label: 'Developer',
+    // },
     {
       id: 2,
-      label: 'Admin',
+      label: 'Branch Admin',
     },
     {
       id: 3,
-      label: 'Owner',
-    },
-    {
-      id: 4,
       label: 'Admin Manager',
     },
     {
-      id: 5,
-      label: 'Commisioner',
-    },
-    {
-      id: 6,
-      label: 'Director',
-    },
-  ];
-
-  religion = [
-    {
-      id: 0,
-      label: 'Islam',
-    },
-    {
-      id: 1,
-      label: 'Christianity',
-    },
-    {
-      id: 2,
-      label: 'Catholic',
-    },
-    {
-      id: 3,
-      label: 'Hinduism',
-    },
-    {
       id: 4,
-      label: 'Buddhism',
-    },
-    {
-      id: 5,
-      label: 'Confucianism',
-    },
-    {
-      id: 6,
-      label: 'Other',
+      label: 'Owner',
     },
   ];
 
-  isTeacherRole = false;
   registerForm: FormGroup;
+  branches: any = [];
   constructor(
     private layoutService: LayoutService,
     private authService: AuthService,
     private router: Router,
     private ability: PureAbility,
     private messageService: MessageService,
+    private dialogService: DialogService,
     private fcDirtyStateService: FcDirtyStateService,
   ) {
-    this.actionButtons[0].hidden = !this.ability.can('create', 'staff');
     this.layoutService.setHeaderConfig({
       title: 'Add Staff',
       icon: '',
@@ -212,34 +132,21 @@ export class StaffAddComponent implements OnInit, AfterContentInit, OnDestroy {
     });
     // init form
     this.registerForm = new FormGroup({
-      first_name: new FormControl('', Validators.required),
-      middle_name: new FormControl(''),
-      last_name: new FormControl(''),
+      name: new FormControl('', Validators.required),
       email: new FormControl('', Validators.required),
       password: new FormControl('asdqwe123'), // default password
       address: new FormControl(''),
       phone_no: new FormControl(''),
       staff: new FormGroup({
-        business_units: new FormArray([]),
+        // branches: new FormControl(''),
+        branch: new FormControl(null),
         note: new FormControl(''),
         role: new FormControl(0),
-        // note: need to change by backend, and every role has different required fields
-        // New Data
-        teacher: new FormGroup({
-          note: new FormControl('-'),
-          type: new FormControl(0),
-          classroom: new FormControl(null),
-          spoken_language: new FormControl('-'),
-          teacher_instruments: new FormArray([]),
-        }),
         working_since: new FormControl(Date()),
         identification_number: new FormControl(''),
         tax_number: new FormControl(''),
         bpjs_number: new FormControl(''),
-        marital_status: new FormControl(0),
-        religion: new FormControl(0),
-        color: new FormControl(null),
-        tax_category: new FormControl(null),
+        // status: new FormControl(0),
       }),
       user_documents: new FormArray([]),
     });
@@ -247,9 +154,6 @@ export class StaffAddComponent implements OnInit, AfterContentInit, OnDestroy {
 
   ngOnInit(): void {
     this.layoutService.setSearchConfig({ hide: true });
-    this.staffForm.get('role')?.valueChanges.subscribe((selectedRole) => {
-      this.isTeacherRole = selectedRole === 1;
-    });
   }
 
   ngAfterContentInit(): void {}
@@ -259,10 +163,8 @@ export class StaffAddComponent implements OnInit, AfterContentInit, OnDestroy {
     this.layoutService.setSearchConfig({ hide: false });
   }
 
-  get businessUnitsForm(): FormArray {
-    return this.registerForm.controls['staff'].get(
-      'business_units',
-    ) as FormArray;
+  get branchesForm(): FormArray {
+    return this.registerForm.controls['staff'].get('branches') as FormArray;
   }
 
   // manage document files
@@ -272,10 +174,6 @@ export class StaffAddComponent implements OnInit, AfterContentInit, OnDestroy {
 
   get staffForm(): FormGroup {
     return this.registerForm.get('staff') as FormGroup;
-  }
-
-  get teacherForm(): FormGroup {
-    return this.staffForm.get('teacher') as FormGroup;
   }
 
   // addMultipleFiles(files: any) {
@@ -353,209 +251,99 @@ export class StaffAddComponent implements OnInit, AfterContentInit, OnDestroy {
   //   });
   // }
 
-  // onAddBusinessUnit() {
-  //   const ref = this.dialogService.open(BusinessUnitSelectDialogComponent, {
-  //     data: {
-  //       title: 'Select Branch',
-  //     },
-  //     showHeader: false,
-  //     contentStyle: {
-  //       padding: '0',
-  //     },
-  //     style: {
-  //       overflow: 'hidden',
-  //     },
-  //     styleClass: 'rounded-sm',
-  //     dismissableMask: true,
-  //     width: '450px',
-  //   });
-  //   ref.onClose.subscribe((businessUnit: any) => {
-  //     if (!businessUnit) {
-  //       return;
-  //     }
-  //     this.businessUnitsForm.push(
-  //       new FormGroup({
-  //         company: new FormControl(businessUnit.company),
-  //         branch: new FormControl(businessUnit.branch),
-  //       })
-  //     );
-  //   });
-  // }
-
-  removeBusinessUnit(index: number) {
-    this.businessUnitsForm.removeAt(index);
+  removeBranch() {
+    this.staffForm.get('branch')?.reset();
   }
 
-  // onSelectTaxCategory() {
-  //   const ref = this.dialogService.open(TaxCategorySelectDialogComponent, {
-  //     data: {
-  //       title: 'Select Tax Category',
-  //     },
-  //     showHeader: false,
-  //     contentStyle: {
-  //       padding: '0',
-  //     },
-  //     style: {
-  //       overflow: 'hidden',
-  //     },
-  //     styleClass: 'rounded-sm',
-  //     dismissableMask: true,
-  //     width: '450px',
-  //   });
-  //   ref.onClose.subscribe((tax_category) => {
-  //     if (tax_category && this.staffForm?.controls['tax_category']) {
-  //       this.staffForm.controls['tax_category'].setValue(tax_category);
-  //     }
-  //   });
-  // }
-
-  onRemoveTaxCategory() {
-    this.staffForm.controls['tax_category'].setValue(null);
-  }
-
-  get teacherInstrumentFormArray(): FormArray {
-    return this.teacherForm.get('teacher_instruments') as FormArray;
-  }
-  generateTeacherInstrument(teacherInstrument: any): FormGroup {
-    return new FormGroup({
-      instrument: new FormControl(
-        teacherInstrument.instrument,
-        Validators.required,
-      ),
-      teacher_rank: new FormControl(
-        teacherInstrument.teacher_rank,
-        Validators.required,
-      ),
-      note: new FormControl(teacherInstrument.note, Validators.required),
+  onSelectBranch() {
+    const ref = this.dialogService.open(BranchSelectDialogComponent, {
+      data: { title: 'Select Branch' },
+      showHeader: false,
+      contentStyle: { padding: '0' },
+      style: { overflow: 'hidden' },
+      styleClass: 'rounded-sm',
+      dismissableMask: true,
+      width: '450px',
+    });
+    ref.onClose.subscribe((result: any) => {
+      if (result && result.branch) {
+        console.log('Selected branch:', result.branch);
+        this.staffForm.get('branch')?.setValue(result.branch);
+      }
     });
   }
-  // addTeacherInstrument() {
-  //   const ref = this.dialogService.open(TeacherAddInstrumentDialogComponent, {
-  //     data: {
-  //       title: 'Add Service Invoice Detail',
-  //       teacherInstrumentFormArray: this.teacherInstrumentFormArray.value,
-  //     },
-  //     showHeader: false,
-  //     contentStyle: {
-  //       padding: '0',
-  //     },
-  //     style: {
-  //       overflow: 'hidden',
-  //     },
-  //     styleClass: 'rounded-sm',
-  //     dismissableMask: true,
-  //     width: '450px',
-  //   });
-  //   ref.onClose.subscribe((teacherInstrument: any) => {
-  //     if (teacherInstrument) {
-  //       console.log('Data received:', teacherInstrument); // Debug 3: Cek data yang dikirim
-  //       this.teacherInstrumentFormArray.push(
-  //         this.generateTeacherInstrument(teacherInstrument)
-  //       );
-
-  //       console.log(
-  //         'Updated FormArray:',
-  //         this.teacherInstrumentFormArray.value
-  //       ); // Debug 4: Cek apakah data berhasil ditambahkan
-  //     } else {
-  //       console.log('No data received.');
-  //     }
-  //   });
-  // }
 
   submit() {
     if (this.registerForm.invalid) {
       this.fcDirtyStateService.checkFormValidation(this.registerForm);
       return;
-    } else {
-      let bodyReq = { ...this.registerForm.value };
-      bodyReq.staff.business_units = bodyReq.staff.business_units.map(
-        (item: any) => {
-          return {
-            company_id: item.company.id,
-            branch_id: item.branch.id,
-          };
-        },
-      );
-      if (!bodyReq.staff.note || bodyReq.staff.note.trim() === '') {
-        bodyReq.staff.note = '-';
-      }
-      bodyReq.staff.tax_category_id =
-        bodyReq.staff.tax_category &&
-        typeof bodyReq.staff.tax_category === 'object'
-          ? bodyReq.staff.tax_category.id
-          : null;
-      delete bodyReq.staff.tax_category;
-
-      if (bodyReq.staff.role === 1) {
-        bodyReq.staff.teacher = {
-          note: bodyReq.staff.teacher?.note || '-',
-          type: bodyReq.staff.teacher?.type || 0,
-          spoken_language: bodyReq.staff.teacher?.spoken_language || '-',
-          teacher_instruments: bodyReq.staff.teacher?.teacher_instruments
-            ? bodyReq.staff.teacher.teacher_instruments.map((item: any) => ({
-                instrument_id: item.instrument.id,
-                teacher_rank_id: item.teacher_rank.id,
-                note: item.note,
-              }))
-            : [],
-        };
-      } else {
-        delete bodyReq.staff.teacher; // Hapus teacher jika role bukan 1
-      }
-
-      delete bodyReq.user_documents;
-      this.actionButtons[0].loading = true;
-      this.authService.register(bodyReq).subscribe({
-        next: (res: any) => {
-          if (this.registerForm.value.user_documents.length) {
-            let bodyReqDocument = new FormData();
-            this.registerForm.value.user_documents.forEach(
-              (file: any, index: number) => {
-                bodyReqDocument.append(
-                  `documents[${index}][document]`,
-                  file.file,
-                );
-                bodyReqDocument.append(`documents[${index}][name]`, file.name);
-                bodyReqDocument.append(`documents[${index}][note]`, file.note);
-              },
-            );
-            this.authService
-              .addUserDocument(res.data.id, bodyReqDocument)
-              .subscribe({
-                next: (documentRes: any) => {
-                  this.actionButtons[0].loading = false;
-                  this.router.navigate(['/staff/view/', res.data.staff.id]);
-                },
-                error: (err) => {
-                  this.actionButtons[0].loading = false;
-                  this.messageService.add({
-                    severity: 'success',
-                    summary: 'Staff',
-                    detail: res.message,
-                  });
-                },
-              });
-          } else {
-            this.actionButtons[0].loading = false;
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Staff',
-              detail: res.message,
-            });
-            this.router.navigate(['/staff/view/', res.data.staff.id]);
-          }
-        },
-        error: (err) => {
-          this.actionButtons[0].loading = false;
-          this.messageService.clear();
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: err.message,
-          });
-        },
-      });
     }
+
+    let bodyReq = { ...this.registerForm.value };
+
+    if (bodyReq.staff.branch && bodyReq.staff.branch.id) {
+      bodyReq.staff.branch_id = bodyReq.staff.branch.id;
+    }
+    delete bodyReq.staff.branch;
+
+    if (!bodyReq.staff.note || bodyReq.staff.note.trim() === '') {
+      bodyReq.staff.note = '-';
+    }
+
+    delete bodyReq.user_documents;
+
+    this.actionButtons[0].loading = true;
+
+    this.authService.register(bodyReq).subscribe({
+      next: (res: any) => {
+        if (this.registerForm.value.user_documents.length) {
+          let bodyReqDocument = new FormData();
+          this.registerForm.value.user_documents.forEach(
+            (file: any, index: number) => {
+              bodyReqDocument.append(
+                `documents[${index}][document]`,
+                file.file,
+              );
+              bodyReqDocument.append(`documents[${index}][name]`, file.name);
+              bodyReqDocument.append(`documents[${index}][note]`, file.note);
+            },
+          );
+
+          this.authService
+            .addUserDocument(res.data.id, bodyReqDocument)
+            .subscribe({
+              next: (documentRes: any) => {
+                this.actionButtons[0].loading = false;
+                this.router.navigate(['/staff/view/', res.data.staff.id]);
+              },
+              error: (err) => {
+                this.actionButtons[0].loading = false;
+                this.messageService.add({
+                  severity: 'success',
+                  summary: 'Staff',
+                  detail: res.message,
+                });
+              },
+            });
+        } else {
+          this.actionButtons[0].loading = false;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Staff',
+            detail: res.message,
+          });
+          this.router.navigate(['/staff/view/', res.data.staff.id]);
+        }
+      },
+      error: (err) => {
+        this.actionButtons[0].loading = false;
+        this.messageService.clear();
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: err.message,
+        });
+      },
+    });
   }
 }

@@ -5,6 +5,4 @@ export interface DataListParameter {
   filterObj?: unknown;
   searchQuery?: string;
   filterRange?: string;
-  get_teacher?: number;
-  student_id?: number;
 }

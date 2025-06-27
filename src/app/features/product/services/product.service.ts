@@ -34,7 +34,7 @@ export class ProductService {
         param = param.concat('&q=' + dataListParameter.searchQuery);
       }
     }
-    return this.http.get(`${ROOT_API}/admin/products${param}`).pipe(
+    return this.http.get(`${ROOT_API}/products${param}`).pipe(
       map((res: any) => {
         res.data.products = res.data.products.map((product: Product) => {
           return this.setProductDefaultImage(product);
@@ -44,7 +44,7 @@ export class ProductService {
     );
   }
   getProductsByProductCategory(param: string) {
-    return this.http.get(`${ROOT_API}/admin/products?${param}`).pipe(
+    return this.http.get(`${ROOT_API}/products?${param}`).pipe(
       map((res: any) => {
         res.data.products = res.data.products.map((product: Product) => {
           return this.setProductDefaultImage(product);
@@ -54,38 +54,32 @@ export class ProductService {
     );
   }
   getProduct(id: string) {
-    return this.http.get(`${ROOT_API}/admin/products/${id}`);
+    return this.http.get(`${ROOT_API}/products/${id}`);
   }
 
   addProduct(data: any) {
-    return this.http.post(`${ROOT_API}/admin/products`, data);
+    return this.http.post(`${ROOT_API}/products`, data);
   }
 
   updateProduct(productId: string, data: any) {
-    return this.http.put(`${ROOT_API}/admin/products/${productId}`, data);
+    return this.http.put(`${ROOT_API}/products/${productId}`, data);
   }
 
   softDeleteProduct(productId: string) {
-    return this.http.delete(`${ROOT_API}/admin/products/${productId}`);
+    return this.http.delete(`${ROOT_API}/products/${productId}`);
   }
 
   addProductImage(productId: string, data: any) {
-    return this.http.post(
-      `${ROOT_API}/admin/products/${productId}/images`,
-      data,
-    );
+    return this.http.post(`${ROOT_API}/products/${productId}/images`, data);
   }
 
   updateProductImage(productId: string, data: any) {
-    return this.http.put(
-      `${ROOT_API}/admin/products/${productId}/images`,
-      data,
-    );
+    return this.http.put(`${ROOT_API}/products/${productId}/images`, data);
   }
 
   softDeleteProductImage(productId: string, imageId: string) {
     return this.http.delete(
-      `${ROOT_API}/admin/products/${productId}/images/${imageId}`,
+      `${ROOT_API}/products/${productId}/images/${imageId}`,
     );
   }
   setProductDefaultImage(product: Product): Product {

@@ -123,7 +123,7 @@ export class PurchaseOrderAddComponent {
       expected_delivery_date: new FormControl(null, Validators.required),
       tax: new FormControl(0),
       note: new FormControl(''),
-      business_unit: new FormControl(null, Validators.required),
+      branch: new FormControl(null, Validators.required),
       purchase_order_documents: new FormArray([]),
       purchase_order_details: new FormArray([], Validators.required),
     });
@@ -191,30 +191,23 @@ export class PurchaseOrderAddComponent {
     return this.purchaseOrderForm.get('purchase_order_details') as FormArray;
   }
 
-  removeBusinessUnit() {
-    this.purchaseOrderForm.controls['business_unit'].setValue('');
+  removeBranch() {
+    this.purchaseOrderForm.get('branch')?.reset();
   }
 
-  onSelectBusinessUnit() {
+  onSelectBranch() {
     const ref = this.dialogService.open(BranchSelectDialogComponent, {
-      data: {
-        title: 'Select Branch',
-        companyId: 2,
-      },
+      data: { title: 'Select Branch' },
       showHeader: false,
-      contentStyle: {
-        padding: '0',
-      },
-      style: {
-        overflow: 'hidden',
-      },
+      contentStyle: { padding: '0' },
+      style: { overflow: 'hidden' },
       styleClass: 'rounded-sm',
       dismissableMask: true,
       width: '450px',
     });
-    ref.onClose.subscribe((businessUnit: any) => {
-      if (businessUnit) {
-        this.purchaseOrderForm.controls['business_unit'].setValue(businessUnit);
+    ref.onClose.subscribe((result: any) => {
+      if (result && result.branch) {
+        this.purchaseOrderForm.get('branch')?.setValue(result.branch);
       }
     });
   }
@@ -494,9 +487,7 @@ export class PurchaseOrderAddComponent {
       this.actionButtons[0].loading = true;
       let bodyReq = JSON.parse(JSON.stringify(this.purchaseOrderForm.value)); // deep copy
       bodyReq.supplier_id = Number(this.purchaseOrderForm.value.supplier.id);
-      bodyReq.business_unit_id = Number(
-        this.purchaseOrderForm.value.business_unit.id,
-      );
+      bodyReq.branch_id = Number(this.purchaseOrderForm.value.branch.id);
       bodyReq.purchase_order_details.forEach((purchaseOrderDetail: any) => {
         purchaseOrderDetail.product_id = purchaseOrderDetail.product.id;
         purchaseOrderDetail.supplier_quotation_id =
@@ -504,7 +495,7 @@ export class PurchaseOrderAddComponent {
         delete purchaseOrderDetail.product;
         delete purchaseOrderDetail.supplier_quotation;
       });
-      delete bodyReq.business_unit;
+      delete bodyReq.branch;
       delete bodyReq.supplier;
       delete bodyReq.purchase_order_documents;
 

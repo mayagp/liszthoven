@@ -129,98 +129,148 @@
             class="grid gap-2 @container"
             *ngIf="supplierQuotationDetails.value.length > 0"
           >
-            <ng-container
-              *ngFor="
-                let supplierQuotationDetail of supplierQuotationDetails.value;
-                let i = index
-              "
-            >
-              <div
-                class="fc-animate-translate-up grid cursor-pointer grid-cols-1 items-center justify-between rounded-md border border-zinc-100/70 bg-zinc-100/70 p-3 hover:border-sky-600 @lg:flex dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600"
-              >
-                <div
-                  class="flex w-full flex-wrap items-start gap-2 @sm:items-center"
+            <form [formGroup]="supplierQuotationForm">
+              <div formArrayName="supplier_quotation_details">
+                <ng-container
+                  *ngFor="
+                    let detail of supplierQuotationDetails.controls;
+                    let i = index
+                  "
+                  [formGroupName]="i"
                 >
                   <div
-                    class="flex flex-1 items-center gap-5 @lg:w-60 @lg:flex-none @xl:w-80 @2xl:w-full @2xl:max-w-sm"
+                    class="fc-animate-translate-up grid cursor-pointer grid-cols-1 items-center justify-between rounded-md border border-zinc-100/70 bg-zinc-100/70 p-3 hover:border-sky-600 @lg:flex dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600"
                   >
                     <div
-                      class="aspect-square w-12 flex-none rounded-lg bg-white object-cover"
+                      class="flex w-full flex-wrap items-start gap-4 @sm:items-center"
                     >
-                      <fc-image-preview
-                        [preview]="true"
-                        [src]="
-                          supplierQuotationDetail.product.default_image
-                            ? supplierQuotationDetail.product.default_image.url
-                            : supplierQuotationDetail.product.product_images[0]
-                                  .url
-                              ? supplierQuotationDetail.product
-                                  .product_images[0].url
-                              : 'assets/images/placeholder/placeholder_small.jpg'
-                        "
+                      <!-- Gambar & Nama Produk -->
+                      <div
+                        class="flex items-center gap-4 @lg:w-60 @lg:flex-none @xl:w-80"
                       >
-                      </fc-image-preview>
-                    </div>
-                    <div class="text-xs">
-                      <a
-                        class="mb-2 font-bold capitalize hover:text-sky-900 dark:hover:text-sky-600"
-                        [routerLink]="[
-                          '/product/view',
-                          supplierQuotationDetail.product.id,
-                        ]"
-                        target="_blank"
-                        pTooltip="View Product"
+                        <div
+                          class="aspect-square w-12 flex-none rounded-lg bg-white object-cover"
+                        >
+                          <fc-image-preview
+                            [preview]="true"
+                            [src]="
+                              detail.value.product.default_image
+                                ? detail.value.product.default_image.url
+                                : detail.value.product.product_images[0]?.url
+                                  ? detail.value.product.product_images[0].url
+                                  : 'assets/images/placeholder/placeholder_small.jpg'
+                            "
+                          ></fc-image-preview>
+                        </div>
+
+                        <div class="text-xs">
+                          <a
+                            class="font-bold capitalize hover:text-sky-900 dark:hover:text-sky-600"
+                            [routerLink]="[
+                              '/product/view',
+                              detail.value.product.id,
+                            ]"
+                            target="_blank"
+                            pTooltip="View Product"
+                          >
+                            {{ detail.value.product.name }}
+                          </a>
+                        </div>
+                      </div>
+
+                      <div class="text-xs @lg:flex-1">
+                        <p>{{ detail.value.quantity | number }} Unit</p>
+                      </div>
+
+                      <div class="w-full @lg:w-1/4">
+                        <ng-container
+                          *ngIf="
+                            isSupplier && supplierQuotation.status == 0;
+                            else showPrice
+                          "
+                        >
+                          <div
+                            class="mt-2 rounded-md border border-dashed border-yellow-500 bg-yellow-50 p-2 dark:border-yellow-600 dark:bg-yellow-900"
+                          >
+                            <label
+                              for="base_price"
+                              class="block mb-1 text-[10px] text-yellow-700 dark:text-yellow-200 font-semibold"
+                            >
+                              Enter Price Per Unit
+                            </label>
+                            <p-inputnumber
+                              formControlName="price_per_unit"
+                              mode="currency"
+                              currency="IDR"
+                              locale="id-ID"
+                              [minFractionDigits]="0"
+                              [maxFractionDigits]="0"
+                              placeholder="e.g. 10000"
+                              class="text-xs w-full"
+                              [inputStyle]="{
+                                'background-color': '#ffffff',
+                                border: '1px solid #eab308',
+                                color: '#000000',
+                                'font-size': '12px',
+                                padding: '6px',
+                                'border-radius': '4px',
+                              }"
+                            ></p-inputnumber>
+                          </div>
+                        </ng-container>
+
+                        <ng-template #showPrice>
+                          <p>Price Per Unit</p>
+                          <p class="mt-1">
+                            {{ detail.value.price_per_unit | fcCurrency }}
+                          </p>
+                        </ng-template>
+                      </div>
+
+                      <div class="w-full @lg:flex-1 text-xs flex flex-col pl-8">
+                        <p>Total</p>
+                        <p>
+                          {{
+                            detail.value.quantity * detail.value.price_per_unit
+                              | fcCurrency
+                          }}
+                        </p>
+                      </div>
+
+                      <!-- Action Buttons -->
+                      <div
+                        class="flex w-full justify-end gap-1 @lg:w-fit mt-2"
+                        *ngIf="supplierQuotation.status == 0 && !isSupplier"
                       >
-                        {{ supplierQuotationDetail.product.name }}
-                      </a>
-                      <p>
-                        {{
-                          supplierQuotationDetail.price_per_unit | fcCurrency
-                        }}
-                      </p>
+                        <button
+                          type="button"
+                          class="btn btn-high"
+                          (click)="onEditSupplierQuotationDetail(i)"
+                        >
+                          <fa-icon
+                            [fixedWidth]="true"
+                            [icon]="faPencil"
+                          ></fa-icon>
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-high"
+                          (click)="
+                            onRemoveSupplierQuotationDetail(i, detail.value.id)
+                          "
+                        >
+                          <fa-icon
+                            [fixedWidth]="true"
+                            [icon]="faTrash"
+                          ></fa-icon>
+                        </button>
+                      </div>
                     </div>
                   </div>
-                  <div class="w-fit self-center @lg:flex-1">
-                    <p>
-                      {{ supplierQuotationDetail.quantity | number }}
-                      Unit
-                    </p>
-                  </div>
-                  <div class="w-full text-right @lg:flex-1">
-                    <p>
-                      {{
-                        supplierQuotationDetail.quantity *
-                          supplierQuotationDetail.price_per_unit | fcCurrency
-                      }}
-                    </p>
-                  </div>
-                  <div
-                    class="flex w-full justify-end gap-1 @lg:w-fit"
-                    *ngIf="supplierQuotation.status == 0 && 'update'"
-                  >
-                    <button
-                      type="button"
-                      class="btn btn-high"
-                      (click)="onEditSupplierQuotationDetail(i)"
-                    >
-                      <fa-icon [fixedWidth]="true" [icon]="faPencil"></fa-icon>
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-high"
-                      (click)="
-                        onRemoveSupplierQuotationDetail(
-                          i,
-                          supplierQuotationDetail.id
-                        )
-                      "
-                    >
-                      <fa-icon [fixedWidth]="true" [icon]="faTrash"></fa-icon>
-                    </button>
-                  </div>
-                </div>
+                </ng-container>
               </div>
-            </ng-container>
+            </form>
+
             <div class="flex justify-end">
               <div
                 class="w-full rounded-md bg-zinc-100/70 p-3 dark:bg-zinc-800 lg:w-96"
@@ -246,38 +296,48 @@
                     <p class="">Subtotal</p>
                     <p>{{ subTotalPrice | fcCurrency }}</p>
                   </div>
-                  <div
-                    class="w-full rounded-lg border border-zinc-200 dark:border-zinc-700"
-                  >
-                    <div class="card flex justify-center w-full">
-                      <p-iftalabel class="w-full">
-                        <p-inputnumber
-                          class="w-full"
-                          mode="currency"
-                          currency="IDR"
-                          locale="id-ID"
-                          [minFractionDigits]="0"
-                          [maxFractionDigits]="0"
-                          formControlName="tax"
-                          placeholder="Enter Tax"
-                          [inputStyle]="{
-                            'background-color': '#27272a',
-                            border: '1px solid #3f3f46',
-                            color: '#ffffff',
-                            'font-size': '12px',
-                          }"
-                        />
-                        <label
-                          for="tax"
-                          style="
-                            font-weight: 500 !important;
-                            color: #ffffff99 !important;
-                          "
-                          >Tax</label
-                        >
-                      </p-iftalabel>
+                  <ng-container *ngIf="isSupplier; else showTax">
+                    <div
+                      class="w-full rounded-lg border border-zinc-200 dark:border-zinc-700"
+                    >
+                      <div class="card flex justify-center w-full">
+                        <p-iftalabel class="w-full">
+                          <p-inputnumber
+                            class="w-full"
+                            mode="currency"
+                            currency="IDR"
+                            locale="id-ID"
+                            [minFractionDigits]="0"
+                            [maxFractionDigits]="0"
+                            formControlName="tax"
+                            placeholder="Enter Tax"
+                            [inputStyle]="{
+                              'background-color': '#27272a',
+                              border: '1px solid #3f3f46',
+                              color: '#ffffff',
+                              'font-size': '12px',
+                            }"
+                          />
+                          <label
+                            for="tax"
+                            style="
+                              font-weight: 500 !important;
+                              color: #ffffff99 !important;
+                            "
+                          >
+                            Tax
+                          </label>
+                        </p-iftalabel>
+                      </div>
                     </div>
-                  </div>
+                  </ng-container>
+
+                  <ng-template #showTax>
+                    <div class="flex items-center justify-between px-1">
+                      <p class="">Tax</p>
+                      <p>{{ supplierQuotationForm.value.tax | fcCurrency }}</p>
+                    </div>
+                  </ng-template>
                 </div>
                 <div
                   class="mt-5 flex items-center justify-between px-1 font-bold"

@@ -13,7 +13,7 @@
     (click)="!disabled && !readonly ? op.toggle($event, dateInput) : ''"
   >
     <p
-      class="m-0 block w-full p-0 text-left text-2xs font-medium leading-5 text-zinc-700/80 dark:text-white/60"
+      class="m-0 block w-full p-0 text-left text-xs font-medium leading-5 text-zinc-700/80 dark:text-white/60"
     >
       {{ title }}
     </p>
@@ -75,7 +75,7 @@
     (click)="!disabled && !readonly ? openMobileDatepicker() : ''"
   >
     <p
-      class="m-0 block w-full p-0 text-left text-2xs font-medium leading-5 text-zinc-700/80 dark:text-white/60"
+      class="m-0 block w-full p-0 text-left text-xs font-medium leading-5 text-zinc-700/80 dark:text-white/60"
     >
       {{ title }}
     </p>
@@ -171,14 +171,14 @@
           </div>
           <button
             type="button"
-            class="items-center gap-2 rounded-md bg-red-500 px-2 py-1 text-2xs font-medium text-slate-50 hover:bg-red-600 dark:bg-red-700 dark:text-slate-200 dark:hover:bg-red-800"
+            class="items-center gap-2 rounded-md bg-red-500 px-2 py-1 text-xs font-medium text-slate-50 hover:bg-red-600 dark:bg-red-700 dark:text-slate-200 dark:hover:bg-red-800"
             (click)="resetDate(); op.hide()"
           >
             Cancel
           </button>
           <button
             type="button"
-            class="items-center gap-2 rounded-md bg-emerald-500 px-2 py-1 text-2xs font-medium text-slate-50 hover:bg-emerald-600 dark:bg-emerald-700 dark:text-slate-200 dark:hover:bg-emerald-800"
+            class="items-center gap-2 rounded-md bg-emerald-500 px-2 py-1 text-xs font-medium text-slate-50 hover:bg-emerald-600 dark:bg-emerald-700 dark:text-slate-200 dark:hover:bg-emerald-800"
             (click)="setDate(); op.hide()"
           >
             Submit

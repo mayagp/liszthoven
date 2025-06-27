@@ -26,6 +26,7 @@ import { FcFilterDialogComponent } from '../../../../shared/components/fc-filter
 import { DialogService } from 'primeng/dynamicdialog';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { FcActionBarComponent } from '../../../../shared/components/fc-action-bar/fc-action-bar.component';
+import { ProgressSpinner } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-staff-list',
@@ -34,6 +35,7 @@ import { FcActionBarComponent } from '../../../../shared/components/fc-action-ba
     FontAwesomeModule,
     DynamicDialogModule,
     FcActionBarComponent,
+    ProgressSpinner,
   ],
   templateUrl: './staff-list.component.html',
   styleUrls: ['./staff-list.component.css'],
@@ -109,7 +111,6 @@ export class StaffListComponent {
     private fcFilterDialogService: FcFilterDialogService,
     private dialogService: DialogService,
   ) {
-    this.actionButtons[0].hidden = !this.ability.can('create', 'staff');
     this.layoutService.setHeaderConfig({
       title: 'Staff',
       icon: '',
@@ -243,8 +244,6 @@ export class StaffListComponent {
     dataListParameter.filterObj = filterObj;
     dataListParameter.searchQuery = searchQuery;
 
-    dataListParameter.filterObj += `status=0`;
-
     this.destroy$.next();
     this.staffService
       .getStaffs(dataListParameter)
@@ -259,6 +258,8 @@ export class StaffListComponent {
               : 1;
           // set data
           this.staffs = res.data.staff;
+          console.log('Staffs response:', res.data.staff);
+
           // set selected staff for quickview purpose
           if (!this.selectedStaff) {
             if (this.staffs.length > 0) {

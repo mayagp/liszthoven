@@ -27,6 +27,8 @@ import { PurchaseRequestService } from '../../services/purchase-request.service'
 import { PurchaseRequestViewComponent } from '../purchase-request-view/purchase-request-view.component';
 import { PaginatorModule } from 'primeng/paginator';
 import { ProgressSpinner } from 'primeng/progressspinner';
+import { User } from '../../../user/interfaces/user';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-purchase-request-list',
@@ -116,6 +118,7 @@ export class PurchaseRequestListComponent {
   rows = 10;
   searchQuery: string = '';
   Math = Math;
+  user: User | null = null;
 
   purchaseRequests: PurchaseRequest[] = [];
   selectedPurchaseRequest: PurchaseRequest | undefined;
@@ -128,6 +131,7 @@ export class PurchaseRequestListComponent {
     private fcFilterDialogService: FcFilterDialogService,
     private dialogService: DialogService,
     private ability: PureAbility,
+    private authService: AuthService,
   ) {
     this.actionButtons[0].hidden = !this.ability.can(
       'create',
@@ -172,23 +176,25 @@ export class PurchaseRequestListComponent {
   }
 
   ngOnInit(): void {
-    // initial load Data
-    this.loadData();
-    // load data when search
-    this.layoutService.setSearchConfig({
-      hide: false,
-      featureName: 'purchase request',
-    });
-    this.layoutService.searchConfigSubject
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((config) => {
-        if (config.featureName == 'purchase request') {
-          if (this.searchQuery != config.searchQuery) {
-            this.searchQuery = config.searchQuery;
-            this.loadData();
-          }
-        }
+    this.authService.currentUserDataSubject.pipe(take(1)).subscribe((user) => {
+      this.user = user as unknown as User;
+      this.loadData();
+      // setup search listener
+      this.layoutService.setSearchConfig({
+        hide: false,
+        featureName: 'purchase request',
       });
+      this.layoutService.searchConfigSubject
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((config) => {
+          if (config.featureName == 'purchase request') {
+            if (this.searchQuery != config.searchQuery) {
+              this.searchQuery = config.searchQuery;
+              this.loadData();
+            }
+          }
+        });
+    });
   }
 
   ngAfterContentInit(): void {}
@@ -258,15 +264,25 @@ export class PurchaseRequestListComponent {
   ) {
     this.setParam();
     this.loading = true;
-    this.layoutService.setSearchConfig({
-      loading: true,
-    });
+    this.layoutService.setSearchConfig({ loading: true });
+
+    let combinedFilterObj = filterObj;
+
+    // Cek role dulu, misal role 2 harus filter branch_id
+    if (this.user?.staff?.role === 2) {
+      const branchFilter = `branch_id=${this.user?.staff?.branch_id ?? ''}`;
+      combinedFilterObj = filterObj
+        ? `${filterObj}&${branchFilter}`
+        : branchFilter;
+    }
+
     let dataListParameter: DataListParameter = {} as DataListParameter;
     dataListParameter.rows = this.rows;
     dataListParameter.page = this.page;
     dataListParameter.sortBy = sortBy;
-    dataListParameter.filterObj = filterObj;
+    dataListParameter.filterObj = combinedFilterObj;
     dataListParameter.searchQuery = searchQuery;
+
     this.destroy$.next();
     this.purchaseRequestService
       .getPurchaseRequests(dataListParameter)
@@ -279,22 +295,20 @@ export class PurchaseRequestListComponent {
               ? Math.ceil(this.totalRecords / this.rows)
               : 1;
           this.purchaseRequests = res.data.purchase_requests;
-          // set selected purchaseRequest for quickview purpose
-          if (!this.selectedPurchaseRequest) {
-            if (this.purchaseRequests.length > 0) {
-              this.selectedPurchaseRequest = this.purchaseRequests[0];
-            }
+
+          if (
+            !this.selectedPurchaseRequest &&
+            this.purchaseRequests.length > 0
+          ) {
+            this.selectedPurchaseRequest = this.purchaseRequests[0];
           }
+
           this.loading = false;
-          this.layoutService.setSearchConfig({
-            loading: false,
-          });
+          this.layoutService.setSearchConfig({ loading: false });
         },
-        error: (err: any) => {
+        error: () => {
           this.loading = false;
-          this.layoutService.setSearchConfig({
-            loading: false,
-          });
+          this.layoutService.setSearchConfig({ loading: false });
         },
       });
   }

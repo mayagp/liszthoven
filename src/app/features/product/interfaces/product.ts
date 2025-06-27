@@ -16,7 +16,7 @@ export interface Product {
   created_at: string;
   updated_at: string;
   deleted_at: any;
-  brand: Brand;
+  brand: string;
   product_category: ProductCategory;
   product_images: ProductImage[];
   default_image?: ProductImage;

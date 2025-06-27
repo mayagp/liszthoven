@@ -37,7 +37,7 @@
 //     // };
 
 //     // fetch(
-//     //   `https://api.liszthoven.id/api/v1/admin/course-schedules?with_filter=1&date_start=2023-10-29T00:00:00+07:00&date_end=2023-12-03T00:00:00+07:00`,
+//     //   `https://api.liszthoven.id/api/v1/course-schedules?with_filter=1&date_start=2023-10-29T00:00:00+07:00&date_end=2023-12-03T00:00:00+07:00`,
 //     //   requestOptions
 //     // )
 //     //   .then((response) => {

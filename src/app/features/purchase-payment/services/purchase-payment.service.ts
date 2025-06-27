@@ -34,36 +34,30 @@ export class PurchasePaymentService {
         param = param.concat('&q=' + dataListParameter.searchQuery);
       }
     }
-    return this.http.get(`${ROOT_API}/admin/purchase-payments${param}`);
+    return this.http.get(`${ROOT_API}/purchase-payments${param}`);
   }
   getPurchasePayment(id: string) {
-    return this.http.get(`${ROOT_API}/admin/purchase-payments/${id}`);
+    return this.http.get(`${ROOT_API}/purchase-payments/${id}`);
   }
   addPurchasePayment(supplier: any) {
-    return this.http.post(`${ROOT_API}/admin/purchase-payments`, supplier);
+    return this.http.post(`${ROOT_API}/purchase-payments`, supplier);
   }
   updatePurchasePayment(id: string, supplier: any) {
-    return this.http.put(`${ROOT_API}/admin/purchase-payments/${id}`, supplier);
+    return this.http.put(`${ROOT_API}/purchase-payments/${id}`, supplier);
   }
   deletePurchasePayment(id: string) {
-    return this.http.delete(`${ROOT_API}/admin/purchase-payments/${id}`);
+    return this.http.delete(`${ROOT_API}/purchase-payments/${id}`);
   }
   approvePurchasePayment(id: string) {
-    return this.http.put(
-      `${ROOT_API}/admin/purchase-payments/${id}/approved`,
-      {},
-    );
+    return this.http.put(`${ROOT_API}/purchase-payments/${id}/approved`, {});
   }
   cancelPurchasePayment(id: string) {
-    return this.http.put(
-      `${ROOT_API}/admin/purchase-payments/${id}/cancelled`,
-      {},
-    );
+    return this.http.put(`${ROOT_API}/purchase-payments/${id}/cancelled`, {});
   }
   // manage purchase payment detail
   addPurchasePaymentDetail(purchasePaymentId: any, purchasePaymentDetail: any) {
     return this.http.post(
-      `${ROOT_API}/admin/purchase-payments/${purchasePaymentId}/details`,
+      `${ROOT_API}/purchase-payments/${purchasePaymentId}/details`,
       purchasePaymentDetail,
     );
   }
@@ -73,7 +67,7 @@ export class PurchasePaymentService {
     purchasePaymentDetailId: string,
   ) {
     return this.http.put(
-      `${ROOT_API}/admin/purchase-payments/${purchasePaymentId}/details/${purchasePaymentDetailId}`,
+      `${ROOT_API}/purchase-payments/${purchasePaymentId}/details/${purchasePaymentDetailId}`,
       purchasePaymentDetail,
     );
   }
@@ -82,14 +76,14 @@ export class PurchasePaymentService {
     purcasePaymentDetailId: string,
   ) {
     return this.http.delete(
-      `${ROOT_API}/admin/purchase-payments/${purchasePaymentId}/details/${purcasePaymentDetailId}`,
+      `${ROOT_API}/purchase-payments/${purchasePaymentId}/details/${purcasePaymentDetailId}`,
     );
   }
 
   // Purchase Order Document Services
   addPurchasePaymentDocuments(id: string, documents: any) {
     return this.http.post(
-      `${ROOT_API}/admin/purchase-payments/${id}/documents`,
+      `${ROOT_API}/purchase-payments/${id}/documents`,
       documents,
     );
   }
@@ -100,25 +94,25 @@ export class PurchasePaymentService {
     documents: any,
   ) {
     return this.http.put(
-      `${ROOT_API}/admin/purchase-payments/${id}/documents/${documentId}`,
+      `${ROOT_API}/purchase-payments/${id}/documents/${documentId}`,
       documents,
     );
   }
 
   deletePurchasePaymentDocument(id: string, documentId: string) {
     return this.http.delete(
-      `${ROOT_API}/admin/purchase-payments/${id}/documents/${documentId}`,
+      `${ROOT_API}/purchase-payments/${id}/documents/${documentId}`,
     );
   }
 
   // Purchase Payment Coa
   getPurchasePaymentCoa(id: string) {
-    return this.http.get(`${ROOT_API}/admin/purchase-payments/${id}/coas`);
+    return this.http.get(`${ROOT_API}/purchase-payments/${id}/coas`);
   }
 
   addPurchasePaymentCoa(id: string, purchasePaymentCoa: any) {
     return this.http.post(
-      `${ROOT_API}/admin/purchase-payments/${id}/coas`,
+      `${ROOT_API}/purchase-payments/${id}/coas`,
       purchasePaymentCoa,
     );
   }
@@ -129,14 +123,14 @@ export class PurchasePaymentService {
     purchasePaymentCoa: any,
   ) {
     return this.http.put(
-      `${ROOT_API}/admin/purchase-payments/${id}/coas/${purchasePaymentCoaId}`,
+      `${ROOT_API}/purchase-payments/${id}/coas/${purchasePaymentCoaId}`,
       purchasePaymentCoa,
     );
   }
 
   deletePurchasePaymentCoa(id: string, purchasePaymentCoaId: number) {
     return this.http.delete(
-      `${ROOT_API}/admin/purchase-payments/${id}/coas/${purchasePaymentCoaId}`,
+      `${ROOT_API}/purchase-payments/${id}/coas/${purchasePaymentCoaId}`,
     );
   }
 }

@@ -1,4 +1,4 @@
-import { BusinessUnit } from '../../branch/interfaces/branch';
+import { Branch } from '../../branch/interfaces/branch';
 import { Product } from '../../product/interfaces/product';
 import { PurchaseOrder } from '../../purchase-order/interfaces/purchase-order';
 import { Supplier } from '../../supplier/interfaces/supplier';
@@ -12,12 +12,13 @@ export interface PurchaseInvoice {
   supplier_id: number;
   date: Date;
   due_date: Date;
+  shipping_cost: number;
   status: number;
   subtotal: string;
   tax: number;
   grandtotal: number;
   note: string;
-  business_unit_id: number;
+  branch_id: number;
   created_by: number;
   updated_by: any;
   created_at: Date;
@@ -26,7 +27,7 @@ export interface PurchaseInvoice {
   purchase_invoice_details: PurchaseInvoiceDetail[];
   purchase_invoice_documents: PurchaseInvoiceDocuments[];
   supplier: Supplier;
-  business_unit: BusinessUnit;
+  branch: Branch;
   remaining_amount: number;
   showDetail?: boolean;
   purchaseInvoiceDetailLoaded?: boolean;

@@ -77,7 +77,7 @@ export class WarehouseAddComponent
       showHeader: true,
     });
     this.warehouseForm = new FormGroup({
-      business_unit: new FormControl(null, Validators.required),
+      branch: new FormControl(null),
       code: new FormControl('', Validators.required),
       name: new FormControl('', Validators.required),
       location: new FormControl('', Validators.required),
@@ -94,39 +94,35 @@ export class WarehouseAddComponent
     this.layoutService.setSearchConfig({ hide: false });
   }
 
+  removeBranch() {
+    this.warehouseForm.get('branch')?.reset();
+  }
+
   onSelectBranch() {
     const ref = this.dialogService.open(BranchSelectDialogComponent, {
-      data: {
-        title: 'Select Branch',
-        companyId: 2,
-      },
+      data: { title: 'Select Branch' },
       showHeader: false,
-      contentStyle: {
-        padding: '0',
-      },
-      style: {
-        overflow: 'hidden',
-      },
+      contentStyle: { padding: '0' },
+      style: { overflow: 'hidden' },
       styleClass: 'rounded-sm',
       dismissableMask: true,
       width: '450px',
     });
-    ref.onClose.subscribe((businessUnit: any) => {
-      if (businessUnit) {
-        this.warehouseForm.controls['business_unit'].setValue(businessUnit);
+    ref.onClose.subscribe((result: any) => {
+      if (result && result.branch) {
+        console.log('Selected branch:', result.branch);
+        this.warehouseForm.get('branch')?.setValue(result.branch);
       }
     });
-  }
-
-  removeBusinessUnit() {
-    this.warehouseForm.controls['business_unit'].setValue(null);
   }
 
   submit() {
     if (this.warehouseForm.valid) {
       let bodyReq = this.warehouseForm.value;
-      bodyReq.business_unit_id = bodyReq.business_unit.id;
-      delete bodyReq.business_unit;
+      console.log('bodyReq before adding branch_id:', bodyReq);
+
+      bodyReq.branch_id = bodyReq.branch.id;
+      delete bodyReq.branch;
       this.actionButtons[0].loading = true;
       this.warehouseService.addWarehouse(bodyReq).subscribe({
         next: (res: any) => {

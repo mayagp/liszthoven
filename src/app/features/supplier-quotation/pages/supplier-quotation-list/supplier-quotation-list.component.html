@@ -25,7 +25,7 @@
             >
               <div class="hidden items-center gap-3 p-3 @2xl:flex">
                 <div class="w-[100px]">
-                  <p>{{ supplierQuotation.supplier.name }}</p>
+                  <p>{{ supplierQuotation.supplier.user.name }}</p>
                 </div>
                 <div class="w-[200px]">
                   <p>{{ supplierQuotation.quotation_no }}</p>
@@ -39,13 +39,13 @@
                   </div>
                 </div>
                 <div class="w-36">
-                  <p class="text-2xs">Date</p>
+                  <p class="text-xs">Date</p>
                   <p class="mt-1">
                     {{ supplierQuotation.date | date: "dd MMMM yyyy" }}
                   </p>
                 </div>
                 <div class="w-36">
-                  <p class="text-2xs">Expected delivery</p>
+                  <p class="text-xs">Expected delivery</p>
                   <p class="mt-1">
                     {{
                       supplierQuotation.expected_delivery_date
@@ -69,9 +69,9 @@
               <div class="gird gap-3 p-2 @2xl:hidden">
                 <div class="flex w-full items-center justify-between">
                   <div class="flex-1">
-                    <p class="text-2xs">{{ supplierQuotation.quotation_no }}</p>
+                    <p class="text-xs">{{ supplierQuotation.quotation_no }}</p>
                     <p class="font-bold">
-                      {{ supplierQuotation.supplier.name }}
+                      {{ supplierQuotation.supplier.user.name }}
                     </p>
                   </div>
                   <div class="flex items-center justify-end gap-2">
@@ -95,13 +95,13 @@
                 ></div>
                 <div class="flex w-full gap-3">
                   <div class="flex-1">
-                    <p class="text-2xs">Date</p>
+                    <p class="text-xs">Date</p>
                     <p>
                       {{ supplierQuotation.date | date: "dd MMMM yyyy" }}
                     </p>
                   </div>
                   <div class="flex-1">
-                    <p class="text-2xs">Expected delivery</p>
+                    <p class="text-xs">Expected delivery</p>
                     <p>
                       {{
                         supplierQuotation.expected_delivery_date

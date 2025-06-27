@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { DataListParameter } from '../../../shared/interfaces/data-list-parameter.interface';
+import { Observable } from 'rxjs';
 
 const ROOT_API = environment.API_URL;
 
@@ -34,35 +35,38 @@ export class PurchaseInvoiceService {
         param = param.concat('&q=' + dataListParameter.searchQuery);
       }
     }
-    return this.http.get(`${ROOT_API}/admin/purchase-invoices${param}`);
+    return this.http.get(`${ROOT_API}/purchase-invoices${param}`);
   }
 
   getPurchaseInvoice(id: string) {
-    return this.http.get(`${ROOT_API}/admin/purchase-invoices/${id}`);
+    return this.http.get(`${ROOT_API}/purchase-invoices/${id}`);
+  }
+
+  getPurchaseInvoicePdf(id: string): Observable<Blob> {
+    return this.http.get(`${ROOT_API}/purchase-invoices/${id}/pdf`, {
+      responseType: 'blob',
+    });
   }
 
   addPurchaseInvoice(purchaseInvoice: any) {
-    return this.http.post(
-      `${ROOT_API}/admin/purchase-invoices`,
-      purchaseInvoice,
-    );
+    return this.http.post(`${ROOT_API}/purchase-invoices`, purchaseInvoice);
   }
 
   updatePurchaseInvoice(id: string, purchaseInvoice: any) {
     return this.http.put(
-      `${ROOT_API}/admin/purchase-invoices/${id}`,
+      `${ROOT_API}/purchase-invoices/${id}`,
       purchaseInvoice,
     );
   }
 
   deletePurchaseInvoice(id: string) {
-    return this.http.delete(`${ROOT_API}/admin/purchase-invoices/${id}`);
+    return this.http.delete(`${ROOT_API}/purchase-invoices/${id}`);
   }
 
   // Purchase Invoice Detail Services
   addPurchaseInvoiceDetail(id: string, purchaseInvoice: any) {
     return this.http.post(
-      `${ROOT_API}/admin/purchase-invoices/${id}/details`,
+      `${ROOT_API}/purchase-invoices/${id}/details`,
       purchaseInvoice,
     );
   }
@@ -73,39 +77,33 @@ export class PurchaseInvoiceService {
     purchaseInvoiceDetailId: string,
   ) {
     return this.http.put(
-      `${ROOT_API}/admin/purchase-invoices/${id}/details/${purchaseInvoiceDetailId}`,
+      `${ROOT_API}/purchase-invoices/${id}/details/${purchaseInvoiceDetailId}`,
       purchaseInvoice,
     );
   }
 
   deletePurchaseInvoiceDetail(id: string, purchaseInvoiceDetailId: string) {
     return this.http.delete(
-      `${ROOT_API}/admin/purchase-invoices/${id}/details/${purchaseInvoiceDetailId}`,
+      `${ROOT_API}/purchase-invoices/${id}/details/${purchaseInvoiceDetailId}`,
     );
   }
   approvePurchaseInvoice(id: string) {
-    return this.http.put(
-      `${ROOT_API}/admin/purchase-invoices/${id}/approve`,
-      {},
-    );
+    return this.http.put(`${ROOT_API}/purchase-invoices/${id}/approve`, {});
   }
   approvalRequestPurchaseInvoice(id: string) {
     return this.http.put(
-      `${ROOT_API}/admin/purchase-invoices/${id}/approval-request`,
+      `${ROOT_API}/purchase-invoices/${id}/approval-request`,
       {},
     );
   }
   cancelPurchaseInvoice(id: string) {
-    return this.http.put(
-      `${ROOT_API}/admin/purchase-invoices/${id}/cancel`,
-      {},
-    );
+    return this.http.put(`${ROOT_API}/purchase-invoices/${id}/cancel`, {});
   }
 
   // Documents
   addPurchaseInvoiceDocument(id: string, documents: any) {
     return this.http.post(
-      `${ROOT_API}/admin/purchase-invoices/${id}/documents`,
+      `${ROOT_API}/purchase-invoices/${id}/documents`,
       documents,
     );
   }
@@ -116,14 +114,14 @@ export class PurchaseInvoiceService {
     documents: any,
   ) {
     return this.http.put(
-      `${ROOT_API}/admin/purchase-invoices/${id}/documents/${documentId}`,
+      `${ROOT_API}/purchase-invoices/${id}/documents/${documentId}`,
       documents,
     );
   }
 
   deletePurchaseInvoiceDocument(id: string, documentId: string) {
     return this.http.delete(
-      `${ROOT_API}/admin/purchase-invoices/${id}/documents/${documentId}`,
+      `${ROOT_API}/purchase-invoices/${id}/documents/${documentId}`,
     );
   }
 }

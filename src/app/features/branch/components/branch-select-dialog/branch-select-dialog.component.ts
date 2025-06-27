@@ -14,16 +14,23 @@ import { Subject, takeUntil } from 'rxjs';
 import { FcFilterConfig } from '../../../../shared/components/fc-filter-dialog/interfaces/fc-filter-config';
 import { FcFilterDialogService } from '../../../../shared/components/fc-filter-dialog/services/fc-filter-dialog.service';
 import { DataListParameter } from '../../../../shared/interfaces/data-list-parameter.interface';
-import { Branch, BusinessUnit, Company } from '../../interfaces/branch';
+import { Branch } from '../../interfaces/branch';
 import { BranchService } from '../../services/branch.service';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { ProgressSpinner } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-branch-select-dialog',
-  imports: [CommonModule, FontAwesomeModule, FormsModule, RouterModule],
+  imports: [
+    CommonModule,
+    FontAwesomeModule,
+    FormsModule,
+    RouterModule,
+    ProgressSpinner,
+  ],
   templateUrl: './branch-select-dialog.component.html',
   styleUrl: './branch-select-dialog.component.css',
 })
@@ -41,9 +48,9 @@ export class BranchSelectDialogComponent
   faLocationDot = faLocationDot;
   faSearch = faSearch;
 
-  filterByCompany = false;
-  companyId?: number;
-  companies: Company[] = [];
+  filterByBranch = false;
+  branchId?: number;
+  branches: Branch[] = [];
 
   searchQuery: string = '';
   loading = false;
@@ -71,9 +78,9 @@ export class BranchSelectDialogComponent
     if (this.config.data.title) {
       this.title = this.config.data.title;
     }
-    if (this.config.data.companyId !== undefined) {
-      this.filterByCompany = true;
-      this.companyId = this.config.data.companyId;
+    if (this.config.data.branchId !== undefined) {
+      this.filterByBranch = true;
+      this.branchId = this.config.data.branchId;
     }
   }
 
@@ -116,17 +123,12 @@ export class BranchSelectDialogComponent
     dataListParameter.filterObj = filterObj;
     dataListParameter.searchQuery = searchQuery;
 
-    if (this.filterByCompany)
-      dataListParameter.filterObj += `${
-        dataListParameter.filterObj ? '&' : ''
-      }companies-id=${this.companyId}`;
-
     this.branchService
-      .getCompanies(dataListParameter)
+      .getBranches(dataListParameter)
       .pipe(takeUntil(this.destroy$))
       .subscribe((res: any) => {
         this.loading = false;
-        this.companies = res.data.companies;
+        this.branches = res.data.branch;
       });
   }
 
@@ -147,8 +149,8 @@ export class BranchSelectDialogComponent
     this.loadData(this.page);
   }
 
-  submit(company: Company, branch: Branch, businessUnit: BusinessUnit) {
-    this.ref.close({ ...businessUnit, company: company, branch: branch });
+  submit(branch: Branch) {
+    this.ref.close({ branch });
   }
 
   onClose() {

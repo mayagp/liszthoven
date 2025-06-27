@@ -19,6 +19,7 @@ import { Supplier } from '../../interfaces/supplier';
 import { SupplierService } from '../../services/supplier.service';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ProgressSpinner } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-supplier-select-dialog',
@@ -28,6 +29,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
+    ProgressSpinner,
   ],
   templateUrl: './supplier-select-dialog.component.html',
   styleUrl: './supplier-select-dialog.component.css',

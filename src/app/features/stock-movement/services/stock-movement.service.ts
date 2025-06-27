@@ -34,14 +34,14 @@ export class StockMovementService {
         param = param.concat('&q=' + dataListParameter.searchQuery);
       }
     }
-    return this.http.get(`${ROOT_API}/admin/stock-movements${param}`);
+    return this.http.get(`${ROOT_API}/stock-movements${param}`);
   }
 
   getStockMovement(id: string) {
-    return this.http.get(`${ROOT_API}/admin/stock-movements/${id}`);
+    return this.http.get(`${ROOT_API}/stock-movements/${id}`);
   }
 
   createStockMovement(data: any) {
-    return this.http.post(`${ROOT_API}/admin/stock-movements`, data);
+    return this.http.post(`${ROOT_API}/stock-movements`, data);
   }
 }

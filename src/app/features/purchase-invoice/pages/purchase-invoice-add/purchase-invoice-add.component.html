@@ -53,7 +53,7 @@
           </p>
           <p *ngIf="purchaseInvoiceForm.value.purchase_order" class="text-xs">
             {{ purchaseInvoiceForm.value.purchase_order.purchase_order_no }}
-            ({{ purchaseInvoiceForm.value.purchase_order.supplier.name }})
+            ({{ purchaseInvoiceForm.value.purchase_order.supplier.user.name }})
           </p>
           <p
             *ngIf="!purchaseInvoiceForm.value.purchase_order"
@@ -81,25 +81,25 @@
         class="form-input flex cursor-pointer items-center rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
         [ngClass]="{
           'border-red-400':
-            purchaseInvoiceForm.get('business_unit')?.invalid &&
-            purchaseInvoiceForm.get('business_unit')?.touched,
+            purchaseInvoiceForm.get('branch')?.invalid &&
+            purchaseInvoiceForm.get('branch')?.touched,
           'border-zinc-200 dark:border-zinc-700':
-            purchaseInvoiceForm.get('business_unit')?.valid ||
-            !purchaseInvoiceForm.get('business_unit')?.touched,
+            purchaseInvoiceForm.get('branch')?.valid ||
+            !purchaseInvoiceForm.get('branch')?.touched,
         }"
       >
-        <div class="flex flex-1 flex-col" (click)="onSelectBusinessUnit()">
+        <div class="flex flex-1 flex-col" (click)="onSelectBranch()">
           <p
             class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
           >
             Branch
           </p>
-          <p *ngIf="purchaseInvoiceForm.value.business_unit" class="text-xs">
-            {{ purchaseInvoiceForm.value.business_unit.branch?.address }}
-            <!-- ({{ purchaseInvoiceForm.value.business_unit.company.name }}) -->
+          <p *ngIf="purchaseInvoiceForm.value.branch" class="text-xs">
+            {{ purchaseInvoiceForm.value.branch.branch?.address }}
+            <!-- ({{ purchaseInvoiceForm.value.branch.company.name }}) -->
           </p>
           <p
-            *ngIf="!purchaseInvoiceForm.value.business_unit"
+            *ngIf="!purchaseInvoiceForm.value.branch"
             class="text-xs dark:text-gray-400"
           >
             Select Branch
@@ -107,13 +107,13 @@
         </div>
         <div class="flex items-center gap-2">
           <button
-            *ngIf="purchaseInvoiceForm.value.business_unit"
+            *ngIf="purchaseInvoiceForm.value.branch"
             type="button"
-            (click)="removeBusinessUnit()"
+            (click)="removeBranch()"
           >
             <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
           </button>
-          <button type="button" (click)="onSelectBusinessUnit()">
+          <button type="button" (click)="onSelectBranch()">
             <fa-icon [fixedWidth]="true" [icon]="faChevronDown"></fa-icon>
           </button>
         </div>
@@ -138,7 +138,7 @@
             Supplier
           </p>
           <p *ngIf="purchaseInvoiceForm.value.supplier" class="text-xs">
-            {{ purchaseInvoiceForm.value.supplier.name }}
+            {{ purchaseInvoiceForm.value.supplier.user.name }}
           </p>
           <p
             *ngIf="!purchaseInvoiceForm.value.supplier"
@@ -214,18 +214,45 @@
           >
         </p-iftalabel>
       </div>
+      <div class="card flex justify-center w-full">
+        <p-iftalabel class="w-full">
+          <p-inputnumber
+            class="w-full"
+            formControlName="shipping_cost"
+            placeholder="Enter Shipping Cost"
+            mode="currency"
+            currency="IDR"
+            locale="id-ID"
+            [minFractionDigits]="0"
+            [maxFractionDigits]="0"
+            [inputStyle]="{
+              'background-color': '#27272a',
+              border: '1px solid #3f3f46',
+              color: '#ffffff',
+              'font-size': '12px',
+            }"
+          />
+          <label
+            for="shipping_cost"
+            style="font-weight: 500 !important; color: #ffffff99 !important"
+            >Shipping Cost</label
+          >
+        </p-iftalabel>
+      </div>
     </div>
     <!-- Upload Document -->
-    <!-- <fc-file-input
-        *ngIf="!documentFilesArray.length"
-        [multiple]="true"
-        (onInput)="addMultipleFiles($event)">
-        <div
-          class="mt-3 flex h-[200px] flex-col items-center justify-center gap-2 overflow-y-auto rounded-md border bg-zinc-100/70 p-5 dark:border-zinc-800 dark:bg-zinc-800">
-          <fa-icon class="text-3xl" [icon]="faCloudArrowUp" />
-          <p>Drag or Upload Purchase Invoice Documents Here</p>
-        </div>
-      </fc-file-input> -->
+    <fc-file-input
+      *ngIf="!documentFilesArray.length"
+      [multiple]="true"
+      (onInput)="addMultipleFiles($event)"
+    >
+      <div
+        class="mt-3 flex h-[200px] flex-col items-center justify-center gap-2 overflow-y-auto rounded-md border bg-zinc-100/70 p-5 dark:border-zinc-800 dark:bg-zinc-800"
+      >
+        <fa-icon class="text-3xl" [icon]="faCloudArrowUp" />
+        <p>Drag or Upload Purchase Invoice Documents Here</p>
+      </div>
+    </fc-file-input>
     <div
       *ngIf="documentFilesArray.length"
       class="mt-3 flex h-[200px] flex-col gap-2 rounded-md bg-zinc-100/70 p-2 dark:bg-zinc-800"
@@ -320,16 +347,18 @@
           </ng-container>
         </div>
       </div>
-      <!-- <fc-file-input [multiple]="true" (onInput)="addMultipleFiles($event)">
-          <div
-            class="flex w-full items-center justify-center gap-2 rounded-md bg-white px-2 py-3 dark:bg-neutral-900">
-            <fa-icon
-              class="text-md"
-              [fixedWidth]="true"
-              [icon]="faCloudArrowUp" />
-            Upload More
-          </div>
-        </fc-file-input> -->
+      <fc-file-input [multiple]="true" (onInput)="addMultipleFiles($event)">
+        <div
+          class="flex w-full items-center justify-center gap-2 rounded-md bg-white px-2 py-3 dark:bg-neutral-900"
+        >
+          <fa-icon
+            class="text-md"
+            [fixedWidth]="true"
+            [icon]="faCloudArrowUp"
+          />
+          Upload More
+        </div>
+      </fc-file-input>
     </div>
     <!-- Purchase Invoice Detail -->
     <div

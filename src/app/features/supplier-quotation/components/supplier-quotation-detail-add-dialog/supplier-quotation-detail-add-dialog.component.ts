@@ -68,7 +68,7 @@ export class SupplierQuotationDetailAddDialogComponent {
     this.supplierQuotationForm = new FormGroup({
       product: new FormControl(null, Validators.required),
       quantity: new FormControl(null, Validators.required),
-      price_per_unit: new FormControl(null, Validators.required),
+      price_per_unit: new FormControl(null),
     });
     if (this.config.data) {
       if (this.config.data.title) {
@@ -158,13 +158,13 @@ export class SupplierQuotationDetailAddDialogComponent {
     this.ref.close();
   }
 
-  isSubmitAllowed(): boolean {
-    if (this.supplierQuotationForm.valid) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+  // isSubmitAllowed(): boolean {
+  //   if (this.supplierQuotationForm.valid) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
 
   submit() {
     this.ref.close(this.supplierQuotationForm.value);

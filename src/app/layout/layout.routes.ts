@@ -75,6 +75,13 @@ export const layoutRoutes: Routes = [
           ),
       },
       {
+        path: 'purchase-plan',
+        loadChildren: () =>
+          import('../features/purchase-plan/purchase-plan.routes').then(
+            (m) => m.purchasePlanRoutes,
+          ),
+      },
+      {
         path: 'purchase-order',
         loadChildren: () =>
           import('../features/purchase-order/purchase-order.routes').then(
@@ -96,10 +103,10 @@ export const layoutRoutes: Routes = [
           ),
       },
       {
-        path: 'purchase-return',
+        path: 'goods-receipt',
         loadChildren: () =>
-          import('../features/purchase-return/purchase-return.routes').then(
-            (m) => m.purchaseReturnRoutes,
+          import('../features/goods-receipt/goods-receipt.routes').then(
+            (m) => m.goodsReceiptRoutes,
           ),
       },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },

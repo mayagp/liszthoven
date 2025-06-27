@@ -43,6 +43,9 @@ import { FcInputTextComponent } from '../../../../shared/components/fc-input-tex
 import { FcTextareaComponent } from '../../../../shared/components/fc-textarea/fc-textarea.component';
 import { FcInputTelComponent } from '../../../../shared/components/fc-input-tel/fc-input-tel.component';
 import { PureAbility } from '@casl/ability';
+import { ProgressSpinner } from 'primeng/progressspinner';
+import { IftaLabelModule } from 'primeng/iftalabel';
+import { SelectModule } from 'primeng/select';
 
 @Component({
   selector: 'app-branch-view',
@@ -59,6 +62,9 @@ import { PureAbility } from '@casl/ability';
     ReactiveFormsModule,
     ConfirmDialogModule,
     FcInputTelComponent,
+    ProgressSpinner,
+    IftaLabelModule,
+    SelectModule,
   ],
   templateUrl: './branch-view.component.html',
   styleUrl: './branch-view.component.css',
@@ -131,8 +137,6 @@ export class BranchViewComponent
     private ability: PureAbility,
   ) {
     this.branch.id = String(this.route.snapshot.paramMap.get('id'));
-    this.actionButtons[0].hidden = !this.ability.can('update', 'branch');
-    this.actionButtons[1].hidden = !this.ability.can('delete', 'branch');
 
     this.layoutService.setHeaderConfig({
       title: 'Branch Detail',
@@ -141,6 +145,7 @@ export class BranchViewComponent
     });
 
     this.branchForm = new FormGroup({
+      name: new FormControl(''),
       address: new FormControl('', Validators.required),
       note: new FormControl(''),
       email: new FormControl(''),
@@ -180,6 +185,7 @@ export class BranchViewComponent
         this.branch = res.data;
         this.companies = res.data.companies;
         this.branchForm.patchValue({
+          name: this.branch.name,
           address: this.branch?.address,
           note: this.branch.note || '-',
           email: this.branch.email,

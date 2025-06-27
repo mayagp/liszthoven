@@ -34,43 +34,34 @@ export class SupplierQuotationService {
         param = param.concat('&q=' + dataListParameter.searchQuery);
       }
     }
-    return this.http.get(`${ROOT_API}/admin/supplier-quotations${param}`);
+    return this.http.get(`${ROOT_API}/supplier-quotations${param}`);
   }
   getSupplierQuotation(id: string) {
-    return this.http.get(`${ROOT_API}/admin/supplier-quotations/${id}`);
+    return this.http.get(`${ROOT_API}/supplier-quotations/${id}`);
   }
   addSupplierQuotation(supplier: any) {
-    return this.http.post(`${ROOT_API}/admin/supplier-quotations`, supplier);
+    return this.http.post(`${ROOT_API}/supplier-quotations`, supplier);
   }
   updateSupplierQuotation(id: string, supplier: any) {
-    return this.http.put(
-      `${ROOT_API}/admin/supplier-quotations/${id}`,
-      supplier,
-    );
+    return this.http.put(`${ROOT_API}/supplier-quotations/${id}`, supplier);
   }
 
   receiveSupplierQuotation(id: string) {
-    return this.http.put(
-      `${ROOT_API}/admin/supplier-quotations/${id}/received`,
-      {},
-    );
+    return this.http.put(`${ROOT_API}/supplier-quotations/${id}/received`, {});
   }
 
   cancelSupplierQuotation(id: string) {
-    return this.http.put(
-      `${ROOT_API}/admin/supplier-quotations/${id}/cancelled`,
-      {},
-    );
+    return this.http.put(`${ROOT_API}/supplier-quotations/${id}/cancelled`, {});
   }
 
   deleteSupplierQuotation(id: string) {
-    return this.http.delete(`${ROOT_API}/admin/supplier-quotations/${id}`);
+    return this.http.delete(`${ROOT_API}/supplier-quotations/${id}`);
   }
 
   // Supplier Quotation Detail
   createSupplierQuotationDetail(id: string, bodyReq: any) {
     return this.http.post(
-      `${ROOT_API}/admin/supplier-quotations/${id}/details`,
+      `${ROOT_API}/supplier-quotations/${id}/details`,
       bodyReq,
     );
   }
@@ -81,14 +72,14 @@ export class SupplierQuotationService {
     bodyReq: any,
   ) {
     return this.http.put(
-      `${ROOT_API}/admin/supplier-quotations/${id}/details/${supplierQuotationId}`,
+      `${ROOT_API}/supplier-quotations/${id}/details/${supplierQuotationId}`,
       bodyReq,
     );
   }
 
   deleteSupplierQuotationDetail(id: string, supplierQuotationId: string) {
     return this.http.delete(
-      `${ROOT_API}/admin/supplier-quotations/${id}/details/${supplierQuotationId}`,
+      `${ROOT_API}/supplier-quotations/${id}/details/${supplierQuotationId}`,
     );
   }
 }

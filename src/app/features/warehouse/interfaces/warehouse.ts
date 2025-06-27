@@ -1,4 +1,4 @@
-import { BusinessUnit } from '../../branch/interfaces/branch';
+import { Branch } from '../../branch/interfaces/branch';
 import { Inventory } from '../../inventory/interfaces/inventory';
 
 export interface Warehouse {
@@ -10,6 +10,6 @@ export interface Warehouse {
   updated_at: string;
   deleted_at: any;
   exist: boolean;
-  business_unit: BusinessUnit;
+  branch: Branch;
   inventories: Inventory[];
 }

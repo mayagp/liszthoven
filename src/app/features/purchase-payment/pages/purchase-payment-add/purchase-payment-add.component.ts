@@ -42,6 +42,7 @@ import { PurchasePaymentDetailAddDialogComponent } from '../../components/purcha
 import { PurchasePaymentDetailEditDialogComponent } from '../../components/purchase-payment-detail-edit-dialog/purchase-payment-detail-edit-dialog.component';
 import { PurchasePaymentService } from '../../services/purchase-payment.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { FcFileInputComponent } from '../../../../shared/components/fc-file-input/fc-file-input.component';
 
 @Component({
   selector: 'app-purchase-payment-add',
@@ -59,6 +60,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     RouterModule,
     FcImagePreviewComponent,
     FcCurrencyPipe,
+    FcFileInputComponent,
   ],
   templateUrl: './purchase-payment-add.component.html',
   styleUrl: './purchase-payment-add.component.css',
@@ -121,7 +123,6 @@ export class PurchasePaymentAddComponent {
       note: new FormControl(''),
       purchase_payment_allocations: new FormArray([]),
       purchase_payment_documents: new FormArray([]),
-      purchase_payment_coas: new FormArray([]),
     });
   }
   ngOnInit(): void {
@@ -395,87 +396,6 @@ export class PurchasePaymentAddComponent {
     });
   }
 
-  // Manage Purchase Payment Coa
-  generatePurchasePaymentCoa(purchasePaymentCoa: any): FormGroup {
-    return new FormGroup({
-      amount: new FormControl(purchasePaymentCoa.amount),
-      description: new FormControl(purchasePaymentCoa.description),
-      chart_of_account: new FormControl(purchasePaymentCoa.chart_of_account),
-    });
-  }
-
-  get coaFilesArray() {
-    return this.purchasePaymentForm.get('purchase_payment_coas') as FormArray;
-  }
-
-  // addPurchasePaymentCoa() {
-  //   const ref = this.dialogService.open(PurchasePaymentCoaAddDialogComponent, {
-  //     data: {
-  //       title: 'Add Purchase Payment Detail',
-  //     },
-  //     showHeader: false,
-  //     contentStyle: {
-  //       padding: '0',
-  //     },
-  //     style: {
-  //       overflow: 'hidden',
-  //     },
-  //     styleClass: 'rounded-sm',
-  //     dismissableMask: true,
-  //     width: '450px',
-  //   });
-  //   ref.onClose.subscribe((purchasePaymentCoa) => {
-  //     if (purchasePaymentCoa) {
-  //       this.coaFilesArray.push(
-  //         this.generatePurchasePaymentCoa(purchasePaymentCoa)
-  //       );
-  //     }
-  //   });
-  // }
-
-  // editPurchasePaymentCoa(index: number) {
-  //   const ref = this.dialogService.open(PurchasePaymentCoaAddDialogComponent, {
-  //     data: {
-  //       title: 'Edit Purchase Payment Coa',
-  //       purchasePaymentCoa: this.coaFilesArray.value[index],
-  //     },
-  //     showHeader: false,
-  //     contentStyle: {
-  //       padding: '0',
-  //     },
-  //     style: {
-  //       overflow: 'hidden',
-  //     },
-  //     styleClass: 'rounded-sm',
-  //     dismissableMask: true,
-  //     width: '450px',
-  //   });
-  //   ref.onClose.subscribe((purchasePaymentCoa) => {
-  //     if (purchasePaymentCoa) {
-  //       this.coaFilesArray.at(index).patchValue(purchasePaymentCoa);
-  //     }
-  //   });
-  // }
-
-  deletePurchasePaymentCoa(index: number) {
-    this.confirmationService.confirm({
-      header: 'Confirmation',
-      message: 'Are you sure to delete this data?',
-      acceptLabel: 'Yes',
-      rejectLabel: 'No',
-      accept: () => {
-        this.coaFilesArray.removeAt(index);
-      },
-      reject: () => {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Cancelled',
-          detail: 'Delete operation was cancelled',
-        });
-      },
-    });
-  }
-
   back() {
     this.location.back();
   }
@@ -496,15 +416,6 @@ export class PurchasePaymentAddComponent {
             amount_allocated: item.amount_allocated,
           };
         });
-      bodyReq.purchase_payment_coas = bodyReq.purchase_payment_coas.map(
-        (item: any) => {
-          return {
-            amount: item.amount,
-            description: item.description,
-            chart_of_account_id: item.chart_of_account.id,
-          };
-        },
-      );
       delete bodyReq.supplier;
       delete bodyReq.purchase_payment_documents;
 

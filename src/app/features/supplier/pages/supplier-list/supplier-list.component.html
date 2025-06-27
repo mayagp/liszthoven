@@ -30,15 +30,15 @@
               <div class="grid flex-1 gap-1">
                 <div class="flex gap-3">
                   <fa-icon [fixedWidth]="true" [icon]="faBuilding"></fa-icon>
-                  <p>{{ supplier.name }} ({{ supplier.pic }})</p>
+                  <p>{{ supplier.user.name }}</p>
                 </div>
                 <div class="flex gap-3">
                   <fa-icon [fixedWidth]="true" [icon]="faPhone"></fa-icon>
-                  <p>{{ supplier.contact_no }}</p>
+                  <p>{{ supplier.user.phone_no }}</p>
                 </div>
                 <div class="flex gap-3">
                   <fa-icon [fixedWidth]="true" [icon]="faLocationDot"></fa-icon>
-                  <p>{{ supplier.address }}</p>
+                  <p>{{ supplier.user.address }}</p>
                 </div>
               </div>
               <div class="flex w-full justify-end @lg:w-[150px]">

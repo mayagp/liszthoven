@@ -2,6 +2,7 @@ import {
   AfterContentInit,
   Component,
   EventEmitter,
+  HostListener,
   Input,
   OnDestroy,
   OnInit,
@@ -25,6 +26,7 @@ import {
   faTimes,
   faChevronDown,
   faSave,
+  faImage,
 } from '@fortawesome/free-solid-svg-icons';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Subject, takeUntil } from 'rxjs';
@@ -77,6 +79,7 @@ export class ProductViewComponent
   faSpinner = faSpinner;
   faTimes = faTimes;
   faChevronDown = faChevronDown;
+  faImage = faImage;
 
   private readonly destroy$: any = new Subject();
   productForm: FormGroup;
@@ -139,6 +142,7 @@ export class ProductViewComponent
   @Input() quickView: Boolean = false;
   @Output() onDeleted = new EventEmitter();
   @Output() onUpdated = new EventEmitter();
+  pastedImages: any = [];
 
   constructor(
     private layoutService: LayoutService,
@@ -212,7 +216,7 @@ export class ProductViewComponent
           status: this.product.status,
           valuation_method: this.product.valuation_method,
           product_category_id: this.product.product_category_id,
-          brand: this.product.brand.name,
+          brand: this.product.brand,
           // quantity: this.product.quantity,
         });
         let imageArrayForm: FormArray = this.productForm.get(
@@ -222,16 +226,13 @@ export class ProductViewComponent
           imageArrayForm.removeAt(0);
         }
         if (this.product.product_images) {
-          // let imageArrayForm: any = this.productForm.get('product_images');
-          this.product.product_images.forEach((image: any) => {
-            imageArrayForm.push(
-              new FormGroup({
-                id: new FormControl(image.id),
-                is_default: new FormControl(image.is_default),
-                sequence: new FormControl(image.sequence),
-                url: new FormControl(image.url),
-              }),
-            );
+          this.pastedImages = this.product.product_images.map((image: any) => {
+            return {
+              image_url: image.url,
+              id: image.id,
+              is_default: image.is_default,
+              sequence: image.sequence,
+            };
           });
         }
       });
@@ -263,185 +264,89 @@ export class ProductViewComponent
     });
   }
 
-  // onSelectProductBrand() {
-  //   const ref = this.dialogService.open(BrandSelectDialogComponent, {
-  //     data: {
-  //       title: 'Select Product Brand',
-  //     },
-  //     showHeader: false,
-  //     contentStyle: {
-  //       padding: '0',
-  //     },
-  //     style: {
-  //       overflow: 'hidden',
-  //     },
-  //     styleClass: 'rounded-sm',
-  //     dismissableMask: true,
-  //     width: '450px',
-  //   });
-  //   ref.onClose.subscribe((brand) => {
-  //     if (brand) {
-  //       this.selectedBrand = brand;
-  //       this.productForm.controls['brand_id'].setValue(this.selectedBrand?.id);
-  //     }
-  //   });
-  // }
-
   removeCategory() {
     this.selectedCategory = null;
     this.productForm.controls['product_category_id'].setValue('');
   }
 
-  // removeBrand() {
-  //   this.selectedBrand = null;
-  //   this.productForm.controls['brand_id'].setValue('');
-  // }
-
-  loadingAddImage = false;
-  addMultipleImage(images: any) {
-    this.loadingAddImage = true;
-    let fd: FormData = new FormData();
-    images.forEach((image: any, i: number) => {
-      fd.append(`product_images[${i}][file]`, image.file);
-      fd.append(`product_images[${i}][is_default]`, 'false');
-    });
-
-    this.productService.addProductImage(this.product.id, fd).subscribe({
-      next: (res: any) => {
-        this.loadingAddImage = false;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Product Image',
-          detail: res.message,
-        });
-        // init productimage to form
-        let imageArrayForm: any = this.productForm.get('product_images');
-        const currentIds = imageArrayForm.value.map((image: any) => image.id);
-        const newImages = res.data.product_images.filter(
-          (value: any) => !currentIds.includes(value.id),
-        );
-        newImages.forEach((image: any) => {
-          imageArrayForm.push(
-            new FormGroup({
-              id: new FormControl(image.id),
-              is_default: new FormControl(image.is_default),
-              sequence: new FormControl(image.sequence),
-              url: new FormControl(image.url),
-            }),
-          );
-        });
-      },
-      error: (err) => {
-        this.loadingAddImage = false;
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Product Image',
-          detail: err.message,
-        });
-      },
-    });
-  }
-
-  onUpdateDefaultImage(image: any) {
-    let reqData = new FormGroup({
-      product_images: new FormArray([
-        new FormGroup({
-          id: new FormControl(image.id),
-          sequence: new FormControl(image.sequence),
-          is_default: new FormControl(true),
-        }),
-      ]),
-    });
-
-    this.confirmationService.confirm({
-      header: 'Confirmation',
-      message: 'Are you sure that you want make this product image default?',
-      acceptLabel: 'Yes',
-      rejectLabel: 'No',
-      accept: () => {
-        this.productService
-          .updateProductImage(this.product.id, reqData.value)
-          .subscribe({
-            next: (res: any) => {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Product Image',
-                detail: res.message,
-              });
-              // init productimage to form
-              this.productForm.removeControl('product_images');
-              this.productForm.addControl('product_images', new FormArray([]));
-              let imageArrayForm: any = this.productForm.get('product_images');
-              let newImageData = res.data.product_images;
-              newImageData.forEach((image: any) => {
-                imageArrayForm.push(
-                  new FormGroup({
-                    id: new FormControl(image.id),
-                    is_default: new FormControl(image.is_default),
-                    sequence: new FormControl(image.sequence),
-                    url: new FormControl(image.url),
-                  }),
-                );
-              });
-            },
-            error: (err) => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Product Image',
-                detail: err.message,
-              });
-            },
-          });
-      },
-      reject: () => {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Cancelled',
-          detail: 'Delete operation was cancelled',
-        });
-      },
-    });
-  }
-
   get imagesArrayForm(): FormArray {
     return this.productForm.get('product_images') as FormArray;
   }
+  @HostListener('document:paste', ['$event'])
+  handlePaste(event: ClipboardEvent) {
+    const items: any = event.clipboardData?.items;
+    if (items) {
+      for (const item of items) {
+        if (item.type.indexOf('image') !== -1) {
+          const blob = item.getAsFile();
+          if (blob) {
+            this.readImage(blob);
+          }
+        }
+      }
+    }
+  }
 
-  softDeleteProductImage(image: any, index: number) {
-    this.confirmationService.confirm({
-      header: 'Confirmation',
-      message: 'Are you sure to delete this product image?',
-      acceptLabel: 'Yes',
-      rejectLabel: 'No',
-      accept: () => {
-        this.productService
-          .softDeleteProductImage(this.product.id, image.id)
-          .subscribe({
-            next: (res: any) => {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Product Image',
-                detail: res.message,
-              });
-              this.imagesArrayForm.removeAt(index);
-            },
-            error: (err) => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Product Image',
-                detail: err.message,
-              });
-            },
-          });
-      },
-      reject: () => {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Cancelled',
-          detail: 'Delete operation was cancelled',
-        });
-      },
-    });
+  @HostListener('drop', ['$event'])
+  handleDrop(event: DragEvent) {
+    event.preventDefault();
+    const items: any = event.dataTransfer?.items;
+    if (items) {
+      for (const item of items) {
+        if (item.kind === 'file' && item.type.indexOf('image') !== -1) {
+          const file = item.getAsFile();
+          if (file) {
+            this.readImage(file);
+          }
+        }
+      }
+    }
+  }
+
+  @HostListener('dragover', ['$event'])
+  handleDragOver(event: DragEvent) {
+    event.preventDefault();
+  }
+
+  private readImage(blob: File) {
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      const imageUrl = e.target?.result;
+      if (imageUrl) {
+        const imageObject = {
+          file: blob,
+          image_url: imageUrl,
+        };
+        if (
+          !this.pastedImages.some((image: any) => image.image_url === imageUrl)
+        ) {
+          this.pastedImages.push(imageObject);
+
+          // ⬇️ Tambahkan ke FormArray
+          (this.productForm.get('product_images') as FormArray).push(
+            new FormGroup({
+              file: new FormControl(blob),
+              src: new FormControl(imageUrl),
+            }),
+          );
+        }
+      }
+    };
+    reader.readAsDataURL(blob);
+  }
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files) {
+      Array.from(input.files).forEach((file) => {
+        this.readImage(file);
+      });
+    }
+  }
+
+  removeImage(event: any, index: number) {
+    event.stopPropagation();
+    this.pastedImages.splice(index, 1);
   }
 
   submit() {

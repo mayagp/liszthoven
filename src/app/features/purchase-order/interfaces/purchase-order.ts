@@ -1,4 +1,4 @@
-import { BusinessUnit } from '../../branch/interfaces/branch';
+import { Branch } from '../../branch/interfaces/branch';
 import { Product } from '../../product/interfaces/product';
 import { Supplier } from '../../supplier/interfaces/supplier';
 import { Warehouse } from '../../warehouse/interfaces/warehouse';
@@ -15,7 +15,7 @@ export interface PurchaseOrder {
   tax: string;
   grandtotal: string;
   note: string;
-  business_unit_id: number;
+  branch_id: number;
   created_by: number;
   approved_at: any;
   approved_by: any;
@@ -23,7 +23,7 @@ export interface PurchaseOrder {
   updated_at: string;
   deleted_at: any;
   supplier: Supplier;
-  business_unit: BusinessUnit;
+  branch: Branch;
   purchase_order_details: PurchaseOrderDetail[];
   purchase_order_documents: PurchaseOrderDocument[];
 }

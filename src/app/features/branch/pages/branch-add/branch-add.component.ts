@@ -20,6 +20,8 @@ import { FcTextareaComponent } from '../../../../shared/components/fc-textarea/f
 import { ButtonModule } from 'primeng/button';
 import { FcInputTelComponent } from '../../../../shared/components/fc-input-tel/fc-input-tel.component';
 import { PureAbility } from '@casl/ability';
+import { IftaLabelModule } from 'primeng/iftalabel';
+import { SelectModule } from 'primeng/select';
 
 @Component({
   selector: 'app-branch-add',
@@ -33,6 +35,8 @@ import { PureAbility } from '@casl/ability';
     FormsModule,
     ReactiveFormsModule,
     FcInputTelComponent,
+    IftaLabelModule,
+    SelectModule,
   ],
   templateUrl: './branch-add.component.html',
   styleUrl: './branch-add.component.css',
@@ -70,13 +74,13 @@ export class BranchAddComponent implements OnInit, OnDestroy, AfterContentInit {
     private router: Router,
     private ability: PureAbility,
   ) {
-    this.actionButtons[0].hidden = !this.ability.can('create', 'branch');
     this.layoutService.setHeaderConfig({
       title: 'Add Branch',
       icon: '',
       showHeader: true,
     });
     this.branchForm = new FormGroup({
+      name: new FormControl('', Validators.required),
       address: new FormControl('', Validators.required),
       note: new FormControl(''),
       email: new FormControl(''),

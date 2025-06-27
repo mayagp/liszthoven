@@ -7,10 +7,11 @@ import { Subject } from 'rxjs';
 import { FcFilterConfig } from '../../../../shared/components/fc-filter-dialog/interfaces/fc-filter-config';
 import { ProductCategory } from '../../interfaces/product-category';
 import { ProductCategoryService } from '../../services/product-category.service';
+import { ProgressSpinner } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-product-category-select-dialog',
-  imports: [CommonModule, FontAwesomeModule],
+  imports: [CommonModule, FontAwesomeModule, ProgressSpinner],
   templateUrl: './product-category-select-dialog.component.html',
   styleUrl: './product-category-select-dialog.component.css',
 })

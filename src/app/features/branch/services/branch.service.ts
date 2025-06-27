@@ -33,27 +33,27 @@ export class BranchService {
       }
     }
 
-    return this.http.get(`${ROOT_API}/admin/branches${param}`);
+    return this.http.get(`${ROOT_API}/branches${param}`);
   }
 
   getBranch(branchId: string) {
-    return this.http.get(`${ROOT_API}/admin/branches/${branchId}`);
+    return this.http.get(`${ROOT_API}/branches/${branchId}`);
   }
 
   addBranch(data: any) {
-    return this.http.post(`${ROOT_API}/admin/branches`, data);
+    return this.http.post(`${ROOT_API}/branches`, data);
   }
 
   updateBrach(branchId: string, data: any) {
-    return this.http.put(`${ROOT_API}/admin/branches/${branchId}`, data);
+    return this.http.put(`${ROOT_API}/branches/${branchId}`, data);
   }
 
   deleteBranch(branchId: string) {
-    return this.http.delete(`${ROOT_API}/admin/branches/${branchId}`);
+    return this.http.delete(`${ROOT_API}/branches/${branchId}`);
   }
 
   assignBranchToCompany(branchId: string, data: any) {
-    return this.http.put(`${ROOT_API}/admin/branches/${branchId}/assign`, data);
+    return this.http.put(`${ROOT_API}/branches/${branchId}/assign`, data);
   }
 
   getCompanies(dataListParameter: DataListParameter = {} as DataListParameter) {
@@ -77,29 +77,40 @@ export class BranchService {
         param = param.concat('&q=' + dataListParameter.searchQuery);
       }
     }
-    return this.http.get(`${ROOT_API}/admin/companies${param}`);
+    return this.http.get(`${ROOT_API}/companies${param}`);
   }
 
   getCompany(companyId: string) {
-    return this.http.get(`${ROOT_API}/admin/companies/${companyId}`);
+    return this.http.get(`${ROOT_API}/companies/${companyId}`);
   }
 
   addCompany(data: any) {
-    return this.http.post(`${ROOT_API}/admin/companies`, data);
+    return this.http.post(`${ROOT_API}/companies`, data);
   }
 
   updateCompany(companyId: string, data: any) {
-    return this.http.put(`${ROOT_API}/admin/companies/${companyId}`, data);
+    return this.http.put(`${ROOT_API}/companies/${companyId}`, data);
   }
 
   delete(companyId: string) {
-    return this.http.delete(`${ROOT_API}/admin/companies/${companyId}`);
+    return this.http.delete(`${ROOT_API}/companies/${companyId}`);
   }
 
   assignCompanyToBranch(companyId: string, data: any) {
-    return this.http.put(
-      `${ROOT_API}/admin/companies/${companyId}/assign`,
-      data,
+    return this.http.put(`${ROOT_API}/companies/${companyId}/assign`, data);
+  }
+
+  getProvinces(param: string) {
+    return this.http.get(`${ROOT_API}/provinces?${param}`);
+  }
+  getCities(provinceId: string) {
+    return this.http.get(
+      `${ROOT_API}/cities?with_filter=1&province_id=${provinceId}&limit=1000`,
+    );
+  }
+  getSubdistricts(cityId: string) {
+    return this.http.get(
+      `${ROOT_API}/subdistricts?with_filter=1&city_id=${cityId}&limit=1000`,
     );
   }
 }

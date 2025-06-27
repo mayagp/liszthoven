@@ -171,7 +171,7 @@ export class PurchaseOrderViewComponent {
       expected_delivery_date: new FormControl(new Date(), Validators.required),
       tax: new FormControl(0),
       note: new FormControl(''),
-      business_unit: new FormControl(null, Validators.required),
+      branch: new FormControl(null, Validators.required),
       purchase_order_documents: new FormArray([]),
       purchase_order_details: new FormArray([], Validators.required),
     });
@@ -216,7 +216,7 @@ export class PurchaseOrderViewComponent {
           ),
           tax: Number(this.purchaseOrder.tax),
           note: this.purchaseOrder.note,
-          business_unit: this.purchaseOrder.business_unit,
+          branch: this.purchaseOrder.branch,
         });
 
         this.purchaseOrder.purchase_order_details.forEach(
@@ -350,30 +350,24 @@ export class PurchaseOrderViewComponent {
     return this.purchaseOrderForm.get('purchase_order_details') as FormArray;
   }
 
-  removeBusinessUnit() {
-    this.purchaseOrderForm.controls['business_unit'].setValue('');
+  removeBranch() {
+    this.purchaseOrderForm.get('branch')?.reset();
   }
 
-  onSelectBusinessUnit() {
+  onSelectBranch() {
     const ref = this.dialogService.open(BranchSelectDialogComponent, {
-      data: {
-        title: 'Select Branch',
-        companyId: 2,
-      },
+      data: { title: 'Select Branch' },
       showHeader: false,
-      contentStyle: {
-        padding: '0',
-      },
-      style: {
-        overflow: 'hidden',
-      },
+      contentStyle: { padding: '0' },
+      style: { overflow: 'hidden' },
       styleClass: 'rounded-sm',
       dismissableMask: true,
       width: '450px',
     });
-    ref.onClose.subscribe((businessUnit: any) => {
-      if (businessUnit) {
-        this.purchaseOrderForm.controls['business_unit'].setValue(businessUnit);
+    ref.onClose.subscribe((result: any) => {
+      if (result && result.branch) {
+        console.log('Selected branch:', result.branch);
+        this.purchaseOrderForm.get('branch')?.setValue(result.branch);
       }
     });
   }
@@ -915,9 +909,7 @@ export class PurchaseOrderViewComponent {
         ),
         tax: new FormControl(Number(this.purchaseOrderForm.value.tax)),
         note: new FormControl(this.purchaseOrderForm.value.note),
-        business_unit_id: new FormControl(
-          this.purchaseOrderForm.value.business_unit.id,
-        ),
+        branch_id: new FormControl(this.purchaseOrderForm.value.branch.id),
       });
 
       this.purchaseOrderService

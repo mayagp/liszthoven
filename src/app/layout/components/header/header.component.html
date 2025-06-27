@@ -42,16 +42,16 @@
         <button
           *ngIf="searchConfig.featureName"
           type="button"
-          class="rounded-md bg-sky-600 p-0.5 px-2 text-2xs capitalize text-white dark:bg-sky-900 md:truncate"
+          class="rounded-md bg-sky-600 p-0.5 px-2 text-xs capitalize text-white dark:bg-sky-900 md:truncate"
           [pTooltip]="searchConfig.featureName"
         >
           {{ searchConfig.featureName }}
         </button>
       </label>
     </div>
-    <a
+    <!-- <a
       routerLink="/notification"
-      class="fc-animate-translate-up relative flex items-center justify-center gap-1 rounded-xl bg-sky-600 px-3 py-2 text-2xs text-white dark:bg-sky-900"
+      class="fc-animate-translate-up relative flex items-center justify-center gap-1 rounded-xl bg-sky-600 px-3 py-2 text-xs text-white dark:bg-sky-900"
     >
       <fa-icon [icon]="faBell"></fa-icon>
       <span *ngIf="notificationsCount" class="text-xs">{{
@@ -61,12 +61,12 @@
         *ngIf="notificationsCount"
         class="absolute -right-0.5 -top-0.5 h-3 w-3 animate-pulse rounded-full bg-red-500"
       ></span>
-    </a>
+    </a> -->
     <div class="flex gap-2" (click)="visible = true">
       <button
         (click)="(userDrawer)"
         type="button"
-        class="fc-animate-translate-up flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-sky-600 text-2xs text-white dark:bg-sky-900"
+        class="fc-animate-translate-up flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-sky-600 text-xs text-white dark:bg-sky-900"
       >
         <fa-icon *ngIf="false" [icon]="faUser"></fa-icon>
         <img
@@ -79,7 +79,11 @@
       </button>
       <div class="hidden @4xl:block">
         <p class="text-xs">{{ user.name }}</p>
-        <p class="text-[0.65rem]">{{ user.staff.role_name }}</p>
+        <p class="text-[0.65rem]">
+          {{
+            user.staff ? user.staff.role_name : user.supplier ? "supplier" : ""
+          }}
+        </p>
       </div>
     </div>
   </div>
@@ -106,7 +110,15 @@
         />
         <div>
           <p class="text-xs">{{ user.name }}</p>
-          <p class="text-[0.65rem] text-gray-500">{{ user.staff.role_name }}</p>
+          <p class="text-[0.65rem] text-gray-500">
+            {{
+              user.staff
+                ? user.staff.role_name
+                : user.supplier
+                  ? "supplier"
+                  : ""
+            }}
+          </p>
         </div>
       </div>
     </div>

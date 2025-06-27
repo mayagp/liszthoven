@@ -37,11 +37,11 @@ export class AutoNumberService {
         param = param.concat('&q=' + dataListParameter.searchQuery);
       }
     }
-    return this.http.get(`${ROOT_API}/admin/auto-numbers${param}`);
+    return this.http.get(`${ROOT_API}/auto-numbers${param}`);
   }
   getAutoNumberByTabel(table: string) {
     return this.http
-      .get(`${ROOT_API}/admin/auto-numbers?with_filter=1&table=${table}`)
+      .get(`${ROOT_API}/auto-numbers?with_filter=1&table=${table}`)
       .pipe(
         map((res: any) => {
           return res.data.auto_numbers[0];

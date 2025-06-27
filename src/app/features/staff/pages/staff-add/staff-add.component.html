@@ -6,19 +6,9 @@
   <div class="body h-full w-full overflow-y-auto py-5 text-xs @container">
     <form [formGroup]="registerForm" class="grid w-full gap-3 @xl:grid-cols-2">
       <fc-input-text
-        title="First Name"
-        formControlName="first_name"
-        placeholder="Enter Your First Name"
-      />
-      <fc-input-text
-        title="Middle Name"
-        formControlName="middle_name"
-        placeholder="Enter Your Middle Name"
-      />
-      <fc-input-text
-        title="Last Name"
-        formControlName="last_name"
-        placeholder="Enter Your Last Name"
+        title="Name"
+        formControlName="name"
+        placeholder="Enter Your Name"
       />
       <ng-container formGroupName="staff">
         <fc-input-text
@@ -26,34 +16,6 @@
           formControlName="identification_number"
           placeholder="Enter Your Identification Number"
         />
-        <!-- <div
-            class="form-input flex flex-1 cursor-pointer items-center rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700">
-            <div class="flex flex-1 flex-col" (click)="onSelectTaxCategory()">
-              <p
-                class="m-0 block p-0 text-2xs font-medium leading-5 text-zinc-700 dark:text-white/60">
-                Tax Category
-              </p>
-              <p *ngIf="staffForm.value.tax_category" class="text-xs">
-                {{ staffForm.value.tax_category.name }}
-              </p>
-              <p
-                *ngIf="!staffForm.value.tax_category"
-                class="text-xs dark:text-gray-400">
-                Select Tax Category
-              </p>
-            </div>
-            <div class="flex items-center gap-2">
-              <button
-                *ngIf="staffForm.value.tax_category"
-                type="button"
-                (click)="onRemoveTaxCategory()">
-                <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
-              </button>
-              <button type="button" (click)="onSelectTaxCategory()">
-                <fa-icon [fixedWidth]="true" [icon]="faChevronDown"></fa-icon>
-              </button>
-            </div>
-          </div> -->
         <fc-input-text
           title="Tax Number"
           formControlName="tax_number"
@@ -64,25 +26,34 @@
           formControlName="bpjs_number"
           placeholder="Enter Your BPJS Number"
         />
-        <!-- <fc-datepicker title="Working Since" formControlName="working_since" /> -->
-        <!-- <fc-select-option
-            [options]="maritalStatus"
-            formControlName="marital_status"
-            [optionValue]="'id'"
-            [optionLabel]="'label'"
-            title="Marital Status"
-            [placeholder]="'Select Marital Status'"
-            [desktopView]="'overlay'"
-            [mobileView]="'dialog'" />
-          <fc-select-option
-            [options]="religion"
-            formControlName="religion"
-            [optionValue]="'id'"
-            [optionLabel]="'label'"
-            title="Religion"
-            [placeholder]="'Select Religion'"
-            [desktopView]="'overlay'"
-            [mobileView]="'dialog'" /> -->
+
+        <div class="card w-full">
+          <p-iftalabel>
+            <p-datepicker
+              [style]="{ width: '100%' }"
+              inputId="icondisplay"
+              showIcon
+              iconDisplay="input"
+              [showButtonBar]="true"
+              formControlName="working_since"
+              placeholder="Select Working Since"
+              appendTo="body"
+              dateFormat="dd/mm/yy"
+              [inputStyle]="{
+                'background-color': '#27272a',
+                border: '1px solid #3f3f46',
+                color: '#ffffff',
+                'font-size': '12px',
+                'line-height': '1.7',
+              }"
+            />
+            <label
+              for="xs"
+              style="font-weight: 500 !important; color: #ffffff99 !important"
+              >Working Since</label
+            >
+          </p-iftalabel>
+        </div>
       </ng-container>
       <fc-input-text
         title="Address"
@@ -100,30 +71,70 @@
         placeholder="Enter Your Phone Number"
       >
       </fc-input-tel>
-
       <ng-container formGroupName="staff">
-        <!-- <fc-select-option
-            [options]="roles"
-            formControlName="role"
-            [optionValue]="'id'"
-            [optionLabel]="'label'"
-            title="Role Name"
-            [placeholder]="'Select Role Name'"
-            [desktopView]="'overlay'"
-            [mobileView]="'dialog'" /> -->
-        <div *ngIf="isTeacherRole">
-          <div formGroupName="teacher">
-            <!-- <fc-select-option
-                [options]="teacherTypes"
-                formControlName="type"
-                [optionValue]="'value'"
-                [optionLabel]="'label'"
-                title="Teacher Type"
-                [placeholder]="'Select Teacher Type'"
-                [desktopView]="'overlay'"
-                [mobileView]="'dialog'" /> -->
+        <div class="card flex justify-center">
+          <p-iftalabel class="w-full">
+            <p-select
+              formControlName="role"
+              inputId="dd-type"
+              [options]="roles"
+              optionLabel="label"
+              optionValue="id"
+              placeholder="Select Role Name"
+              styleClass="w-full"
+              [style]="{
+                'background-color': '#27272a',
+                color: '#ffffff',
+                border: '1px solid #3f3f46',
+                'line-height': '1.5',
+              }"
+            >
+            </p-select>
+            <label
+              for="dd-type"
+              style="
+                font-weight: 500 !important;
+                color: #ffffff99 !important;
+                line-height: 1.4 !important;
+              "
+              >Role Name</label
+            >
+          </p-iftalabel>
+        </div>
+        <div
+          class="form-input flex cursor-pointer items-center rounded-lg border border-zinc-200 bg-whita p-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+        >
+          <div class="flex flex-1 flex-col" (click)="onSelectBranch()">
+            <p
+              class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+            >
+              Branch
+            </p>
+            <p *ngIf="staffForm.get('branch')?.value" class="text-xs">
+              {{ staffForm.get("branch")?.value?.address }}
+            </p>
+            <p
+              *ngIf="!staffForm.get('branch')?.value"
+              class="text-xs dark:text-gray-400"
+            >
+              Select Branch
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button
+              *ngIf="staffForm.get('branch')?.value"
+              type="button"
+              (click)="removeBranch()"
+            >
+              <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
+            </button>
+
+            <button type="button" (click)="onSelectBranch()">
+              <fa-icon [fixedWidth]="true" [icon]="faChevronDown"></fa-icon>
+            </button>
           </div>
         </div>
+
         <div class="@xl:col-span-2">
           <fc-textarea
             title="Note"
@@ -194,7 +205,7 @@
                         <p class="text-md ]">
                           {{ documentFilesArray.value[i].name }}
                         </p>
-                        <p class="text-2xs text-slate-400">
+                        <p class="text-xs text-slate-400">
                           {{ documentFilesArray.value[i].note }}
                         </p>
                       </div>
@@ -260,29 +271,30 @@
         </div> -->
 
       <!-- Business Unit Data -->
-      <div class="flex-1 @xl:col-span-2">
+      <!-- <div class="flex-1 @xl:col-span-2">
         <div class="mb-3 flex items-center justify-between">
           <p class="text-sm">Branches</p>
-          <!-- <button
-              type="button"
-              (click)="onAddBusinessUnit()"
-              class="fc-animate-translate-up flex gap-1 text-xs">
-              <fa-icon class="" [icon]="faPlus"></fa-icon>
-              Add Branch
-            </button> -->
+          <button
+            type="button"
+            (click)="onAddBranches()"
+            class="fc-animate-translate-up flex gap-1 text-xs"
+          >
+            <fa-icon class="" [icon]="faPlus"></fa-icon>
+            Add Branch
+          </button>
         </div>
         <div
           class="flex h-full items-center justify-center"
-          *ngIf="businessUnitsForm.value.length == 0"
+          *ngIf="branchesForm.value.length == 0"
         >
           <div class="text-center text-sm">
             <fa-icon class="" [icon]="faBoxOpen"></fa-icon>
             Empty Branches
           </div>
         </div>
-        <div *ngIf="businessUnitsForm.value" class="grid gap-2">
+        <div *ngIf="branchesForm.value" class="grid gap-2">
           <ng-container
-            *ngFor="let businessUnit of businessUnitsForm.value; let i = index"
+            *ngFor="let branch of branchesForm.value; let i = index"
           >
             <div
               class="fc-animate-translate-up flex w-full cursor-pointer items-center justify-between rounded-md border border-zinc-100/70 bg-zinc-100/70 p-2 hover:border-sky-600 dark:border-zinc-800 dark:bg-zinc-800 hover:dark:border-sky-600"
@@ -290,19 +302,19 @@
               <div class="flex-1">
                 <div class="flex gap-2">
                   <fa-icon class="" [icon]="faBuilding"></fa-icon>
-                  <!-- <p>{{ businessUnit.company.name }}</p> -->
+                  <p>{{ branch.name }}</p>
                   <p>Liszthoven</p>
                 </div>
                 <div class="flex gap-2">
                   <fa-icon class="" [icon]="faLocationDot"></fa-icon>
-                  <p>{{ businessUnit.branch?.address }}</p>
+                  <p>{{ branch.address }}</p>
                 </div>
               </div>
               <div class="flex justify-end gap-2">
                 <button
                   type="button"
                   class="btn btn-high"
-                  (click)="removeBusinessUnit(i)"
+                  (click)="removeBranch(i)"
                 >
                   <fa-icon [fixedWidth]="true" [icon]="faTrash"></fa-icon>
                 </button>
@@ -310,7 +322,7 @@
             </div>
           </ng-container>
         </div>
-      </div>
+      </div> -->
     </form>
   </div>
 </div>

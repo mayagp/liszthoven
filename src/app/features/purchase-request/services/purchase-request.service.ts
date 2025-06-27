@@ -35,35 +35,32 @@ export class PurchaseRequestService {
         param = param.concat('&q=' + dataListParameter.searchQuery);
       }
     }
-    return this.http.get(`${ROOT_API}/admin/purchase-requests${param}`);
+    return this.http.get(`${ROOT_API}/purchase-requests${param}`);
   }
 
   getPurchaseRequest(id: string) {
-    return this.http.get(`${ROOT_API}/admin/purchase-requests/${id}`);
+    return this.http.get(`${ROOT_API}/purchase-requests/${id}`);
   }
 
   addPurchaseRequest(purchaseRequest: any) {
-    return this.http.post(
-      `${ROOT_API}/admin/purchase-requests`,
-      purchaseRequest,
-    );
+    return this.http.post(`${ROOT_API}/purchase-requests`, purchaseRequest);
   }
 
   updatePurchaseRequest(id: string, purchaseRequest: any) {
     return this.http.put(
-      `${ROOT_API}/admin/purchase-requests/${id}`,
+      `${ROOT_API}/purchase-requests/${id}`,
       purchaseRequest,
     );
   }
 
   deletePurchaseRequest(id: string) {
-    return this.http.delete(`${ROOT_API}/admin/purchase-requests/${id}`);
+    return this.http.delete(`${ROOT_API}/purchase-requests/${id}`);
   }
 
   // Purchase Request Detail Services
   addPurchaseRequestDetail(id: string, purchaseRequest: any) {
     return this.http.post(
-      `${ROOT_API}/admin/purchase-requests/${id}/details`,
+      `${ROOT_API}/purchase-requests/${id}/details`,
       purchaseRequest,
     );
   }
@@ -74,32 +71,26 @@ export class PurchaseRequestService {
     purchaseRequestDetailId: string,
   ) {
     return this.http.put(
-      `${ROOT_API}/admin/purchase-requests/${id}/details/${purchaseRequestDetailId}`,
+      `${ROOT_API}/purchase-requests/${id}/details/${purchaseRequestDetailId}`,
       purchaseRequest,
     );
   }
 
   deletePurchaseRequestDetail(id: string, purchaseRequestDetailId: string) {
     return this.http.delete(
-      `${ROOT_API}/admin/purchase-requests/${id}/details/${purchaseRequestDetailId}`,
+      `${ROOT_API}/purchase-requests/${id}/details/${purchaseRequestDetailId}`,
     );
   }
   approvePurchaseRequest(id: string) {
-    return this.http.put(
-      `${ROOT_API}/admin/purchase-requests/${id}/approved`,
-      {},
-    );
+    return this.http.put(`${ROOT_API}/purchase-requests/${id}/approved`, {});
   }
   approvalRequestPurchaseRequest(id: string) {
     return this.http.put(
-      `${ROOT_API}/admin/purchase-requests/${id}/approval-request`,
+      `${ROOT_API}/purchase-requests/${id}/approval-request`,
       {},
     );
   }
   cancelPurchaseRequest(id: string) {
-    return this.http.put(
-      `${ROOT_API}/admin/purchase-requests/${id}/cancelled`,
-      {},
-    );
+    return this.http.put(`${ROOT_API}/purchase-requests/${id}/cancelled`, {});
   }
 }

@@ -25,7 +25,7 @@
             >
               <div class="hidden items-center gap-3 p-3 @2xl:flex">
                 <div class="w-[100px]">
-                  <p class="text-2xs">
+                  <p class="text-xs">
                     {{ purchaseRequest.date | date: "dd MMMM yyyy" }}
                   </p>
                   <p class="mt-1">{{ purchaseRequest.purchase_request_no }}</p>
@@ -39,13 +39,12 @@
                   </div>
                 </div>
                 <div class="flex-1">
-                  <!-- {{ purchaseRequest.business_unit.company.name }} -->
-                  Liszthoven
+                  {{ purchaseRequest.branch.name }}
                 </div>
                 <div class="flex-1">
                   {{
-                    purchaseRequest.business_unit.branch
-                      ? purchaseRequest.business_unit.branch.address
+                    purchaseRequest.branch
+                      ? purchaseRequest.branch.address
                       : "-"
                   }}
                 </div>
@@ -62,7 +61,7 @@
               <div class="gird gap-3 p-2 @2xl:hidden">
                 <div class="flex w-full items-center justify-between">
                   <div class="flex-1">
-                    <p class="text-2xs">
+                    <p class="text-xs">
                       {{ purchaseRequest.date | date: "dd MMMM yyyy" }}
                     </p>
                     <p class="font-bold">
@@ -89,18 +88,18 @@
                   class="my-2 h-0.5 w-full bg-zinc-200/50 dark:bg-zinc-700/50"
                 ></div>
                 <div class="w-full gap-3 @sm:flex">
-                  <div class="flex-1">
-                    <p class="text-2xs">Company</p>
+                  <!-- <div class="flex-1">
+                    <p class="text-xs">Company</p>
                     <p>
                       {{ purchaseRequest.business_unit.company.name }}
                     </p>
-                  </div>
+                  </div> -->
                   <div class="flex-1">
-                    <p class="text-2xs">Branch</p>
+                    <p class="text-xs">Branch</p>
                     <p>
                       {{
-                        purchaseRequest.business_unit.branch
-                          ? purchaseRequest.business_unit.branch.address
+                        purchaseRequest.branch
+                          ? purchaseRequest.branch.address
                           : "-"
                       }}
                     </p>

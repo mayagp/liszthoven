@@ -42,15 +42,18 @@ export class SidebarComponent {
   @Output() onToggleSidebar: EventEmitter<boolean> =
     new EventEmitter<boolean>();
   mainMenus: any = [];
+  currentUserRole = 0 || 3;
 
   constructor(
     private authService: AuthService,
     private layoutService: LayoutService,
     private router: Router,
   ) {
-    this.mainMenus = this.layoutService.getRoutes();
     this.authService.getCurrentUserData.subscribe((data: any) => {
       this.user = data;
+      this.currentUserRole = data.staff?.role ?? 0;
+
+      this.mainMenus = this.layoutService.getRoutes(this.currentUserRole);
     });
   }
 
@@ -66,7 +69,7 @@ export class SidebarComponent {
   checkActiveDropdownMenu() {
     const CUR_URL = this.router.url.split('/');
     this.mainMenus.map((mainMenu: any) => {
-      if (mainMenu.parentRoute) {
+      if (mainMenu.parentRoute && mainMenu.subMenus?.length) {
         mainMenu.subMenus.forEach((subMenu: any) => {
           let route = subMenu.route.split('/')[1];
           if (CUR_URL.includes(route)) {

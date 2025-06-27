@@ -7,6 +7,15 @@
 @import "./utils/buttons.css";
 @import "./vendors/prime-ng/prime-ng.css";
 
+@font-face {
+  font-family: "Questrial";
+  src: url("../fonts/Questrial-Regular.ttf") format("truetype");
+}
+
+* {
+  font-family: "Questrial", sans-serif;
+  /* font-size: 18px; */
+}
 .fc-animate-scale {
   @apply transition ease-in-out hover:scale-150;
 }

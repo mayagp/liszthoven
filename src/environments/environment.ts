@@ -5,8 +5,9 @@
 export const environment = {
   production: false,
   appName: 'Liszthoven Admin',
-  // API_URL: 'http://192.168.1.3:3001/api/v1',
-  API_URL: 'https://api.liszthoven.id/api/v1',
+  // API_URL: 'http://localhost:3000/api/v1',
+  API_URL: 'http://192.168.1.4:3000/api/v1',
+  // API_URL: 'https://api.liszthoven.id/api/v1',
   // API_URL: 'https://api-dev.liszthoven.id/api/v1',
   // appVersion: require('../../package.json').version + '-dev',
   locale_string: 'IDR',

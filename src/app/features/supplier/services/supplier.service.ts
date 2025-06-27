@@ -32,26 +32,26 @@ export class SupplierService {
         param = param.concat('&q=' + dataListParameter.searchQuery);
       }
     }
-    return this.http.get(`${ROOT_API}/admin/suppliers${param}`);
+    return this.http.get(`${ROOT_API}/suppliers${param}`);
   }
   getSupplier(id: string) {
-    return this.http.get(`${ROOT_API}/admin/suppliers/${id}`);
+    return this.http.get(`${ROOT_API}/suppliers/${id}`);
   }
   addSupplier(supplier: any) {
-    return this.http.post(`${ROOT_API}/admin/suppliers`, supplier);
+    return this.http.post(`${ROOT_API}/suppliers`, supplier);
   }
   updateSupplier(id: string, supplier: any) {
-    return this.http.put(`${ROOT_API}/admin/suppliers/${id}`, supplier);
+    return this.http.put(`${ROOT_API}/suppliers/${id}`, supplier);
   }
   deleteSupplier(id: string) {
-    return this.http.delete(`${ROOT_API}/admin/suppliers/${id}`);
+    return this.http.delete(`${ROOT_API}/suppliers/${id}`);
   }
   getSupplierBankAccounts(id: string) {
-    return this.http.get(`${ROOT_API}/admin/suppliers/${id}/details`);
+    return this.http.get(`${ROOT_API}/suppliers/${id}/details`);
   }
   addSupplierBankAccount(id: string, supplierBankAccount: any) {
     return this.http.post(
-      `${ROOT_API}/admin/suppliers/${id}/details`,
+      `${ROOT_API}/suppliers/${id}/details`,
       supplierBankAccount,
     );
   }
@@ -61,13 +61,16 @@ export class SupplierService {
     supplierBankAccount: any,
   ) {
     return this.http.put(
-      `${ROOT_API}/admin/suppliers/${id}/details/${supplierBankAccountId}`,
+      `${ROOT_API}/suppliers/${id}/details/${supplierBankAccountId}`,
       supplierBankAccount,
     );
   }
   deleteSupplierBankAccount(id: string, supplierBankAccountId: string) {
     return this.http.delete(
-      `${ROOT_API}/admin/suppliers/${id}/details/${supplierBankAccountId}`,
+      `${ROOT_API}/suppliers/${id}/details/${supplierBankAccountId}`,
     );
+  }
+  updateSupplierBasedOnUser(userId: string, bodyReq: any) {
+    return this.http.put(`${ROOT_API}/users/${userId}`, bodyReq);
   }
 }

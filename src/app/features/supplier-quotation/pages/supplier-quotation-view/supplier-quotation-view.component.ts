@@ -135,6 +135,8 @@ export class SupplierQuotationViewComponent {
   @Output() onUpdated = new EventEmitter();
   loading = false;
 
+  isSupplier: boolean = false;
+
   constructor(
     private layoutService: LayoutService,
     private supplierQuotationService: SupplierQuotationService,
@@ -146,6 +148,7 @@ export class SupplierQuotationViewComponent {
     private router: Router,
     private ability: PureAbility,
   ) {
+    this.isSupplier = this.ability.can('update-price', 'supplier-quotation');
     if (this.route.snapshot.paramMap.get('id')) {
       this.supplierQuotation.id = String(
         this.route.snapshot.paramMap.get('id'),
@@ -276,7 +279,7 @@ export class SupplierQuotationViewComponent {
       .subscribe((res: any) => {
         this.loading = false;
         this.supplierQuotation = res.data;
-        this.selectedSupplier = this.supplierQuotation.supplier;
+        this.selectedSupplier = this.supplierQuotation.supplier.user;
         this.supplierQuotationForm.patchValue({
           quotation_no: this.supplierQuotation.quotation_no,
           supplier_id: this.supplierQuotation.supplier_id,
@@ -313,7 +316,9 @@ export class SupplierQuotationViewComponent {
       id: new FormControl(supplierQuotationDetail.id),
       product: new FormControl(supplierQuotationDetail.product),
       quantity: new FormControl(supplierQuotationDetail.quantity),
-      price_per_unit: new FormControl(supplierQuotationDetail.price_per_unit),
+      price_per_unit: new FormControl(
+        supplierQuotationDetail.price_per_unit ?? 0,
+      ),
     });
   }
 
@@ -611,24 +616,29 @@ export class SupplierQuotationViewComponent {
   submit() {
     if (this.supplierQuotationForm.valid) {
       this.actionButtons[0].loading = true;
-      let bodyReqForm: FormGroup;
-      bodyReqForm = new FormGroup({
-        quotation_no: new FormControl(
-          this.supplierQuotationForm.value.quotation_no,
+
+      const formValue = this.supplierQuotationForm.value;
+
+      // Buat payload lengkap termasuk detail
+      const bodyReqForm = {
+        quotation_no: formValue.quotation_no,
+        supplier_id: Number(formValue.supplier_id),
+        date: formValue.date,
+        expected_delivery_date: formValue.expected_delivery_date,
+        tax: Number(formValue.tax),
+        note: formValue.note,
+        supplier_quotation_details: formValue.supplier_quotation_details.map(
+          (detail: any) => ({
+            id: detail.id,
+            product: detail.product,
+            quantity: detail.quantity,
+            price_per_unit: detail.price_per_unit, // pastikan ini terisi
+          }),
         ),
-        supplier_id: new FormControl(
-          Number(this.supplierQuotationForm.value.supplier_id),
-        ),
-        date: new FormControl(this.supplierQuotationForm.value.date),
-        expected_delivery_date: new FormControl(
-          this.supplierQuotationForm.value.expected_delivery_date,
-        ),
-        tax: new FormControl(Number(this.supplierQuotationForm.value.tax)),
-        note: new FormControl(this.supplierQuotationForm.value.note),
-      });
+      };
 
       this.supplierQuotationService
-        .updateSupplierQuotation(this.supplierQuotation.id, bodyReqForm.value)
+        .updateSupplierQuotation(this.supplierQuotation.id, bodyReqForm)
         .subscribe({
           next: (res: any) => {
             this.actionButtons[0].loading = false;
@@ -658,14 +668,9 @@ export class SupplierQuotationViewComponent {
           },
         });
     } else {
-      // Toast
       this.messageService.add({
         summary: 'Supplier Quotation',
         detail: 'Fill the form first!',
-        // lottieOption: {
-        //   path: '/assets/lotties/warning.json',
-        //   loop: false,
-        // },
       });
     }
   }

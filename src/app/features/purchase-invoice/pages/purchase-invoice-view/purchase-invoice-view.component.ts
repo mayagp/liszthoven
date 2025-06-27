@@ -33,6 +33,7 @@ import {
   faExclamationCircle,
   faSave,
   faRefresh,
+  faDownload,
 } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DatePickerModule } from 'primeng/datepicker';
@@ -54,6 +55,7 @@ import { PurchaseInvoice } from '../../interfaces/purchase-invoice';
 import { PurchaseInvoiceService } from '../../services/purchase-invoice.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ProgressSpinner } from 'primeng/progressspinner';
+import { FcFileInputComponent } from '../../../../shared/components/fc-file-input/fc-file-input.component';
 
 @Component({
   selector: 'app-purchase-invoice-view',
@@ -73,6 +75,7 @@ import { ProgressSpinner } from 'primeng/progressspinner';
     PurchaseInvoiceDetailComponent,
     InputNumberModule,
     ProgressSpinner,
+    FcFileInputComponent,
   ],
   templateUrl: './purchase-invoice-view.component.html',
   styleUrl: './purchase-invoice-view.component.css',
@@ -135,6 +138,14 @@ export class PurchaseInvoiceViewComponent {
         this.delete();
       },
     },
+    {
+      label: 'Download Invoice',
+      icon: faDownload,
+      hidden: true,
+      action: () => {
+        this.downloadPdf();
+      },
+    },
   ];
   filterButtons: any[] = [
     {
@@ -180,7 +191,8 @@ export class PurchaseInvoiceViewComponent {
       tax: new FormControl(null, Validators.required),
       note: new FormControl(null),
       supplier: new FormControl(null),
-      business_unit: new FormControl(null),
+      branch: new FormControl(null),
+      shipping_cost: new FormControl(null),
       purchase_invoice_details: new FormArray([]),
       purchase_invoice_documents: new FormArray([]),
     });
@@ -227,12 +239,13 @@ export class PurchaseInvoiceViewComponent {
             });
         }
         this.purchaseInvoiceForm.patchValue({
-          date: this.purchaseInvoice.date,
-          due_date: this.purchaseInvoice.due_date,
+          date: new Date(this.purchaseInvoice.date),
+          due_date: new Date(this.purchaseInvoice.due_date),
           tax: Number(this.purchaseInvoice.tax),
           note: this.purchaseInvoice.note,
+          shipping_cost: Number(this.purchaseInvoice.shipping_cost),
           supplier: this.purchaseInvoice.supplier,
-          business_unit: this.purchaseInvoice.business_unit,
+          branch: this.purchaseInvoice.branch,
         });
         this.purchaseInvoice.purchase_invoice_details.forEach(
           (purchaseInvoiceDetail) => {
@@ -301,8 +314,13 @@ export class PurchaseInvoiceViewComponent {
           this.actionButtons[4].hidden = false;
         break;
       case 2: // Approved
+        if (this.ability.can('download-pdf', 'purchase-invoice'))
+          this.actionButtons[5].hidden = false;
         break;
-      case 3: // cancelled
+      case 3:
+        if (this.ability.can('download-pdf', 'purchase-invoice'))
+          this.actionButtons[5].hidden = false;
+        break;
         break;
       default:
         break;
@@ -310,7 +328,8 @@ export class PurchaseInvoiceViewComponent {
   }
   generateHeader() {
     this.layoutService.setHeaderConfig({
-      title: `Purchase Invoice (${this.purchaseInvoice.status_name})`,
+      // title: `Purchase Invoice (${this.purchaseInvoice.status_name})`,
+      title: `Purchase Invoice`,
       icon: '',
       showHeader: true,
     });
@@ -543,7 +562,11 @@ export class PurchaseInvoiceViewComponent {
   }
 
   get grandTotalPrice() {
-    return this.subTotalPrice + this.purchaseInvoiceForm.value.tax;
+    return (
+      this.subTotalPrice +
+      this.purchaseInvoiceForm.value.tax +
+      this.purchaseInvoiceForm.value.shipping_cost
+    );
   }
 
   get subTotalPrice() {
@@ -725,6 +748,30 @@ export class PurchaseInvoiceViewComponent {
     }
   }
 
+  downloadPdf(): void {
+    const id = this.purchaseInvoice.id;
+    this.purchaseInvoiceService.getPurchaseInvoicePdf(id).subscribe({
+      next: (response: Blob) => {
+        const blob = new Blob([response], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `purchase-invoice-${id}.pdf`;
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to download PDF',
+        });
+      },
+    });
+  }
+
   submit() {
     if (this.purchaseInvoiceForm.valid) {
       let bodyReq = JSON.parse(JSON.stringify(this.purchaseInvoiceForm.value)); // deep copy
@@ -732,7 +779,7 @@ export class PurchaseInvoiceViewComponent {
       // Delete unuse field
       delete bodyReq.purchase_order;
       delete bodyReq.supplier;
-      delete bodyReq.business_unit;
+      delete bodyReq.branch;
       delete bodyReq.purchase_invoice_details;
       delete bodyReq.purchase_invoice_documents;
       this.actionButtons[0].loading = true;

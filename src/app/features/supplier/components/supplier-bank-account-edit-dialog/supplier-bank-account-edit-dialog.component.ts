@@ -50,7 +50,6 @@ export class SupplierBankAccountEditDialogComponent {
     this.supplierBankAccountForm = new FormGroup({
       account_no: new FormControl(this.supplierBankAccount.account_no),
       bank: new FormControl(this.supplierBankAccount.bank),
-      swift_code: new FormControl(this.supplierBankAccount.swift_code),
     });
   }
 

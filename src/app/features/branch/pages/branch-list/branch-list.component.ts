@@ -23,21 +23,21 @@ import { FcFilterDialogService } from '../../../../shared/components/fc-filter-d
 import { DataListParameter } from '../../../../shared/interfaces/data-list-parameter.interface';
 import { Branch } from '../../interfaces/branch';
 import { BranchService } from '../../services/branch.service';
-import { FcActionBarComponent } from '../../../../shared/components/fc-action-bar/fc-action-bar.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { BranchViewComponent } from '../branch-view/branch-view.component';
 import { PaginatorModule } from 'primeng/paginator';
 import { ProgressSpinner } from 'primeng/progressspinner';
+import { FcActionBarComponent } from '../../../../shared/components/fc-action-bar/fc-action-bar.component';
 
 @Component({
   selector: 'app-branch-list',
   imports: [
     CommonModule,
-    FcActionBarComponent,
     FontAwesomeModule,
     BranchViewComponent,
     PaginatorModule,
     ProgressSpinner,
+    FcActionBarComponent,
   ],
   templateUrl: './branch-list.component.html',
   styleUrl: './branch-list.component.css',
@@ -114,7 +114,7 @@ export class BranchListComponent {
     private dialogService: DialogService,
     private ability: PureAbility,
   ) {
-    this.actionButtons[0].hidden = !this.ability.can('create', 'branch');
+    // this.actionButtons[0].hidden = !this.ability.can('create', 'branch');
     this.layoutService.setHeaderConfig({
       title: 'Branches',
       icon: '',
@@ -260,7 +260,7 @@ export class BranchListComponent {
               ? Math.ceil(this.totalRecords / this.rows)
               : 1;
           // set data
-          this.branches = res.data.branches;
+          this.branches = res.data.branch;
           // set selected branch for quickview purpose
           if (!this.selectedBranch) {
             if (this.branches.length > 0) {

@@ -22,13 +22,13 @@ import { Subject } from 'rxjs';
 import { LayoutService } from '../../../../layout/services/layout.service';
 import { FcActionBarComponent } from '../../../../shared/components/fc-action-bar/fc-action-bar.component';
 import { FcInputTextComponent } from '../../../../shared/components/fc-input-text/fc-input-text.component';
-import { SupplierBankAccountAddDialogComponent } from '../../components/supplier-bank-account-add-dialog/supplier-bank-account-add-dialog.component';
-import { SupplierBankAccountEditDialogComponent } from '../../components/supplier-bank-account-edit-dialog/supplier-bank-account-edit-dialog.component';
-import { SupplierBankAccount } from '../../interfaces/supplier';
 import { SupplierService } from '../../services/supplier.service';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { FcInputTelComponent } from '../../../../shared/components/fc-input-tel/fc-input-tel.component';
+import { FcDirtyStateService } from '../../../../core/service/fc-dirty-state.service';
+import { Router } from '@angular/router';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-supplier-add',
@@ -64,14 +64,16 @@ export class SupplierAddComponent {
     },
   ];
 
-  supplierForm: FormGroup;
+  registerForm: FormGroup;
   constructor(
     private layoutService: LayoutService,
-    private supplierService: SupplierService,
+    private authService: AuthService,
+    private router: Router,
     private location: Location,
     private messageService: MessageService,
     private dialogService: DialogService,
     private ability: PureAbility,
+    private fcDirtyStateService: FcDirtyStateService,
   ) {
     this.actionButtons[0].hidden = !this.ability.can('create', 'supplier');
     this.layoutService.setHeaderConfig({
@@ -79,14 +81,19 @@ export class SupplierAddComponent {
       icon: '',
       showHeader: true,
     });
-    // init form
-    this.supplierForm = new FormGroup({
+    this.registerForm = new FormGroup({
       name: new FormControl('', Validators.required),
+      email: new FormControl('', Validators.required),
+      password: new FormControl('asdqwe123'), // default password
       address: new FormControl(''),
-      contact_no: new FormControl(''),
-      pic: new FormControl(''),
-      tax_no: new FormControl(''),
-      supplier_bank_accounts: new FormArray([]),
+      phone_no: new FormControl(''),
+      supplier: new FormGroup({
+        tax_no: new FormControl(''),
+        total_payable: new FormControl(''),
+        account_no: new FormControl(''),
+        bank: new FormControl(''),
+        swift_code: new FormControl(''),
+      }),
     });
   }
   ngOnInit(): void {
@@ -98,103 +105,42 @@ export class SupplierAddComponent {
     this.destroy$.complete();
     this.layoutService.setSearchConfig({ hide: false });
   }
-  // Manage supplier bank accounts
-  generateSupplierBankAccouns(
-    supplierBankAccount: SupplierBankAccount,
-  ): FormGroup {
-    return new FormGroup({
-      account_no: new FormControl(supplierBankAccount.account_no),
-      bank: new FormControl(supplierBankAccount.bank),
-      swift_code: new FormControl(supplierBankAccount.swift_code),
-    });
-  }
-  get supplierBankAccounts(): FormArray {
-    return this.supplierForm.get('supplier_bank_accounts') as FormArray;
-  }
-  addSupplierBankAccount() {
-    const ref = this.dialogService.open(SupplierBankAccountAddDialogComponent, {
-      showHeader: false,
-      contentStyle: {
-        padding: '0',
-      },
-      style: {
-        overflow: 'hidden',
-      },
-      styleClass: 'rounded-sm',
-      dismissableMask: true,
-      width: '450px',
-    });
-    ref.onClose.subscribe((supplierBankAccount: any) => {
-      if (supplierBankAccount) {
-        this.supplierBankAccounts.push(
-          this.generateSupplierBankAccouns(supplierBankAccount),
-        );
-      }
-    });
-  }
-  editSupplierBankAccountDetail(index: number) {
-    const ref = this.dialogService.open(
-      SupplierBankAccountEditDialogComponent,
-      {
-        data: {
-          title: 'Edit Purchase Payment Detail',
-          supplierBankAccount: this.supplierBankAccounts.value[index],
-        },
-        showHeader: false,
-        contentStyle: {
-          padding: '0',
-        },
-        style: {
-          overflow: 'hidden',
-        },
-        styleClass: 'rounded-sm',
-        dismissableMask: true,
-        width: '450px',
-      },
-    );
-    ref.onClose.subscribe((supplierBankAccount: any) => {
-      if (supplierBankAccount) {
-        this.supplierBankAccounts.at(index).patchValue(supplierBankAccount);
-      }
-    });
-  }
-  deleteSupplierBankAccountDetail(index: number) {
-    this.supplierBankAccounts.removeAt(index);
-  }
-  submit() {
-    if (this.supplierForm.valid) {
-      this.actionButtons[0].loading = true;
-      this.supplierService.addSupplier(this.supplierForm.value).subscribe({
-        next: (res) => {
-          this.actionButtons[0].loading = false;
-          this.location.back();
-          this.messageService.clear();
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Supplier added successfully',
-          });
-        },
-        error: (err) => {
-          this.actionButtons[0].loading = false;
 
-          this.messageService.clear();
-          this.messageService.add({
-            severity: 'error',
-            summary: 'error',
-            detail: err.message,
-          });
-        },
-      });
-    } else {
-      this.messageService.clear();
-      this.messageService.add({
-        severity: 'error',
-        summary: 'error',
-        detail: 'Please check your input',
-      });
-    }
+  get supplierForm(): FormGroup {
+    return this.registerForm.get('supplier') as FormGroup;
   }
+
+  submit() {
+    if (this.registerForm.invalid) {
+      this.fcDirtyStateService.checkFormValidation(this.registerForm);
+      return;
+    }
+
+    let bodyReq = { ...this.registerForm.value };
+    this.actionButtons[0].loading = true;
+
+    this.authService.registerSupplier(bodyReq).subscribe({
+      next: (res: any) => {
+        this.actionButtons[0].loading = false;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Supplier',
+          detail: res.message,
+        });
+        this.router.navigate(['/supplier/view/', res.data.supplier.id]);
+      },
+      error: (err) => {
+        this.actionButtons[0].loading = false;
+        this.messageService.clear();
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: err.message,
+        });
+      },
+    });
+  }
+
   back() {
     this.location.back();
   }

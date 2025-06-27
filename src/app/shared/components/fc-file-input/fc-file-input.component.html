@@ -1,0 +1,18 @@
+<label
+  [for]="uniqueId"
+  tabindex="0"
+  (keypress)="fileInput.click()"
+  class="relative"
+>
+  <ng-content></ng-content>
+  <input
+    (change)="uploadFile($event)"
+    [id]="uniqueId"
+    [disabled]="disabled"
+    tabindex="-1"
+    #fileInput
+    type="file"
+    class="absolute top-0 z-10 h-full w-full cursor-pointer opacity-0 disabled:cursor-default"
+    [multiple]="multiple"
+  />
+</label>

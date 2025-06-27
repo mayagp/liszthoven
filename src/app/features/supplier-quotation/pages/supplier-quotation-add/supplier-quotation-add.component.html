@@ -35,7 +35,7 @@
             Supplier
           </p>
           <p *ngIf="supplierQuotationForm.value.supplier" class="text-xs">
-            {{ supplierQuotationForm.value.supplier.name }}
+            {{ supplierQuotationForm.value.supplier.user.name }}
           </p>
           <p
             *ngIf="!supplierQuotationForm.value.supplier"
@@ -176,11 +176,6 @@
                       >
                         {{ supplierQuotationDetail.product.name }}
                       </a>
-                      <p>
-                        {{
-                          supplierQuotationDetail.price_per_unit | fcCurrency
-                        }}
-                      </p>
                     </div>
                   </div>
                   <div class="w-fit self-center @lg:flex-1">
@@ -189,14 +184,14 @@
                       Unit
                     </p>
                   </div>
-                  <div class="w-full text-right @lg:flex-1">
+                  <!-- <div class="w-full text-right @lg:flex-1">
                     <p>
                       {{
                         supplierQuotationDetail.quantity *
                           supplierQuotationDetail.price_per_unit | fcCurrency
                       }}
                     </p>
-                  </div>
+                  </div> -->
                   <div class="flex w-full justify-end gap-1 @lg:w-fit">
                     <button
                       type="button"
@@ -232,7 +227,7 @@
                 </div>
               </div>
             </div>
-            <div class="flex justify-end" #detailSummary>
+            <!-- <div class="flex justify-end" #detailSummary>
               <div
                 class="w-full rounded-md bg-zinc-100/70 p-3 dark:bg-zinc-800 lg:w-96"
               >
@@ -281,7 +276,7 @@
                   <p>{{ grandTotalPrice | fcCurrency }}</p>
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
           <div
             class="flex h-full w-full items-center justify-center"
@@ -294,7 +289,7 @@
         </div>
       </div>
     </div>
-    <div
+    <!-- <div
       (click)="scrollToBottom()"
       #stickyDetailSummary
       class="sticky bottom-0 left-0 mt-2 flex w-full cursor-pointer items-center justify-between gap-4 rounded-md border border-zinc-200 bg-zinc-100/70 p-3 transition duration-300 ease-in-out dark:border-zinc-700 dark:bg-zinc-800"
@@ -308,7 +303,7 @@
           <p class="text-lg font-bold">{{ grandTotalPrice | fcCurrency }}</p>
         </div>
       </div>
-    </div>
+    </div> -->
   </form>
 </div>
 

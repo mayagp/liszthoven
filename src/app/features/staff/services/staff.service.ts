@@ -24,9 +24,6 @@ export class StaffService {
     if (dataListParameter.filterObj) {
       param = param.concat('&' + dataListParameter.filterObj);
     }
-    if (dataListParameter.get_teacher) {
-      param = param.concat(`&get_teacher=${dataListParameter.get_teacher}`);
-    }
 
     if (dataListParameter.searchQuery) {
       if (!dataListParameter.sortBy) {
@@ -35,37 +32,31 @@ export class StaffService {
         param = param.concat('&q=' + dataListParameter.searchQuery);
       }
     }
-    return this.http.get(`${ROOT_API}/admin/staff/${param}`);
+    return this.http.get(`${ROOT_API}/staff/${param}`);
   }
 
   getStaff(id: string) {
-    return this.http.get(`${ROOT_API}/admin/staff/${id}`);
+    return this.http.get(`${ROOT_API}/staff/${id}`);
   }
 
   updateStaffBasedOnUser(userId: string, bodyReq: any) {
-    return this.http.put(`${ROOT_API}/admin/users/${userId}`, bodyReq);
+    return this.http.put(`${ROOT_API}/users/${userId}`, bodyReq);
   }
 
   deleteUser(id: string) {
-    return this.http.delete(`${ROOT_API}/admin/users/${id}`);
+    return this.http.delete(`${ROOT_API}/users/${id}`);
   }
 
   updateProfilePicture(id: string, user: any) {
-    return this.http.post(
-      `${ROOT_API}/admin/users/${id}/profile-picture`,
-      user,
-    );
+    return this.http.post(`${ROOT_API}/users/${id}/profile-picture`, user);
   }
 
   assignBusinessUnit(data: any, staffId: string) {
-    return this.http.put(
-      `${ROOT_API}/admin/users/staff/${staffId}/assign`,
-      data,
-    );
+    return this.http.put(`${ROOT_API}/users/staff/${staffId}/assign`, data);
   }
 
   deleteBusinessUnit(businessUnitId: number, staffId: string) {
-    return this.http.delete(`${ROOT_API}/admin/users/staff/${staffId}/remove`, {
+    return this.http.delete(`${ROOT_API}/users/staff/${staffId}/remove`, {
       body: {
         business_units: [
           {

@@ -91,18 +91,18 @@
           </div>
         </div>
       </div>
-      <!-- Bussiness Unit and Supplier -->
+      <!-- Branch and Supplier -->
       <div class="grid gap-3 lg:grid-cols-2">
         <div
-          (click)="onSelectBusinessUnit()"
+          (click)="onSelectBranch()"
           class="form-input flex cursor-pointer items-center rounded-lg border bg-white p-2 dark:bg-zinc-800 dark:hover:bg-zinc-700"
           [ngClass]="{
             'border-red-400':
-              purchaseOrderForm.get('business_unit')?.invalid &&
-              purchaseOrderForm.get('business_unit')?.touched,
+              purchaseOrderForm.get('branch')?.invalid &&
+              purchaseOrderForm.get('branch')?.touched,
             'border-zinc-200 dark:border-zinc-700':
-              purchaseOrderForm.get('business_unit')?.valid ||
-              !purchaseOrderForm.get('business_unit')?.touched,
+              purchaseOrderForm.get('branch')?.valid ||
+              !purchaseOrderForm.get('branch')?.touched,
           }"
         >
           <div class="flex flex-1 flex-col">
@@ -111,12 +111,11 @@
             >
               Branch
             </p>
-            <p *ngIf="purchaseOrderForm.value.business_unit" class="text-xs">
-              {{ purchaseOrderForm.value.business_unit.branch?.address }}
-              <!-- ({{ purchaseOrderForm.value.business_unit.company.name }}) -->
+            <p *ngIf="purchaseOrderForm.value.branch" class="text-xs">
+              {{ purchaseOrderForm.value.branch.address }}
             </p>
             <p
-              *ngIf="!purchaseOrderForm.value.business_unit"
+              *ngIf="!purchaseOrderForm.value.branch"
               class="text-xs dark:text-gray-400"
             >
               Select Branch
@@ -124,9 +123,9 @@
           </div>
           <div class="flex items-center gap-2">
             <button
-              *ngIf="purchaseOrderForm.value.business_unit"
+              *ngIf="purchaseOrderForm.value.branch"
               type="button"
-              (click)="removeBusinessUnit()"
+              (click)="removeBranch()"
             >
               <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
             </button>
@@ -153,7 +152,7 @@
               Supplier
             </p>
             <p *ngIf="purchaseOrderForm.value.supplier" class="text-xs">
-              {{ purchaseOrderForm.value.supplier.name }}
+              {{ purchaseOrderForm.value.supplier.user.name }}
             </p>
             <p
               *ngIf="!purchaseOrderForm.value.supplier"

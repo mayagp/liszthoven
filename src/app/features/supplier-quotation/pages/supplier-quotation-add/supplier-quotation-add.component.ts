@@ -51,7 +51,6 @@ import { InputNumberModule } from 'primeng/inputnumber';
     ToastModule,
     ConfirmDialogModule,
     FcImagePreviewComponent,
-    FcCurrencyPipe,
     RouterModule,
     DatePickerModule,
     IftaLabelModule,
@@ -325,7 +324,6 @@ export class SupplierQuotationAddComponent {
           return {
             product_id: prd.product.id,
             quantity: prd.quantity,
-            price_per_unit: prd.price_per_unit,
           };
         });
     }

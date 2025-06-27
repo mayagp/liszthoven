@@ -131,18 +131,15 @@ export class PurchasePaymentDetailAddDialogComponent {
   ) {
     this.setParam();
     this.loading = true;
-    const filterBusinessUnit = this.user.staff.business_units.reduce(
-      (x, businessUnit, index) => {
-        return (x += `&business_unit_id[${index}]=${businessUnit.id}`);
-      },
-      '',
-    );
+    const filterBranch = this.user.staff.branch
+      ? `&branch_id[0]=${this.user.staff.branch.id}`
+      : '';
     let dataListParameter: DataListParameter = {} as DataListParameter;
     dataListParameter.rows = this.rows;
     dataListParameter.page = this.page;
     dataListParameter.sortBy = sortBy;
     dataListParameter.filterObj =
-      filterObj + `status=2&with_filter=1${filterBusinessUnit}`;
+      filterObj + `status=2&with_filter=1${filterBranch}`;
     if (this.supplier.id) {
       dataListParameter.filterObj += `&supplier_id=${this.supplier.id}`;
     }

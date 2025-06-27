@@ -25,6 +25,7 @@
             class="p-input h-8 w-full text-xs px-1 bg-zinc-800 rounded-md focus:outline-none focus:ring-0 focus:border-transparent"
             placeholder="Search Product"
             [(ngModel)]="searchQuery"
+            [ngModelOptions]="{ standalone: true }"
             fcDebounceKeyup
             (onEvent)="search()"
           />
@@ -70,7 +71,7 @@
                   </div>
                   <div class="text-xs">
                     <p class="font-bold capitalize">{{ product.name }}</p>
-                    <p>Stock: {{ product.quantity | number }} Pcs</p>
+                    <!-- <p>Stock: {{ product.quantity | number }} Pcs</p> -->
                     <p class="font-bold">
                       {{ product.base_price | fcCurrency }}/pcs
                     </p>
@@ -89,7 +90,7 @@
         <div class="py-[15vh] text-center" *ngIf="!products.length && !loading">
           <img
             class="mx-auto w-32 rounded-lg object-cover"
-            src="assets/images/bg/empty.png"
+            src="images/bg/empty.png"
           />
           <p>No Product Data</p>
         </div>

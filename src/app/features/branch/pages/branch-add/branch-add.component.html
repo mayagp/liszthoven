@@ -8,9 +8,9 @@
     <form class="mx-auto mt-2 grid w-full gap-3" [formGroup]="branchForm">
       <div class="grid gap-3 @lg:grid-cols-2">
         <fc-input-text
-          title="Address"
-          formControlName="address"
-          placeholder="Enter Branch Address"
+          title="Name"
+          formControlName="name"
+          placeholder="Enter Branch Name"
         ></fc-input-text>
         <fc-input-text
           title="Email"
@@ -36,6 +36,11 @@
           title="Internet Bill No"
           formControlName="internet_bill_no"
           placeholder="Enter Internet Bill No"
+        ></fc-input-text>
+        <fc-input-text
+          title="Address"
+          formControlName="address"
+          placeholder="Enter Branch Address"
         ></fc-input-text>
       </div>
 

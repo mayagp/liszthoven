@@ -53,6 +53,7 @@ import { FcImagePreviewComponent } from '../../../../shared/components/fc-image-
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { FcCurrencyPipe } from '../../../../shared/pipes/fc-currency.pipe';
 import { ProgressSpinner } from 'primeng/progressspinner';
+import { FcFileInputComponent } from '../../../../shared/components/fc-file-input/fc-file-input.component';
 
 @Component({
   selector: 'app-purchase-payment-view',
@@ -71,6 +72,7 @@ import { ProgressSpinner } from 'primeng/progressspinner';
     FcImagePreviewComponent,
     FcCurrencyPipe,
     ProgressSpinner,
+    FcFileInputComponent,
   ],
   templateUrl: './purchase-payment-view.component.html',
   styleUrl: './purchase-payment-view.component.css',
@@ -170,7 +172,6 @@ export class PurchasePaymentViewComponent {
       note: new FormControl(null, Validators.required),
       purchase_payment_allocations: new FormArray([]),
       purchase_payment_documents: new FormArray([]),
-      purchase_payment_coas: new FormArray([]),
     });
   }
   ngOnInit(): void {
@@ -273,8 +274,13 @@ export class PurchasePaymentViewComponent {
       .subscribe((res: any) => {
         this.loading = false;
         this.purchasePayment = res.data;
-        this.loadPurchasePaymentCoa();
-        this.purchasePaymentForm.patchValue(this.purchasePayment);
+        this.purchasePaymentForm.patchValue({
+          ...this.purchasePayment,
+          date: this.purchasePayment.date
+            ? new Date(this.purchasePayment.date)
+            : null,
+        });
+
         this.purchasePayment.purchase_payment_allocations.forEach(
           (purchasePaymentDetail: any) => {
             this.purchasePaymentDetails.push(
@@ -311,21 +317,6 @@ export class PurchasePaymentViewComponent {
         setTimeout(() => {
           this.setPurchasePaymentDetailSummaryVisibility();
         }, 100);
-      });
-  }
-
-  loadingPurchasePaymentCoa = false;
-  loadPurchasePaymentCoa() {
-    this.loadingPurchasePaymentCoa = true;
-    this.purchasePaymentService
-      .getPurchasePaymentCoa(this.purchasePayment.id)
-      .subscribe((res: any) => {
-        this.loadingPurchasePaymentCoa = false;
-        res.data.purchase_payment_coas.forEach((purchasePaymentCoa: any) => {
-          this.coaFilesArray.push(
-            this.generatePurchasePaymentCoa(purchasePaymentCoa),
-          );
-        });
       });
   }
 
@@ -695,173 +686,6 @@ export class PurchasePaymentViewComponent {
       chart_of_account: new FormControl(purchasePaymentCoa.chart_of_account),
       loading_edit: new FormControl(false),
       loading_delete: new FormControl(false),
-    });
-  }
-
-  get coaFilesArray() {
-    return this.purchasePaymentForm.get('purchase_payment_coas') as FormArray;
-  }
-
-  // loadingAddPurchasePaymentCoa = false;
-  // addPurchasePaymentCoa() {
-  //   const ref = this.dialogService.open(PurchasePaymentCoaAddDialogComponent, {
-  //     data: {
-  //       title: 'Add Purchase Payment Detail',
-  //     },
-  //     showHeader: false,
-  //     contentStyle: {
-  //       padding: '0',
-  //     },
-  //     style: {
-  //       overflow: 'hidden',
-  //     },
-  //     styleClass: 'rounded-sm',
-  //     dismissableMask: true,
-  //     width: '450px',
-  //   });
-  //   ref.onClose.subscribe((purchasePaymentCoa) => {
-  //     if (purchasePaymentCoa) {
-  //       let bodyReq = {
-  //         amount: purchasePaymentCoa.amount,
-  //         description: purchasePaymentCoa.description,
-  //         chart_of_account_id: purchasePaymentCoa.chart_of_account.id,
-  //       };
-  //       this.loadingAddPurchasePaymentCoa = true;
-  //       this.purchasePaymentService
-  //         .addPurchasePaymentCoa(this.purchasePayment.id, bodyReq)
-  //         .subscribe({
-  //           next: (res: any) => {
-  //             this.loadingAddPurchasePaymentCoa = false;
-  //             this.coaFilesArray.push(
-  //               this.generatePurchasePaymentCoa({
-  //                 ...res.data,
-  //                 chart_of_account: purchasePaymentCoa.chart_of_account,
-  //               })
-  //             );
-  //             this.messageService.clear();
-  //             this.messageService.add({
-  //               severity: 'success',
-  //               header: 'Purchase Payment Coa',
-  //               detail: res.message,
-  //             });
-  //           },
-  //           error: (err) => {
-  //             this.loadingAddPurchasePaymentCoa = false;
-  //             this.messageService.clear();
-  //             this.messageService.add({
-  //               severity: 'error',
-  //               header: 'Purchase Payment Coa',
-  //               detail: err.message,
-  //             });
-  //           },
-  //         });
-  //     }
-  //   });
-  // }
-
-  // editPurchasePaymentCoa(id: number, index: number) {
-  //   const ref = this.dialogService.open(PurchasePaymentCoaAddDialogComponent, {
-  //     data: {
-  //       title: 'Edit Purchase Payment Coa',
-  //       purchasePaymentCoa: this.coaFilesArray.value[index],
-  //     },
-  //     showHeader: false,
-  //     contentStyle: {
-  //       padding: '0',
-  //     },
-  //     style: {
-  //       overflow: 'hidden',
-  //     },
-  //     styleClass: 'rounded-sm',
-  //     dismissableMask: true,
-  //     width: '450px',
-  //   });
-  //   ref.onClose.subscribe((purchasePaymentCoa) => {
-  //     if (purchasePaymentCoa) {
-  //       this.coaFilesArray.at(index).patchValue({
-  //         loading_edit: true,
-  //       });
-  //       let bodyReq = {
-  //         amount: purchasePaymentCoa.amount,
-  //         description: purchasePaymentCoa.description,
-  //         chart_of_account_id: purchasePaymentCoa.chart_of_account.id,
-  //       };
-  //       this.purchasePaymentService
-  //         .updatePurchasePaymentCoa(this.purchasePayment.id, id, bodyReq)
-  //         .subscribe({
-  //           next: (res: any) => {
-  //             this.coaFilesArray.at(index).patchValue({
-  //               amount: purchasePaymentCoa.amount,
-  //               description: purchasePaymentCoa.description,
-  //               chart_of_account: purchasePaymentCoa.chart_of_account,
-  //               loading_edit: false,
-  //             });
-  //             this.messageService.clear();
-  //             this.messageService.add({
-  //               severity: 'success',
-  //               header: 'Purchase Payment Coa',
-  //               message: res.message,
-  //             });
-  //           },
-  //           error: (err) => {
-  //             this.coaFilesArray.at(index).patchValue({
-  //               loading_edit: false,
-  //             });
-  //             this.messageService.clear();
-  //             this.messageService.add({
-  //               severity: 'error',
-  //               header: 'Purchase Payment Coa',
-  //               message: err.message,
-  //             });
-  //           },
-  //         });
-  //     }
-  //   });
-  // }
-
-  deletePurchasePaymentCoa(id: number, index: number) {
-    this.confirmationService.confirm({
-      header: 'Confirmation',
-      message: 'Are you sure to delete this purchase payment coa?',
-      acceptLabel: 'Yes',
-      rejectLabel: 'No',
-      accept: () => {
-        this.coaFilesArray.at(index).patchValue({
-          loading_delete: true,
-        });
-        this.purchasePaymentService
-          .deletePurchasePaymentCoa(this.purchasePayment.id, id)
-          .subscribe({
-            next: (res: any) => {
-              this.coaFilesArray.at(index).patchValue({
-                loading_delete: false,
-              });
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Purchase Payment Coa',
-                detail: res.message,
-              });
-              this.coaFilesArray.removeAt(index);
-            },
-            error: (err) => {
-              this.coaFilesArray.at(index).patchValue({
-                loading_delete: false,
-              });
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Purchase Payment Coa',
-                detail: err.message,
-              });
-            },
-          });
-      },
-      reject: () => {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Cancelled',
-          detail: 'Delete operation was cancelled',
-        });
-      },
     });
   }
 

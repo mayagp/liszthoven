@@ -1,1 +1,427 @@
-<p>staff-view works!</p>
+<div class="flex h-full flex-col space-y-3 @container">
+  <app-fc-action-bar
+    [isHasBackButton]="true"
+    [actionButtons]="actionButtons"
+    [filterButtons]="filterButtons"
+  ></app-fc-action-bar>
+
+  <div class="flex h-full flex-col">
+    <div
+      class="body flex w-full flex-1 flex-col overflow-y-auto rounded-b-md rounded-tr-md border p-2 text-xs dark:border-zinc-700"
+    >
+      <div class="tab-view relative flex-1 rounded-lg rounded-tl-none">
+        <div class="h-full">
+          <ng-container>
+            <form
+              *ngIf="!loading"
+              [formGroup]="registerForm"
+              class="flex w-full flex-col gap-3 @2xl:flex-row"
+            >
+              <div class="w-full @2xl:w-[350px]">
+                <!-- <fc-file-input
+                  [accept]="'image/*'"
+                  *ngIf="!registerForm.value.file"
+                  (onInput)="changeProfile($event)">
+                  <button
+                    type="button"
+                    [ngClass]="{
+                      'opacity-50': loadingProfileImage
+                    }"
+                    [disabled]="loadingProfileImage"
+                    class="flex h-[200px] w-full flex-col items-center justify-center gap-2 overflow-y-auto rounded-md border bg-zinc-100/70 p-5 dark:border-zinc-800 dark:bg-zinc-800">
+                    <fa-icon
+                      class="text-3xl"
+                      [spin]="loadingProfileImage"
+                      [icon]="
+                        loadingProfileImage ? faSpinner : faCloudArrowUp
+                      " />
+                    <p>Drag or Upload Image Here</p>
+                  </button>
+                </fc-file-input> -->
+                <div
+                  class="flex flex-col gap-2"
+                  *ngIf="registerForm.value.file"
+                >
+                  <fc-image-preview
+                    class="w-full"
+                    [preview]="true"
+                    [src]="
+                      registerForm.value.file.img_src
+                        ? registerForm.value.file.img_src
+                        : registerForm.value.file
+                    "
+                    [alt]="'Happy Beauty'"
+                  >
+                  </fc-image-preview>
+                  <!-- <fc-file-input
+                    [accept]="'image/*'"
+                    (onInput)="changeProfile($event)">
+                    <button
+                      [ngClass]="{
+                        'opacity-50': loadingProfileImage
+                      }"
+                      [disabled]="loadingProfileImage"
+                      type="button"
+                      class="flex w-full items-center justify-center gap-2 rounded-md bg-zinc-100/70 p-2 text-sm hover:bg-zinc-200 dark:bg-zinc-800 hover:dark:bg-zinc-700">
+                      <fa-icon
+                        [fixedWidth]="true"
+                        [spin]="loadingProfileImage"
+                        [icon]="
+                          loadingProfileImage ? faSpinner : faCloudArrowUp
+                        "></fa-icon>
+                      Change Image
+                    </button>
+                  </fc-file-input> -->
+                </div>
+              </div>
+
+              <div class="grid w-full flex-1 gap-3 @xl:grid-cols-2">
+                <fc-input-text
+                  title="Name"
+                  formControlName="name"
+                  placeholder="Enter Your Name"
+                />
+                <fc-input-text
+                  title="Username"
+                  formControlName="username"
+                  placeholder="Enter Your Username"
+                  [disabled]="true"
+                ></fc-input-text>
+                <ng-container formGroupName="staff">
+                  <fc-input-text
+                    title="Identification Number"
+                    formControlName="identification_number"
+                    placeholder="Enter Your Identification Number"
+                  ></fc-input-text>
+                  <fc-input-text
+                    title="Tax Number"
+                    formControlName="tax_number"
+                    placeholder="Enter Your Tax Number"
+                  ></fc-input-text>
+                  <fc-input-text
+                    title="BPJS Number"
+                    formControlName="bpjs_number"
+                    placeholder="Enter Your BPJS Number"
+                  ></fc-input-text>
+                  <div class="card w-full">
+                    <p-iftalabel>
+                      <p-datepicker
+                        [style]="{ width: '100%' }"
+                        inputId="icondisplay"
+                        showIcon
+                        iconDisplay="input"
+                        [showButtonBar]="true"
+                        formControlName="working_since"
+                        placeholder="Select Working Since"
+                        appendTo="body"
+                        dateFormat="dd/mm/yy"
+                        [inputStyle]="{
+                          'background-color': '#27272a',
+                          border: '1px solid #3f3f46',
+                          color: '#ffffff',
+                          'font-size': '12px',
+                          'line-height': '1.7',
+                        }"
+                      />
+                      <label
+                        for="xs"
+                        style="
+                          font-weight: 500 !important;
+                          color: #ffffff99 !important;
+                        "
+                        >Working Since</label
+                      >
+                    </p-iftalabel>
+                  </div>
+                </ng-container>
+                <fc-input-text
+                  title="Email"
+                  formControlName="email"
+                  [disabled]="true"
+                  placeholder="Enter Your Email"
+                ></fc-input-text>
+                <fc-input-tel
+                  title="Phone Number"
+                  formControlName="phone_no"
+                  placeholder="Enter Your Phone Number"
+                >
+                </fc-input-tel>
+                <fc-input-text
+                  title="Address"
+                  formControlName="address"
+                  placeholder="Enter Staff Address"
+                />
+                <ng-container formGroupName="staff">
+                  <div class="card flex justify-center">
+                    <p-iftalabel class="w-full">
+                      <p-select
+                        formControlName="role"
+                        inputId="dd-type"
+                        [options]="roles"
+                        optionLabel="label"
+                        optionValue="id"
+                        placeholder="Select Role Name"
+                        styleClass="w-full"
+                        [style]="{
+                          'background-color': '#27272a',
+                          color: '#ffffff',
+                          border: '1px solid #3f3f46',
+                          'line-height': '1.5',
+                        }"
+                      >
+                      </p-select>
+                      <label
+                        for="dd-type"
+                        style="
+                          font-weight: 500 !important;
+                          color: #ffffff99 !important;
+                          line-height: 1.4 !important;
+                        "
+                        >Role Name</label
+                      >
+                    </p-iftalabel>
+                  </div>
+                  <div
+                    class="form-input flex cursor-pointer items-center rounded-lg border border-zinc-200 bg-whita p-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+                  >
+                    <div
+                      class="flex flex-1 flex-col"
+                      (click)="onSelectBranch()"
+                    >
+                      <p
+                        class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+                      >
+                        Branch
+                      </p>
+                      <p *ngIf="staffForm.value.branch" class="text-xs">
+                        {{ staffForm.value.branch?.address }}
+                      </p>
+                      <p
+                        *ngIf="!staffForm.get('branch')?.value"
+                        class="text-xs dark:text-gray-400"
+                      >
+                        Select Branch
+                      </p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <button
+                        *ngIf="staffForm.get('branch')?.value"
+                        type="button"
+                        (click)="removeBranch()"
+                      >
+                        <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
+                      </button>
+
+                      <button type="button" (click)="onSelectBranch()">
+                        <fa-icon
+                          [fixedWidth]="true"
+                          [icon]="faChevronDown"
+                        ></fa-icon>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="@xl:col-span-2">
+                    <fc-textarea
+                      title="Note"
+                      formControlName="note"
+                      placeholder="Enter Staff Note"
+                    />
+                  </div>
+                </ng-container>
+                <!-- Upload Document -->
+                <!-- <ng-container *ngIf="!loadingDocument">
+                  <div class="@xl:col-span-2">
+                    <fc-file-input
+                      *ngIf="!documentFilesArray.length"
+                      [multiple]="true"
+                      (onInput)="addMultipleFiles($event)">
+                      <div
+                        class="flex h-[200px] flex-col items-center justify-center gap-2 overflow-y-auto rounded-md border bg-zinc-100/70 p-5 dark:border-zinc-800 dark:bg-zinc-800">
+                        <fa-icon class="text-3xl" [icon]="faCloudArrowUp" />
+                        <p>Drag or Upload Documents Here</p>
+                      </div>
+                    </fc-file-input>
+                  </div>
+                  <div
+                    *ngIf="documentFilesArray.length"
+                    class="flex h-[200px] flex-col gap-2 rounded-md bg-zinc-100/70 p-2 @xl:col-span-2 dark:bg-zinc-800">
+                    <div class="h-[180px] flex-1 overflow-y-auto">
+                      <div class="grid gap-1 @md:grid-cols-2 @3xl:grid-cols-3">
+                        <ng-container formArrayName="user_documents">
+                          <ng-container
+                            *ngFor="
+                              let document of documentFilesArray.controls;
+                              let i = index
+                            "
+                            [formGroupName]="i">
+                            <div
+                              class="flex w-full items-center justify-between gap-2 rounded-md bg-white p-2 dark:border-neutral-900 dark:bg-neutral-900">
+                              <div class="flex w-full items-center gap-3">
+                                <div
+                                  *ngIf="
+                                    fileType(
+                                      documentFilesArray.value[i].file_type
+                                    ) == 'file'
+                                  "
+                                  class="flex cursor-pointer items-center justify-center rounded-md bg-zinc-100/70 p-2 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700">
+                                  <fa-icon [icon]="faFile" />
+                                </div>
+                                <ng-container
+                                  *ngIf="
+                                    fileType(
+                                      documentFilesArray.value[i].file_type
+                                    ) == 'image'
+                                  ">
+                                  <fc-image-preview
+                                    class="w-[70px]"
+                                    [preview]="true"
+                                    [src]="documentFilesArray.value[i].src">
+                                  </fc-image-preview>
+                                </ng-container>
+                                <div
+                                  *ngIf="
+                                    fileType(
+                                      documentFilesArray.value[i].file_type
+                                    ) == 'pdf'
+                                  "
+                                  class="flex cursor-pointer items-center justify-center rounded-md bg-zinc-100/70 p-2 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700">
+                                  PDF
+                                </div>
+                                <div
+                                  *ngIf="
+                                    documentFilesArray.value[i]
+                                      .inputChangeName == false
+                                  ">
+                                  <p class="text-md cursor-pointer">
+                                    {{ documentFilesArray.value[i].name }}
+                                  </p>
+                                  <p class="text-2xs text-slate-400">
+                                    {{ documentFilesArray.value[i].note }}
+                                  </p>
+                                </div>
+                                <div class="w-full space-y-2">
+                                  <label
+                                    *ngIf="
+                                      documentFilesArray.value[i]
+                                        .inputChangeName
+                                    "
+                                    class="form-input flex w-full items-center gap-2 rounded-lg border border-zinc-200 bg-white p-2 focus-within:border-sky-600/50 dark:border-zinc-700 dark:bg-zinc-800 focus-within:dark:border-zinc-700">
+                                    <div class="flex flex-1 flex-col">
+                                      <input
+                                        class="m-0 w-full bg-white p-0 text-xs ring-0 focus:outline-none focus:ring-0 dark:bg-zinc-800"
+                                        type="text"
+                                        formControlName="name"
+                                        placeholder="Enter Document Name" />
+                                    </div>
+                                  </label>
+                                  <label
+                                    *ngIf="
+                                      documentFilesArray.value[i]
+                                        .inputChangeName
+                                    "
+                                    class="form-input flex w-full items-center gap-2 rounded-lg border border-zinc-200 bg-white p-2 focus-within:border-sky-600/50 dark:border-zinc-700 dark:bg-zinc-800 focus-within:dark:border-zinc-700">
+                                    <div class="flex flex-1 flex-col">
+                                      <input
+                                        class="m-0 w-full bg-white p-0 text-xs ring-0 focus:outline-none focus:ring-0 dark:bg-zinc-800"
+                                        type="text"
+                                        formControlName="note"
+                                        placeholder="Enter Document Note" />
+                                    </div>
+                                  </label>
+                                </div>
+                              </div>
+                              <div class="flex items-center gap-2">
+                                <button
+                                  [disabled]="
+                                    documentFilesArray.value[i].loading_edit
+                                  "
+                                  [ngClass]="{
+                                    'opacity-50':
+                                      documentFilesArray.value[i].loading_edit
+                                  }"
+                                  (click)="
+                                    changeDocumentName(
+                                      i,
+                                      documentFilesArray.value[i].id
+                                    )
+                                  "
+                                  type="button"
+                                  class="flex items-center justify-center rounded-md bg-zinc-100/70 p-2 hover:bg-zinc-200 dark:border-zinc-800 dark:bg-zinc-800 hover:dark:bg-zinc-700">
+                                  <fa-icon
+                                    [spin]="
+                                      documentFilesArray.value[i].loading_edit
+                                    "
+                                    [icon]="
+                                      documentFilesArray.value[i]
+                                        .inputChangeName
+                                        ? documentFilesArray.value[i]
+                                            .loading_edit
+                                          ? faSpinner
+                                          : faFloppyDisk
+                                        : faPencil
+                                    " />
+                                </button>
+
+                                <a
+                                  [href]="documentFilesArray.value[i].src"
+                                  target="_blank"
+                                  class="flex items-center justify-center rounded-md bg-green-600 p-2 hover:bg-green-700">
+                                  <fa-icon [icon]="faDownload" />
+                                </a>
+                                <button
+                                  [disabled]="
+                                    documentFilesArray.value[i].loading_delete
+                                  "
+                                  [ngClass]="{
+                                    'opacity-50':
+                                      documentFilesArray.value[i].loading_delete
+                                  }"
+                                  (click)="
+                                    removeDocument(
+                                      i,
+                                      documentFilesArray.value[i].id
+                                    )
+                                  "
+                                  type="button"
+                                  class="flex items-center justify-center rounded-md p-2 hover:bg-zinc-200 hover:dark:bg-zinc-700">
+                                  <fa-icon
+                                    [spin]="
+                                      documentFilesArray.value[i].loading_delete
+                                    "
+                                    [icon]="
+                                      documentFilesArray.value[i].loading_delete
+                                        ? faSpinner
+                                        : faXmark
+                                    " />
+                                </button>
+                              </div>
+                            </div>
+                          </ng-container>
+                        </ng-container>
+                      </div>
+                    </div>
+                    <fc-file-input
+                      [multiple]="true"
+                      (onInput)="addMultipleFiles($event)">
+                      <div
+                        class="flex w-full items-center justify-center gap-2 rounded-md bg-white px-2 py-3 dark:bg-neutral-900">
+                        <fa-icon
+                          class="text-md"
+                          [fixedWidth]="true"
+                          [icon]="faCloudArrowUp" />
+                        Upload More
+                      </div>
+                    </fc-file-input>
+                  </div>
+                </ng-container> -->
+              </div>
+            </form>
+            <div class="w-full py-[20vh] text-center" *ngIf="loading">
+              <p-progress-spinner ariaLabel="loading" />
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

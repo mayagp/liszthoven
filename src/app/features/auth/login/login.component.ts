@@ -86,7 +86,7 @@ export class LoginComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Login Gagal',
-          detail: err.message || 'Cek kembali username dan password!',
+          detail: 'Cek kembali username dan password!',
         });
         this.loading = false;
       },

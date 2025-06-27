@@ -23,7 +23,7 @@
             <div class="flex items-center gap-2">
               <fa-icon [fixedWidth]="true" [icon]="faBoxesStocked"></fa-icon>
               <div class="grid">
-                <p class="text-2xs">{{ inventory.date | date }} - Stock In</p>
+                <p class="text-xs">{{ inventory.date | date }} - Stock In</p>
                 <p class="text-xs capitalize">
                   By : {{ removeUnderscores(inventory.inable_type) }} ({{
                     inventory.quantity
@@ -44,7 +44,7 @@
 
           <div *ngIf="inventory.showDetail">
             <div class="py-[2vh] text-center" *ngIf="inventory.loading">
-              <!-- <fc-loading></fc-loading> -->
+              <p-progress-spinner ariaLabel="loading" />
             </div>
             <div
               class="grid gap-1"
@@ -56,7 +56,7 @@
                 "
               >
                 <div
-                  class="ml-4 flex cursor-pointer items-center justify-between rounded-lg bg-zinc-200 px-2 py-1 text-2xs dark:bg-zinc-800 dark:hover:bg-zinc-700"
+                  class="ml-4 flex cursor-pointer items-center justify-between rounded-lg bg-zinc-200 px-2 py-1 text-xs dark:bg-zinc-800 dark:hover:bg-zinc-700"
                 >
                   <div class="flex items-center gap-3">
                     <fa-icon [fixedWidth]="true" [icon]="faBoxOpen"></fa-icon>
@@ -88,7 +88,7 @@
       </div>
     </div>
     <div class="py-[20vh] text-center" *ngIf="loading">
-      <!-- <fc-loading></fc-loading> -->
+      <p-progress-spinner ariaLabel="loading" />
     </div>
   </div>
   <div>

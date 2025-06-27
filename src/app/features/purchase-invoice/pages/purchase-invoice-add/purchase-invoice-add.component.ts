@@ -50,6 +50,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { FcImagePreviewComponent } from '../../../../shared/components/fc-image-preview/fc-image-preview.component';
 import { PurchaseInvoiceDetailComponent } from '../../components/purchase-invoice-detail/purchase-invoice-detail.component';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { FcFileInputComponent } from '../../../../shared/components/fc-file-input/fc-file-input.component';
 
 @Component({
   selector: 'app-purchase-invoice-add',
@@ -68,6 +69,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
     FcImagePreviewComponent,
     PurchaseInvoiceDetailComponent,
     InputNumberModule,
+    FcFileInputComponent,
   ],
   templateUrl: './purchase-invoice-add.component.html',
   styleUrl: './purchase-invoice-add.component.css',
@@ -132,7 +134,8 @@ export class PurchaseInvoiceAddComponent {
       tax: new FormControl(0, Validators.required),
       note: new FormControl(null),
       supplier: new FormControl(null, Validators.required),
-      business_unit: new FormControl(null, Validators.required),
+      branch: new FormControl(null, Validators.required),
+      shipping_cost: new FormControl(null),
       purchase_invoice_details: new FormArray([], Validators.required),
       purchase_invoice_documents: new FormArray([]),
     });
@@ -247,7 +250,7 @@ export class PurchaseInvoiceAddComponent {
               },
             );
           });
-        this.purchaseInvoiceForm.removeControl('business_unit');
+        this.purchaseInvoiceForm.removeControl('branch');
         this.purchaseInvoiceForm.removeControl('supplier');
       }
     });
@@ -255,7 +258,7 @@ export class PurchaseInvoiceAddComponent {
 
   removePurchaseOrder() {
     this.purchaseInvoiceForm.addControl(
-      'business_unit',
+      'branch',
       new FormControl(null, Validators.required),
     );
     this.purchaseInvoiceForm.addControl(
@@ -270,34 +273,25 @@ export class PurchaseInvoiceAddComponent {
     );
   }
 
-  onSelectBusinessUnit() {
+  removeBranch() {
+    this.purchaseInvoiceForm.get('branch')?.reset();
+  }
+
+  onSelectBranch() {
     const ref = this.dialogService.open(BranchSelectDialogComponent, {
-      data: {
-        title: 'Select Branch',
-        companyId: 2,
-      },
+      data: { title: 'Select Branch' },
       showHeader: false,
-      contentStyle: {
-        padding: '0',
-      },
-      style: {
-        overflow: 'hidden',
-      },
+      contentStyle: { padding: '0' },
+      style: { overflow: 'hidden' },
       styleClass: 'rounded-sm',
       dismissableMask: true,
       width: '450px',
     });
-    ref.onClose.subscribe((businessUnit: any) => {
-      if (businessUnit) {
-        this.purchaseInvoiceForm.controls['business_unit'].setValue(
-          businessUnit,
-        );
+    ref.onClose.subscribe((result: any) => {
+      if (result && result.branch) {
+        this.purchaseInvoiceForm.get('branch')?.setValue(result.branch);
       }
     });
-  }
-
-  removeBusinessUnit() {
-    this.purchaseInvoiceForm.controls['business_unit'].setValue(null);
   }
 
   onSelectSupplier() {
@@ -435,7 +429,11 @@ export class PurchaseInvoiceAddComponent {
   }
 
   get grandTotalPrice() {
-    return this.subTotalPrice + this.purchaseInvoiceForm.value.tax;
+    return (
+      this.subTotalPrice +
+      this.purchaseInvoiceForm.value.tax +
+      this.purchaseInvoiceForm.value.shipping_cost
+    );
   }
 
   get subTotalPrice() {
@@ -535,7 +533,7 @@ export class PurchaseInvoiceAddComponent {
       if (this.purchaseInvoiceForm.value.purchase_order) {
         bodyReq.purchase_order_id = bodyReq.purchase_order.id;
         delete bodyReq.supplier;
-        delete bodyReq.business_unit;
+        delete bodyReq.branch;
       }
       // Without Purchase Order
       if (this.purchaseInvoiceForm.value.supplier) {
@@ -543,10 +541,10 @@ export class PurchaseInvoiceAddComponent {
         bodyReq.supplier_id = bodyReq.supplier.id;
         delete bodyReq.supplier;
       }
-      if (this.purchaseInvoiceForm.value.business_unit) {
+      if (this.purchaseInvoiceForm.value.branch) {
         bodyReq.purchase_order_id = null;
-        bodyReq.business_unit_id = bodyReq.business_unit.id;
-        delete bodyReq.business_unit;
+        bodyReq.branch_id = bodyReq.branch.id;
+        delete bodyReq.branch;
       }
 
       delete bodyReq.purchase_order;

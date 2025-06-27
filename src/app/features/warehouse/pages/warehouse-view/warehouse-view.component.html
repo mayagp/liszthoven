@@ -4,30 +4,27 @@
     [actionButtons]="actionButtons"
     [filterButtons]="filterButtons"
   ></app-fc-action-bar>
-  <p-toast></p-toast>
-  <p-confirmDialog></p-confirmDialog>
   <div class="body h-full w-full overflow-y-auto text-xs @container">
     <form
       *ngIf="!loading"
       class="mx-auto mb-16 mt-2 grid w-full gap-3 md:mb-0 lg:mb-0"
       [formGroup]="warehouseForm"
     >
-      <!-- Select Business Unit -->
+      <!-- Select Branch -->
       <div
         class="form-input flex cursor-pointer items-center rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700"
       >
         <div class="flex flex-1 flex-col">
           <p
-            class="m-0 block p-0 text-2xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+            class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
           >
             Branch
           </p>
-          <p *ngIf="warehouseForm.value.business_unit" class="text-xs">
-            {{ warehouseForm.value.business_unit.branch?.address }}
-            <!-- ({{warehouseForm.value.business_unit.company.name}}) -->
+          <p *ngIf="warehouseForm.value.branch" class="text-xs">
+            {{ warehouseForm.value.branch?.address }}
           </p>
           <p
-            *ngIf="!warehouseForm.value.business_unit"
+            *ngIf="!warehouseForm.value.branch"
             class="text-xs dark:text-gray-400"
           >
             Select Branch
@@ -73,7 +70,7 @@
                     [src]="
                       inventory.product.product_images[0].url
                         ? inventory.product.product_images[0].url
-                        : 'assets/images/placeholder/placeholder_small.jpg'
+                        : 'images\placeholder\placeholder_small.jpg'
                     "
                   >
                   </fc-image-preview>
@@ -87,7 +84,7 @@
                   >
                     {{ inventory.product.name }}
                   </a>
-                  <p>{{ inventory.quantity }} Pcs</p>
+                  <!-- <p>{{ inventory.quantity }} Pcs</p> -->
                 </div>
                 <div class="flex justify-end gap-2">
                   <button
@@ -96,7 +93,7 @@
                     class="btn-high flex gap-2 rounded-lg p-2"
                   >
                     <fa-icon class="text-xs" [icon]="faTruckMoving"></fa-icon>
-                    <p class="hidden @sm:block">Transactions</p>
+                    <p class="">Transactions</p>
                   </button>
                 </div>
               </div>
@@ -111,13 +108,15 @@
             </p>
           </div>
           <div class="py-[20vh] text-center" *ngIf="loadingInventory">
-            <!-- <fc-loading></fc-loading> -->
+            <p-progress-spinner ariaLabel="loading" />
           </div>
         </div>
       </div>
     </form>
     <div class="py-[20vh] text-center" *ngIf="loading">
-      <!-- <fc-loading></fc-loading> -->
+      <p-progress-spinner ariaLabel="loading" />
     </div>
   </div>
+  <p-toast></p-toast>
+  <p-confirmDialog></p-confirmDialog>
 </div>

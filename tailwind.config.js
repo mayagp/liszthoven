@@ -26,7 +26,7 @@ module.exports = {
       ...defaultTheme.screens,
     },
   },
-  darkMode: "class",
+  darkMode: "media",
   plugins: [
     // require('prettier-plugin-tailwindcss'),
     require("@tailwindcss/container-queries"),

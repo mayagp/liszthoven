@@ -33,22 +33,22 @@ export class ProductCategoryService {
         param = param.concat('&q=' + dataListParameter.searchQuery);
       }
     }
-    return this.http.get(`${ROOT_API}/admin/product-categories`);
+    return this.http.get(`${ROOT_API}/product-categories`);
   }
 
   getProductCategory(id: string) {
-    return this.http.get(`${ROOT_API}/admin/product-categories/${id}`);
+    return this.http.get(`${ROOT_API}/product-categories/${id}`);
   }
 
   addProductCategory(bodyReq: any) {
-    return this.http.post(`${ROOT_API}/admin/product-categories`, bodyReq);
+    return this.http.post(`${ROOT_API}/product-categories`, bodyReq);
   }
 
   updateProductCategory(id: string, bodyReq: any) {
-    return this.http.put(`${ROOT_API}/admin/product-categories/${id}`, bodyReq);
+    return this.http.put(`${ROOT_API}/product-categories/${id}`, bodyReq);
   }
 
   deleteProductCategory(id: string) {
-    return this.http.delete(`${ROOT_API}/admin/product-categories/${id}`);
+    return this.http.delete(`${ROOT_API}/product-categories/${id}`);
   }
 }

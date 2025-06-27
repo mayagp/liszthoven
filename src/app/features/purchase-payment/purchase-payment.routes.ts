@@ -12,18 +12,10 @@ export const purchasePaymentRoutes: Routes = [
   {
     path: 'add',
     component: PurchasePaymentAddComponent,
-    //   data: {
-    //     subject: 'product-category',
-    //     action: 'read',
-    //   },
   },
   {
     path: 'view/:id',
     component: PurchasePaymentViewComponent,
-    // data: {
-    //   subject: 'product-category',
-    //   action: 'read',
-    // },
   },
   { path: 'list', component: PurchasePaymentListComponent },
 ];

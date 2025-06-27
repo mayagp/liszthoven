@@ -10,6 +10,7 @@ import { FcFilterConfig } from '../../../../shared/components/fc-filter-dialog/i
 import { FcFilterDialogService } from '../../../../shared/components/fc-filter-dialog/services/fc-filter-dialog.service';
 import { ProductService } from '../../../product/services/product.service';
 import { FcImagePreviewComponent } from '../../../../shared/components/fc-image-preview/fc-image-preview.component';
+import { ProgressSpinner } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-inventory-select-dialog',
@@ -20,6 +21,7 @@ import { FcImagePreviewComponent } from '../../../../shared/components/fc-image-
     ReactiveFormsModule,
     RouterModule,
     FcImagePreviewComponent,
+    ProgressSpinner,
   ],
   templateUrl: './inventory-select-dialog.component.html',
   styleUrl: './inventory-select-dialog.component.css',

@@ -39,10 +39,10 @@ export class AuthService {
   }
 
   login(loginData: any) {
-    return this.http.post(ROOT_API_URL + '/admin/auth/login', loginData).pipe(
+    return this.http.post(ROOT_API_URL + '/auth/login', loginData).pipe(
       map((res: any) => {
+        console.log('LOGIN RESPONSE:', res); // Tambahkan ini
         if (res.statusCode == 200) {
-          // set cookie
           localStorage.setItem('access_token', res.data.access_token);
           this.currentUserTokensSubject.next(res.data.access_token);
           localStorage.setItem('user', JSON.stringify(res.data.user));
@@ -58,16 +58,33 @@ export class AuthService {
 
   private updateAbility(user: User) {
     if (!user) return;
+
     const { can, rules } = new AbilityBuilder<PureAbility>(PureAbility);
-    const ability = USER_ABILITY.find((ability) =>
-      ability.role_enums.includes(user.staff.role),
+
+    let roleNumber: number | undefined;
+
+    if (user.staff) {
+      roleNumber = user.staff.role;
+    } else if (user.supplier) {
+      roleNumber = 7;
+    } else {
+      this.ability.update([]);
+      return;
+    }
+
+    const ability = USER_ABILITY.find((a) =>
+      a.role_enums.includes(roleNumber!),
     );
-    if (ability)
-      ability.abilities.forEach((rule) => {
-        can(rule[1], rule[0]);
+
+    if (ability) {
+      ability.abilities.forEach(([subject, action]) => {
+        can(action, subject);
       });
+    }
+
     this.ability.update(rules);
   }
+
   isLoggedIn() {
     if (this.currentUserTokensSubject.value) {
       return true;
@@ -89,83 +106,52 @@ export class AuthService {
   }
 
   register(registerData: any) {
-    return this.http.post(ROOT_API_URL + '/admin/auth/register', registerData);
+    return this.http.post(ROOT_API_URL + '/auth/register/staff', registerData);
   }
 
+  registerSupplier(registerData: any) {
+    return this.http.post(
+      ROOT_API_URL + '/auth/register/supplier',
+      registerData,
+    );
+  }
   // User Document
   getUserDocuments(userId: string, params: string) {
     return this.http.get(
-      ROOT_API_URL + '/admin/users/' + userId + `/documents?${params}`,
+      ROOT_API_URL + '/users/' + userId + `/documents?${params}`,
     );
   }
 
   getUserDocument(userId: number, documentId: number) {
     return this.http.get(
-      ROOT_API_URL + '/admin/users/' + userId + `/documents/${documentId}`,
+      ROOT_API_URL + '/users/' + userId + `/documents/${documentId}`,
     );
   }
 
   addUserDocument(userId: number, document: any) {
     return this.http.post(
-      ROOT_API_URL + '/admin/users/' + userId + '/documents',
+      ROOT_API_URL + '/users/' + userId + '/documents',
       document,
     );
   }
 
   updateUserDocument(userId: string, documentId: string, document: any) {
     return this.http.put(
-      ROOT_API_URL + '/admin/users/' + userId + '/documents/' + documentId,
+      ROOT_API_URL + '/users/' + userId + '/documents/' + documentId,
       document,
     );
   }
 
   updateUserDocumentFile(userId: number, document: any) {
     return this.http.put(
-      ROOT_API_URL + '/admin/users/' + userId + '/documents/image',
+      ROOT_API_URL + '/users/' + userId + '/documents/image',
       document,
     );
   }
 
   deleteUserDocument(userId: string, documentId: string) {
     return this.http.delete(
-      ROOT_API_URL + '/admin/users/' + userId + '/documents/' + documentId,
-    );
-  }
-
-  // location apis
-  getProvinces(dataListParameter: DataListParameter = {} as DataListParameter) {
-    let param = '';
-    if (dataListParameter.rows && dataListParameter.page) {
-      param = param.concat(
-        `?page=${dataListParameter.page}&limit=${dataListParameter.rows}`,
-      );
-    }
-    if (dataListParameter.sortBy) {
-      param = param.concat('&' + dataListParameter.sortBy);
-    }
-    if (dataListParameter.filterObj) {
-      param = param.concat('&' + dataListParameter.filterObj);
-    }
-
-    if (dataListParameter.searchQuery) {
-      if (!dataListParameter.sortBy) {
-        param = param.concat('?q=' + dataListParameter.searchQuery);
-      } else {
-        param = param.concat('&q=' + dataListParameter.searchQuery);
-      }
-    }
-
-    return this.http.get(`${ROOT_API_URL}/admin/provinces${param}`);
-  }
-
-  getCities(provinceId: string) {
-    return this.http.get(
-      `${ROOT_API_URL}/cities?with_filter=1&province_id=${provinceId}`,
-    );
-  }
-  getSubdistricts(cityId: string) {
-    return this.http.get(
-      `${ROOT_API_URL}/subdistricts?with_filter=1&city_id=${cityId}`,
+      ROOT_API_URL + '/users/' + userId + '/documents/' + documentId,
     );
   }
 }

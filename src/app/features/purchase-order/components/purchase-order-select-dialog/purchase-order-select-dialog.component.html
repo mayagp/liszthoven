@@ -63,7 +63,7 @@
             </div>
 
             <div class="w-full @lg:w-[100px]">
-              <p>{{ purchaseOrder.supplier.name }}</p>
+              <p>{{ purchaseOrder?.supplier?.user?.name || "-" }}</p>
             </div>
             <div class="w-full text-right @lg:w-[100px]">
               <p>{{ purchaseOrder.grandtotal | fcCurrency }}</p>

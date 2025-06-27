@@ -27,7 +27,7 @@
                 <div class="w-full @lg:w-[150px]">
                   <p class="text-xs">{{ purchaseOrder.purchase_order_no }}</p>
                   <p class="mt-1" *ngIf="purchaseOrder.supplier">
-                    {{ purchaseOrder.supplier.name }}
+                    {{ purchaseOrder.supplier.user.name }}
                   </p>
                 </div>
                 <div class="w-full @lg:w-[100px]">
@@ -73,7 +73,7 @@
                       {{ purchaseOrder.purchase_order_no }}
                     </p>
                     <p class="font-bold" *ngIf="purchaseOrder.supplier">
-                      {{ purchaseOrder.supplier.name }}
+                      {{ purchaseOrder.supplier.user.name }}
                     </p>
                   </div>
                   <div class="flex items-center justify-end gap-2">

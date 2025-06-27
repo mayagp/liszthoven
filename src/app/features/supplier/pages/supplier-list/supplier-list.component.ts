@@ -92,7 +92,6 @@ export class SupplierListComponent {
     sort: {
       fields: [
         { name: 'name', header: 'Name' },
-        { name: 'pic', header: 'PIC' },
         { name: 'address', header: 'Address' },
       ],
       selectedField: 'id',

@@ -1,19 +1,12 @@
+import { User } from '../../user/interfaces/user';
+
 export interface Supplier {
   id: string;
-  name: string;
-  contact_no: string;
+  user_id: number;
   tax_no: string;
-  pic: string;
-  address: string;
-  supplier_bank_accounts: SupplierBankAccount[];
-}
-export interface SupplierBankAccount {
-  id: string;
-  supplier_id: string;
+  total_payable: number;
   account_no: string;
   bank: string;
   swift_code: string;
-  created_at: Date;
-  updated_at: Date;
-  deleted_at: Date;
+  user: User;
 }

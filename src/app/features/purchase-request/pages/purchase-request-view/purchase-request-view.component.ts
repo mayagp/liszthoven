@@ -46,6 +46,7 @@ import { PurchaseRequestService } from '../../services/purchase-request.service'
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { BranchSelectDialogComponent } from '../../../branch/components/branch-select-dialog/branch-select-dialog.component';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ProgressSpinner } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-purchase-request-view',
@@ -63,6 +64,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     IftaLabelModule,
     ToastModule,
     ConfirmDialogModule,
+    ProgressSpinner,
   ],
   templateUrl: './purchase-request-view.component.html',
   styleUrl: './purchase-request-view.component.css',
@@ -113,7 +115,7 @@ export class PurchaseRequestViewComponent {
       showHeader: true,
     });
     this.purchaseRequestForm = new FormGroup({
-      business_unit: new FormControl(null, Validators.required),
+      branch: new FormControl(null, Validators.required),
       date: new FormControl(new Date(), Validators.required),
       purchase_request_no: new FormControl('', Validators.required),
       purchase_request_details: new FormArray([]),
@@ -201,12 +203,12 @@ export class PurchaseRequestViewComponent {
             hidden: !this.ability.can('approval-request', 'purchase-request'),
           },
           {
-            label: 'Cancel',
+            label: 'Reject',
             icon: faTimes,
             action: () => {
-              this.cancel();
+              this.reject();
             },
-            hidden: !this.ability.can('cancel', 'purchase-request'),
+            hidden: !this.ability.can('reject', 'purchase-request'),
           },
           {
             label: 'Delete',
@@ -229,12 +231,12 @@ export class PurchaseRequestViewComponent {
             hidden: !this.ability.can('approve', 'purchase-request'),
           },
           {
-            label: 'Cancel',
+            label: 'Reject',
             icon: faTimes,
             action: () => {
-              this.cancel();
+              this.reject();
             },
-            hidden: !this.ability.can('cancel', 'purchase-request'),
+            hidden: !this.ability.can('reject', 'purchase-request'),
           },
           {
             label: 'Delete',
@@ -490,38 +492,34 @@ export class PurchaseRequestViewComponent {
     });
   }
 
-  removeBusinessUnit() {
-    this.purchaseRequestForm.controls['business_unit'].setValue('');
+  removeBranch() {
+    this.purchaseRequestForm.get('branch')?.reset();
   }
 
-  onSelectBusinessUnit() {
+  onSelectBranch() {
     const ref = this.dialogService.open(BranchSelectDialogComponent, {
-      data: {
-        title: 'Select Business Unit',
-        companyId: 2,
-      },
+      data: { title: 'Select Branch' },
       showHeader: false,
-      contentStyle: {
-        padding: '0',
-      },
-      style: {
-        overflow: 'hidden',
-      },
+      contentStyle: { padding: '0' },
+      style: { overflow: 'hidden' },
       styleClass: 'rounded-sm',
       dismissableMask: true,
       width: '450px',
     });
-    ref.onClose.subscribe((businessUnit: any) => {
-      if (businessUnit) {
-        this.purchaseRequestForm.controls['business_unit'].setValue(
-          businessUnit,
-        );
+    ref.onClose.subscribe((result: any) => {
+      if (result && result.branch) {
+        console.log('Selected branch:', result.branch);
+        this.purchaseRequestForm.get('branch')?.setValue(result.branch);
       }
     });
   }
   get grandTotalPrice() {
     return this.purchaseRequestDetails.value.reduce(
-      (sum: any, item: any) => sum + item.product.base_price * item.quantity,
+      (sum: number, item: any) => {
+        const price = item?.product?.base_price ?? 0;
+        const qty = item?.quantity ?? 0;
+        return sum + price * qty;
+      },
       0,
     );
   }
@@ -538,10 +536,10 @@ export class PurchaseRequestViewComponent {
     if (this.purchaseRequestForm.valid) {
       this.actionButtons[0].loading = true;
       let bodyReq = JSON.parse(JSON.stringify(this.purchaseRequestForm.value)); // deep copy
-      bodyReq = { ...bodyReq, business_unit_id: bodyReq.business_unit.id };
+      bodyReq = { ...bodyReq, branch_id: bodyReq.branch.id };
       delete bodyReq.purchase_request_no;
       delete bodyReq.purchase_request_details;
-      delete bodyReq.business_unit;
+      delete bodyReq.branch;
 
       this.purchaseRequestService
         .updatePurchaseRequest(this.purchaseRequest.id, bodyReq)
@@ -663,10 +661,10 @@ export class PurchaseRequestViewComponent {
     });
   }
 
-  cancel() {
+  reject() {
     this.confirmationService.confirm({
       header: 'Confirmation',
-      message: 'Are you sure to cancel this data?',
+      message: 'Are you sure to reject this data?',
       acceptLabel: 'Yes',
       rejectLabel: 'No',
       accept: () => {
@@ -677,7 +675,7 @@ export class PurchaseRequestViewComponent {
               this.messageService.add({
                 severity: 'success',
                 summary: 'Success Message',
-                detail: 'Purchase Request has been canceled',
+                detail: 'Purchase Request has been rejected',
               });
               this.purchaseRequest.status = res.data.status;
               this.purchaseRequest.status_name = res.data.status_name;

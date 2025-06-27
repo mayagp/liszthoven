@@ -24,13 +24,13 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Subject, takeUntil } from 'rxjs';
 import { LayoutService } from '../../../../layout/services/layout.service';
 import { FcActionBarComponent } from '../../../../shared/components/fc-action-bar/fc-action-bar.component';
-import { Supplier, SupplierBankAccount } from '../../interfaces/supplier';
+import { Supplier } from '../../interfaces/supplier';
 import { SupplierService } from '../../services/supplier.service';
 import { FcInputTextComponent } from '../../../../shared/components/fc-input-text/fc-input-text.component';
-import { SupplierBankAccountAddDialogComponent } from '../../components/supplier-bank-account-add-dialog/supplier-bank-account-add-dialog.component';
-import { SupplierBankAccountEditDialogComponent } from '../../components/supplier-bank-account-edit-dialog/supplier-bank-account-edit-dialog.component';
 import { ToastModule } from 'primeng/toast';
 import { FcInputTelComponent } from '../../../../shared/components/fc-input-tel/fc-input-tel.component';
+import { ProgressSpinner } from 'primeng/progressspinner';
+import { FcDirtyStateService } from '../../../../core/service/fc-dirty-state.service';
 
 @Component({
   selector: 'app-supplier-view',
@@ -44,6 +44,7 @@ import { FcInputTelComponent } from '../../../../shared/components/fc-input-tel/
     FcInputTextComponent,
     ToastModule,
     FcInputTelComponent,
+    ProgressSpinner,
   ],
   templateUrl: './supplier-view.component.html',
   styleUrl: './supplier-view.component.css',
@@ -90,7 +91,7 @@ export class SupplierViewComponent {
 
   loading = true;
 
-  supplierForm: FormGroup;
+  registerForm: FormGroup;
   confirmPassword: string = '';
   constructor(
     private layoutService: LayoutService,
@@ -101,6 +102,7 @@ export class SupplierViewComponent {
     private confirmationService: ConfirmationService,
     private dialogService: DialogService,
     private ability: PureAbility,
+    private fcDirtyStateService: FcDirtyStateService,
   ) {
     this.supplier.id = String(this.route.snapshot.paramMap.get('id'));
     this.actionButtons[0].hidden = !this.ability.can('update', 'supplier');
@@ -111,13 +113,18 @@ export class SupplierViewComponent {
       showHeader: true,
     });
     // init form
-    this.supplierForm = new FormGroup({
+    this.registerForm = new FormGroup({
       name: new FormControl('', Validators.required),
+      email: new FormControl('', Validators.required),
       address: new FormControl(''),
-      contact_no: new FormControl(''),
-      pic: new FormControl(''),
-      tax_no: new FormControl(''),
-      supplier_bank_accounts: new FormArray([]),
+      phone_no: new FormControl(''),
+      supplier: new FormGroup({
+        tax_no: new FormControl(''),
+        total_payable: new FormControl(''),
+        account_no: new FormControl(''),
+        bank: new FormControl(''),
+        swift_code: new FormControl(''),
+      }),
     });
   }
   ngOnInit(): void {
@@ -136,6 +143,10 @@ export class SupplierViewComponent {
     this.layoutService.setSearchConfig({ hide: false });
   }
 
+  get supplierForm(): FormGroup {
+    return this.registerForm.get('supplier') as FormGroup;
+  }
+
   loadData() {
     this.loading = true;
     this.destroy$.next();
@@ -144,189 +155,54 @@ export class SupplierViewComponent {
       .pipe(takeUntil(this.destroy$))
       .subscribe((res: any) => {
         this.supplier = res.data;
-        this.supplierForm.patchValue({
-          name: this.supplier.name,
-          address: this.supplier.address,
-          contact_no: this.supplier.contact_no,
-          pic: this.supplier.pic,
-          tax_no: this.supplier.tax_no,
+        this.registerForm.patchValue({
+          name: this.supplier.user.name,
+          email: this.supplier.user.email,
+          address: this.supplier.user.address,
+          phone_no: this.supplier.user.phone_no,
         });
-        this.supplier.supplier_bank_accounts.forEach(
-          (supplierBankAcocunt: SupplierBankAccount) => {
-            this.supplierBankAccounts.push(
-              this.generateSupplierBankAccouns(supplierBankAcocunt),
-            );
-          },
-        );
+        this.supplierForm.patchValue({
+          tax_no: this.supplier.tax_no,
+          total_payable: this.supplier.total_payable,
+          account_no: this.supplier.account_no,
+          bank: this.supplier.bank,
+          swift_code: this.supplier.swift_code,
+        });
         this.loading = false;
       });
   }
-  // Manage supplier bank accounts
-  generateSupplierBankAccouns(
-    supplierBankAccount: SupplierBankAccount,
-  ): FormGroup {
-    return new FormGroup({
-      id: new FormControl(supplierBankAccount.id),
-      account_no: new FormControl(supplierBankAccount.account_no),
-      bank: new FormControl(supplierBankAccount.bank),
-      swift_code: new FormControl(supplierBankAccount.swift_code),
-    });
-  }
-  get supplierBankAccounts(): FormArray {
-    return this.supplierForm.get('supplier_bank_accounts') as FormArray;
-  }
-  addSupplierBankAccount() {
-    const ref = this.dialogService.open(SupplierBankAccountAddDialogComponent, {
-      showHeader: false,
-      contentStyle: {
-        padding: '0',
-      },
-      style: {
-        overflow: 'hidden',
-      },
-      styleClass: 'rounded-sm',
-      dismissableMask: true,
-      width: '450px',
-    });
-    ref.onClose.subscribe((supplierBankAccount) => {
-      if (supplierBankAccount) {
-        let bodyReq = JSON.parse(JSON.stringify(supplierBankAccount)); // deep copy
-
-        this.supplierService
-          .addSupplierBankAccount(this.supplier.id, bodyReq)
-          .subscribe({
-            next: (res: any) => {
-              supplierBankAccount.id = res.data.id;
-              this.supplierBankAccounts.push(
-                this.generateSupplierBankAccouns(supplierBankAccount),
-              );
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Success Message',
-                detail: 'Supplier Bank Account has been added',
-              });
-            },
-            error: (err: any) => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error Message',
-                detail: err.message,
-              });
-            },
-          });
-      }
-    });
-  }
-  editSupplierBankAccountDetail(index: number) {
-    const ref = this.dialogService.open(
-      SupplierBankAccountEditDialogComponent,
-      {
-        data: {
-          title: 'Edit Purchase Payment Detail',
-          supplierBankAccount: this.supplierBankAccounts.value[index],
-        },
-        showHeader: false,
-        contentStyle: {
-          padding: '0',
-        },
-        style: {
-          overflow: 'hidden',
-        },
-        styleClass: 'rounded-sm',
-        dismissableMask: true,
-        width: '450px',
-      },
-    );
-    ref.onClose.subscribe((supplierBankAccount) => {
-      if (supplierBankAccount) {
-        let bodyReq = JSON.parse(JSON.stringify(supplierBankAccount)); // deep copy
-        this.supplierService
-          .updateSupplierBankAccount(
-            this.supplier.id,
-            this.supplierBankAccounts.value[index].id,
-            bodyReq,
-          )
-          .subscribe({
-            next: (res: any) => {
-              this.supplierBankAccounts
-                .at(index)
-                .patchValue(supplierBankAccount);
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Success Message',
-                detail: 'Supplier Bank Account has been updated',
-              });
-            },
-            error: (err: any) => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error Message',
-                detail: err.message,
-              });
-            },
-          });
-      }
-    });
-  }
-  deleteSupplierBankAccountDetail(index: number) {
-    this.confirmationService.confirm({
-      header: 'Confirmation',
-      message: 'Are you sure to delete this data?',
-      acceptLabel: 'Yes',
-      rejectLabel: 'No',
-      accept: () => {
-        this.supplierService
-          .deleteSupplierBankAccount(
-            this.supplier.id,
-            this.supplierBankAccounts.value[index].id,
-          )
-          .subscribe({
-            next: (res: any) => {
-              this.supplierBankAccounts.removeAt(index);
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Success Message',
-                detail: 'Supplier Bank Account has been deleted',
-              });
-            },
-          });
-      },
-      reject: () => {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Cancelled',
-          detail: 'Delete operation was cancelled',
-        });
-      },
-    });
-  }
 
   submit() {
-    if (this.supplierForm.valid) {
-      let bodyReq = JSON.parse(JSON.stringify(this.supplierForm.value)); // deep copy
-      delete bodyReq.supplier_bank_accounts;
+    if (this.registerForm.invalid) {
+      this.messageService.clear();
+      this.fcDirtyStateService.checkFormValidation(this.registerForm);
+      return;
+    }
+    if (this.registerForm.valid) {
       this.actionButtons[0].loading = true;
-      this.supplierService.updateSupplier(this.supplier.id, bodyReq).subscribe({
-        next: (res: any) => {
-          this.actionButtons[0].loading = false;
-          this.messageService.clear();
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Supplier',
-            detail: res.message,
-          });
-          this.onUpdated.emit(res.data);
-        },
-        error: (err: any) => {
-          this.actionButtons[0].loading = false;
-          this.messageService.clear();
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Supplier',
-            detail: err.message,
-          });
-        },
-      });
+      let bodyReq = JSON.parse(JSON.stringify(this.registerForm.value));
+      delete bodyReq.email;
+      this.supplierService
+        .updateSupplierBasedOnUser(this.supplier.user.id, bodyReq)
+        .subscribe({
+          next: (res: any) => {
+            this.actionButtons[0].loading = false;
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Supplier',
+              detail: 'Supplier has been updated',
+            });
+            this.onUpdated.emit();
+          },
+          error: (err) => {
+            this.actionButtons[0].loading = false;
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Supplier',
+              detail: 'Failed to update supplier',
+            });
+          },
+        });
     } else {
       this.messageService.clear();
       this.messageService.add({
@@ -385,8 +261,6 @@ export class SupplierViewComponent {
   }
   refresh() {
     this.supplierForm.reset();
-    this.supplierForm.removeControl('supplier_bank_accounts');
-    this.supplierForm.addControl('supplier_bank_accounts', new FormArray([]));
     this.loadData();
   }
 }

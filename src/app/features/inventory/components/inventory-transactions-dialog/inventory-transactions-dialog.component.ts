@@ -23,6 +23,7 @@ import { FcFilterDialogService } from '../../../../shared/components/fc-filter-d
 import { DataListParameter } from '../../../../shared/interfaces/data-list-parameter.interface';
 import { Inventory } from '../../interfaces/inventory';
 import { InventoryServices } from '../../services/inventory.service';
+import { ProgressSpinner } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-inventory-transactions-dialog',
@@ -32,6 +33,7 @@ import { InventoryServices } from '../../services/inventory.service';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
+    ProgressSpinner,
   ],
   templateUrl: './inventory-transactions-dialog.component.html',
   styleUrl: './inventory-transactions-dialog.component.css',

@@ -38,7 +38,7 @@
               >
             </p-iftalabel>
           </div>
-          <div class="card flex justify-center w-full">
+          <!-- <div class="card flex justify-center w-full">
             <p-iftalabel class="w-full">
               <p-inputnumber
                 class="w-full"
@@ -57,7 +57,7 @@
                 >Quantity</label
               >
             </p-iftalabel>
-          </div>
+          </div> -->
 
           <div class="grid gap-2 lg:grid-cols-3">
             <div class="card flex justify-center">
@@ -201,7 +201,7 @@
                   class="form-input flex cursor-pointer items-center rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700">
                   <div class="flex flex-1 flex-col">
                     <p
-                      class="m-0 block p-0 text-2xs font-medium leading-5 text-zinc-700 dark:text-white/60">
+                      class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60">
                       Product Brand
                     </p>
                     <p *ngIf="selectedBrand" class="text-xs">
@@ -238,45 +238,62 @@
             </div>
           </fc-file-input> -->
         <div
-          class="mt-6 flex w-full flex-col rounded-md border-2 border-dashed border-gray-300 p-4"
+          class="mt-6 w-full rounded-md border-2 border-dashed border-gray-300 p-4"
           (click)="fileInput.click()"
           (drop)="handleDrop($event)"
           (dragover)="handleDragOver($event)"
         >
+          <!-- AREA UPLOAD (JIKA BELUM ADA GAMBAR) -->
           <div
-            class="mx-auto items-center text-center text-gray-300"
-            *ngIf="pastedImages.length == 0"
+            class="flex flex-col items-center justify-center text-gray-400"
+            *ngIf="pastedImages.length === 0"
           >
-            <fa-icon
-              [icon]="faImage"
-              [fixedWidth]="true"
-              class="h-12 w-12 text-4xl"
-            ></fa-icon>
-            <h3 class="text-center text-gray-700">
-              Paste, Drag and Drop, or Select Images <br />
-            </h3>
+            <fa-icon [icon]="faImage" class="h-12 w-12 text-4xl mb-2"></fa-icon>
+            <p class="text-center text-sm text-gray-500">
+              Paste, Drag & Drop, or Click to Select Images
+            </p>
           </div>
+
+          <!-- INPUT FILE -->
           <input
             #fileInput
             type="file"
             multiple
             (change)="onFileSelected($event); fileInput.value = ''"
-            class="mb-4 hidden"
+            class="hidden"
           />
-          <div class="flex flex-1 gap-3 overflow-x-auto">
+
+          <!-- GALERI GAMBAR (JIKA ADA GAMBAR) -->
+          <div
+            class="mt-4 flex gap-4 overflow-x-auto"
+            *ngIf="pastedImages.length > 0"
+          >
+            <!-- Gambar Upload -->
             <div
-              class="relative aspect-square h-full"
               *ngFor="let image of pastedImages; let i = index"
+              class="relative flex-shrink-0 w-32 h-32 rounded border border-gray-200 overflow-hidden group"
             >
               <img
                 [src]="image.image_url"
-                alt="Pasted Image"
-                class="h-full w-full rounded-sm object-cover"
+                alt="Product Image"
+                class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
+              <!-- Tombol Delete -->
               <fa-icon
-                class="absolute right-2 top-2 cursor-pointer text-red-500"
                 [icon]="faTrash"
+                class="absolute top-1 right-1 text-red-500 bg-white rounded-full p-1 shadow hover:bg-red-100 cursor-pointer"
                 (click)="removeImage($event, i)"
+              ></fa-icon>
+            </div>
+
+            <!-- Kotak Tambah Gambar -->
+            <div
+              class="flex items-center justify-center w-32 h-32 flex-shrink-0 border-2 border-dashed border-gray-300 cursor-pointer hover:border-blue-400 transition"
+              (click)="fileInput.click()"
+            >
+              <fa-icon
+                [icon]="faImage"
+                class="text-gray-400 text-2xl"
               ></fa-icon>
             </div>
           </div>

@@ -75,6 +75,7 @@ export class HeaderComponent {
 
   menus: any = [];
   user: any = {} as User;
+  currentUserRole = 3;
 
   constructor(
     private layoutService: LayoutService,
@@ -85,7 +86,7 @@ export class HeaderComponent {
   ) {}
 
   ngOnInit(): void {
-    this.menus = this.layoutService.getRoutes();
+    this.menus = this.layoutService.getRoutes(this.currentUserRole);
     this.layoutService.headerConfigSubject.subscribe((config: any) => {
       this.headerConfig = config;
       this.title.setTitle(config.title);

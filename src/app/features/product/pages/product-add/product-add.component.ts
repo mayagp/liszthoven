@@ -176,7 +176,7 @@ export class ProductAddComponent
     fd.append(`status`, product.status);
     fd.append(`valuation_method`, product.valuation_method);
     fd.append(`product_category_id`, product.product_category_id);
-    fd.append(`brand`, product.brand.name);
+    fd.append(`brand`, product.brand);
     // fd.append(`quantity`, product.quantity);
     // Image
     product.product_images.forEach((image: any, i: number) => {
@@ -211,26 +211,8 @@ export class ProductAddComponent
     });
   }
 
-  addMultipleImage(images: any) {
-    images.forEach((element: any) => {
-      (this.productForm.get('product_images') as FormArray).push(
-        new FormGroup({
-          file: new FormControl(element.file),
-          src: new FormControl(element.img_src),
-        }),
-      );
-    });
-  }
-
   get imagesArrayForm(): FormArray {
     return this.productForm.get('product_images') as FormArray;
-  }
-
-  removeProductImage(image: any, index: number) {
-    this.imagesArrayForm.removeAt(index);
-    if (image == this.selectedDefaultImage) {
-      this.selectedDefaultImage = '';
-    }
   }
 
   onSelectedDefaultImage(image: any) {
@@ -263,39 +245,10 @@ export class ProductAddComponent
     });
   }
 
-  // onSelectProductBrand() {
-  //   const ref = this.dialogService.open(BrandSelectDialogComponent, {
-  //     data: {
-  //       title: 'Select Product Brand',
-  //     },
-  //     showHeader: false,
-  //     contentStyle: {
-  //       padding: '0',
-  //     },
-  //     style: {
-  //       overflow: 'hidden',
-  //     },
-  //     styleClass: 'rounded-sm',
-  //     dismissableMask: true,
-  //     width: '450px',
-  //   });
-  //   ref.onClose.subscribe((brand) => {
-  //     if (brand) {
-  //       this.selectedBrand = brand;
-  //       this.productForm.controls['brand_id'].setValue(this.selectedBrand.id);
-  //     }
-  //   });
-  // }
-
   removeCategory() {
     this.selectedCategory = null;
     this.productForm.controls['product_category_id'].setValue('');
   }
-
-  // removeBrand() {
-  //   this.selectedBrand = null;
-  //   this.productForm.controls['brand_id'].setValue('');
-  // }
 
   @HostListener('document:paste', ['$event'])
   handlePaste(event: ClipboardEvent) {
@@ -346,6 +299,14 @@ export class ProductAddComponent
           !this.pastedImages.some((image: any) => image.image_url === imageUrl)
         ) {
           this.pastedImages.push(imageObject);
+
+          // ⬇️ Tambahkan ke FormArray
+          (this.productForm.get('product_images') as FormArray).push(
+            new FormGroup({
+              file: new FormControl(blob),
+              src: new FormControl(imageUrl),
+            }),
+          );
         }
       }
     };

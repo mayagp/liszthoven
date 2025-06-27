@@ -36,22 +36,22 @@ export class WarehouseService {
         param = param.concat('&q=' + dataListParameter.searchQuery);
       }
     }
-    return this.http.get(`${ROOT_API}/admin/warehouses${param}`);
+    return this.http.get(`${ROOT_API}/warehouses${param}`);
   }
 
   getWarehouse(id: string) {
-    return this.http.get(`${ROOT_API}/admin/warehouses/${id}`);
+    return this.http.get(`${ROOT_API}/warehouses/${id}`);
   }
 
   addWarehouse(data: any) {
-    return this.http.post(`${ROOT_API}/admin/warehouses`, data);
+    return this.http.post(`${ROOT_API}/warehouses`, data);
   }
 
   updateWarehouse(warehouseId: string, data: any) {
-    return this.http.put(`${ROOT_API}/admin/warehouses/${warehouseId}`, data);
+    return this.http.put(`${ROOT_API}/warehouses/${warehouseId}`, data);
   }
 
   deleteWarehouse(warehouseId: string) {
-    return this.http.delete(`${ROOT_API}/admin/warehouses/${warehouseId}`);
+    return this.http.delete(`${ROOT_API}/warehouses/${warehouseId}`);
   }
 }

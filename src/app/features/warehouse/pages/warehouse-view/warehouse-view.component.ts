@@ -27,6 +27,7 @@ import {
   faSave,
   faTrash,
   faRefresh,
+  faTruckPickup,
 } from '@fortawesome/free-solid-svg-icons';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Subject, takeUntil } from 'rxjs';
@@ -44,6 +45,7 @@ import { BranchSelectDialogComponent } from '../../../branch/components/branch-s
 import { ToastModule } from 'primeng/toast';
 import { FcImagePreviewComponent } from '../../../../shared/components/fc-image-preview/fc-image-preview.component';
 import { InventoryTransactionsDialogComponent } from '../../../inventory/components/inventory-transactions-dialog/inventory-transactions-dialog.component';
+import { ProgressSpinner } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-warehouse-view',
@@ -58,6 +60,7 @@ import { InventoryTransactionsDialogComponent } from '../../../inventory/compone
     ToastModule,
     FcImagePreviewComponent,
     RouterModule,
+    ProgressSpinner,
   ],
   templateUrl: './warehouse-view.component.html',
   styleUrl: './warehouse-view.component.css',
@@ -68,7 +71,7 @@ export class WarehouseViewComponent
 {
   // Icons
   faEye = faEye;
-  faTruckMoving = faTruckMoving;
+  faTruckMoving = faTruckPickup;
   faPlus = faPlus;
   faTimes = faTimes;
   faChevronDown = faChevronDown;
@@ -132,7 +135,7 @@ export class WarehouseViewComponent
       showHeader: true,
     });
     this.warehouseForm = new FormGroup({
-      business_unit: new FormControl(null, Validators.required),
+      branch: new FormControl(null, Validators.required),
       code: new FormControl('', Validators.required),
       name: new FormControl('', Validators.required),
       location: new FormControl('', Validators.required),
@@ -166,7 +169,7 @@ export class WarehouseViewComponent
         this.warehouse = res.data;
         this.loadInventories();
         this.warehouseForm.patchValue({
-          business_unit: this.warehouse.business_unit,
+          branch: this.warehouse.branch,
           code: this.warehouse.code,
           name: this.warehouse.name,
           location: this.warehouse.location,
@@ -258,7 +261,7 @@ export class WarehouseViewComponent
   onSelectBranch() {
     const ref = this.dialogService.open(BranchSelectDialogComponent, {
       data: {
-        title: 'Select Business Unit',
+        title: 'Select Branch',
       },
       showHeader: false,
       contentStyle: {
@@ -271,22 +274,22 @@ export class WarehouseViewComponent
       dismissableMask: true,
       width: '450px',
     });
-    ref.onClose.subscribe((businessUnit: any) => {
-      if (businessUnit) {
-        this.warehouseForm.controls['business_unit'].setValue(businessUnit);
+    ref.onClose.subscribe((branch: any) => {
+      if (branch) {
+        this.warehouseForm.controls['branch'].setValue(branch);
       }
     });
   }
 
   removeBranch() {
-    this.warehouseForm.controls['business_unit'].setValue(null);
+    this.warehouseForm.controls['branch'].setValue(null);
   }
 
   submit() {
     this.actionButtons[0].loading = true;
     // bodyReq
     let bodyReq = { ...this.warehouseForm.value };
-    delete bodyReq.business_unit;
+    delete bodyReq.branch;
     this.warehouseService
       .updateWarehouse(this.warehouse.id, bodyReq)
       .subscribe({
