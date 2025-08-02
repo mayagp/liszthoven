@@ -16,16 +16,21 @@
       >
         <div class="flex flex-1 flex-col">
           <p
-            class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+            class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-900 dark:text-white"
           >
             Branch
+            <span
+              *ngIf="hasRequiredValidator('branch')"
+              class="required-asterisk"
+              >*</span
+            >
           </p>
           <p *ngIf="warehouseForm.value.branch" class="text-xs">
             {{ warehouseForm.value.branch?.address }}
           </p>
           <p
             *ngIf="!warehouseForm.value.branch"
-            class="text-xs dark:text-gray-400"
+            class="text-xs dark:text-gray-400 text-zinc-400"
           >
             Select Branch
           </p>

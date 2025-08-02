@@ -6,9 +6,7 @@
   ></app-fc-action-bar>
 
   <div class="flex h-full flex-col">
-    <div
-      class="body flex w-full flex-1 flex-col overflow-y-auto rounded-b-md rounded-tr-md border p-2 text-xs dark:border-zinc-700"
-    >
+    <div class="body relative h-full w-full overflow-y-auto pt-5 text-xs">
       <div class="tab-view relative flex-1 rounded-lg rounded-tl-none">
         <div class="h-full">
           <ng-container>
@@ -17,76 +15,12 @@
               [formGroup]="registerForm"
               class="flex w-full flex-col gap-3 @2xl:flex-row"
             >
-              <div class="w-full @2xl:w-[350px]">
-                <!-- <fc-file-input
-                  [accept]="'image/*'"
-                  *ngIf="!registerForm.value.file"
-                  (onInput)="changeProfile($event)">
-                  <button
-                    type="button"
-                    [ngClass]="{
-                      'opacity-50': loadingProfileImage
-                    }"
-                    [disabled]="loadingProfileImage"
-                    class="flex h-[200px] w-full flex-col items-center justify-center gap-2 overflow-y-auto rounded-md border bg-zinc-100/70 p-5 dark:border-zinc-800 dark:bg-zinc-800">
-                    <fa-icon
-                      class="text-3xl"
-                      [spin]="loadingProfileImage"
-                      [icon]="
-                        loadingProfileImage ? faSpinner : faCloudArrowUp
-                      " />
-                    <p>Drag or Upload Image Here</p>
-                  </button>
-                </fc-file-input> -->
-                <div
-                  class="flex flex-col gap-2"
-                  *ngIf="registerForm.value.file"
-                >
-                  <fc-image-preview
-                    class="w-full"
-                    [preview]="true"
-                    [src]="
-                      registerForm.value.file.img_src
-                        ? registerForm.value.file.img_src
-                        : registerForm.value.file
-                    "
-                    [alt]="'Happy Beauty'"
-                  >
-                  </fc-image-preview>
-                  <!-- <fc-file-input
-                    [accept]="'image/*'"
-                    (onInput)="changeProfile($event)">
-                    <button
-                      [ngClass]="{
-                        'opacity-50': loadingProfileImage
-                      }"
-                      [disabled]="loadingProfileImage"
-                      type="button"
-                      class="flex w-full items-center justify-center gap-2 rounded-md bg-zinc-100/70 p-2 text-sm hover:bg-zinc-200 dark:bg-zinc-800 hover:dark:bg-zinc-700">
-                      <fa-icon
-                        [fixedWidth]="true"
-                        [spin]="loadingProfileImage"
-                        [icon]="
-                          loadingProfileImage ? faSpinner : faCloudArrowUp
-                        "></fa-icon>
-                      Change Image
-                    </button>
-                  </fc-file-input> -->
-                </div>
-              </div>
-
               <div class="grid w-full flex-1 gap-3 @xl:grid-cols-2">
                 <fc-input-text
                   title="Name"
                   formControlName="name"
                   placeholder="Enter Your Name"
                 />
-                <fc-input-text
-                  title="Username"
-                  formControlName="username"
-                  placeholder="Enter Your Username"
-                  [disabled]="true"
-                ></fc-input-text>
                 <ng-container formGroupName="staff">
                   <fc-input-text
                     title="Identification Number"
@@ -115,20 +49,18 @@
                         placeholder="Select Working Since"
                         appendTo="body"
                         dateFormat="dd/mm/yy"
-                        [inputStyle]="{
-                          'background-color': '#27272a',
-                          border: '1px solid #3f3f46',
-                          color: '#ffffff',
-                          'font-size': '12px',
-                          'line-height': '1.7',
+                        [inputStyle]="
+                          isDarkMode ? darkInputStyle : lightInputStyle
+                        "
+                        [panelStyle]="{
+                          backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
                         }"
                       />
                       <label
                         for="xs"
-                        style="
-                          font-weight: 500 !important;
-                          color: #ffffff99 !important;
-                        "
+                        [ngStyle]="{
+                          color: isDarkMode ? '#ffffff' : '#1f2937',
+                        }"
                         >Working Since</label
                       >
                     </p-iftalabel>
@@ -162,22 +94,23 @@
                         optionValue="id"
                         placeholder="Select Role Name"
                         styleClass="w-full"
-                        [style]="{
-                          'background-color': '#27272a',
-                          color: '#ffffff',
-                          border: '1px solid #3f3f46',
-                          'line-height': '1.5',
+                        [style]="isDarkMode ? darkInputStyle : lightInputStyle"
+                        [panelStyle]="{
+                          backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
                         }"
                       >
                       </p-select>
                       <label
                         for="dd-type"
-                        style="
-                          font-weight: 500 !important;
-                          color: #ffffff99 !important;
-                          line-height: 1.4 !important;
-                        "
-                        >Role Name</label
+                        [ngStyle]="{
+                          color: isDarkMode ? '#ffffff' : '#1f2937',
+                        }"
+                        >Role Name
+                        <span
+                          *ngIf="hasRequiredValidator('role')"
+                          class="required-asterisk"
+                          >*</span
+                        ></label
                       >
                     </p-iftalabel>
                   </div>
@@ -189,16 +122,21 @@
                       (click)="onSelectBranch()"
                     >
                       <p
-                        class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+                        class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-900 dark:text-white"
                       >
                         Branch
+                        <span
+                          *ngIf="hasRequiredValidator('branch')"
+                          class="required-asterisk"
+                          >*</span
+                        >
                       </p>
                       <p *ngIf="staffForm.value.branch" class="text-xs">
                         {{ staffForm.value.branch?.address }}
                       </p>
                       <p
                         *ngIf="!staffForm.get('branch')?.value"
-                        class="text-xs dark:text-gray-400"
+                        class="text-xs dark:text-gray-400 text-zinc-400"
                       >
                         Select Branch
                       </p>

@@ -29,16 +29,21 @@
       >
         <div class="flex flex-1 flex-col" (click)="onSelectSupplier()">
           <p
-            class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+            class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-900 dark:text-white"
           >
             Supplier
+            <span
+              *ngIf="hasRequiredValidator('supplier')"
+              class="required-asterisk"
+              >*</span
+            >
           </p>
           <p *ngIf="purchasePaymentForm.value.supplier" class="text-xs">
             {{ purchasePaymentForm.value.supplier.user.name }}
           </p>
           <p
             *ngIf="!purchasePaymentForm.value.supplier"
-            class="text-xs dark:text-gray-400"
+            class="text-xs dark:text-gray-400 text-zinc-400"
           >
             Select Supplier
           </p>
@@ -68,18 +73,18 @@
             placeholder="Select Date"
             appendTo="body"
             dateFormat="dd/mm/yy"
-            [inputStyle]="{
-              'background-color': '#27272a',
-              border: '1px solid #3f3f46',
-              color: '#ffffff',
-              'font-size': '12px',
-              'line-height': '1.7',
+            [inputStyle]="isDarkMode ? darkInputStyle : lightInputStyle"
+            [panelStyle]="{
+              backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
             }"
           />
           <label
             for="date"
-            style="font-weight: 500 !important; color: #ffffff99 !important"
-            >Date</label
+            [ngStyle]="{ color: isDarkMode ? '#ffffff' : '#1f2937' }"
+            >Date
+            <span *ngIf="hasRequiredValidator('date')" class="required-asterisk"
+              >*</span
+            ></label
           >
         </p-iftalabel>
       </div>

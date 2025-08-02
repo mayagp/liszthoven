@@ -37,14 +37,14 @@
                     {{ purchasePayment.created_at | date: "dd MMMM yyyy" }}
                   </p>
                 </div>
-                <div class="w-full @lg:w-[100px]">
+                <!-- <div class="w-full @lg:w-[100px]">
                   <div
                     class="w-fit rounded-md px-2 py-1"
                     [ngClass]="getStatusColor(purchasePayment.status)"
                   >
                     {{ purchasePayment.status_name }}
                   </div>
-                </div>
+                </div> -->
 
                 <div class="w-full @lg:w-[100px]">
                   <p class="text-xs">Payment Method</p>
@@ -127,12 +127,12 @@
                     </p>
                   </div>
                   <div class="flex items-center justify-end gap-2">
-                    <div
+                    <!-- <div
                       class="w-fit rounded-md px-2 py-1"
                       [ngClass]="getStatusColor(purchasePayment.status)"
                     >
                       {{ purchasePayment.status_name }}
-                    </div>
+                    </div> -->
                     <button
                       type="button"
                       class="btn btn-high"

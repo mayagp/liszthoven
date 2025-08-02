@@ -91,20 +91,19 @@ export class BranchViewComponent
     {
       label: 'Save',
       icon: faSave,
-      action: () => {
-        this.submit();
-      },
+      color: 'blue',
+      action: () => this.submit(),
       hidden: false,
     },
     {
       label: 'Delete',
       icon: faTrash,
-      action: () => {
-        this.confirmDelete();
-      },
+      color: 'red',
+      action: () => this.confirmDelete(),
       hidden: false,
     },
   ];
+
   hiddenActionButtons: any[] = [];
   filterButtons: any[] = [
     {
@@ -145,7 +144,7 @@ export class BranchViewComponent
     });
 
     this.branchForm = new FormGroup({
-      name: new FormControl(''),
+      name: new FormControl('', Validators.required),
       address: new FormControl('', Validators.required),
       note: new FormControl(''),
       email: new FormControl(''),

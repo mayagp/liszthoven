@@ -8,13 +8,14 @@
 >
   <div class="flex flex-1 flex-col">
     <p
-      class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+      class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-900 dark:text-white"
     >
       {{ title }}
+      <span *ngIf="required" class="ml-1 text-sm text-red-500">*</span>
     </p>
     <input
       fcNumber
-      class="m-0 w-full bg-white p-0 text-xs ring-0 focus:outline-none focus:ring-0 dark:bg-zinc-800"
+      class="m-0 w-full bg-white p-0 text-xs ring-0 focus:outline-none focus:ring-0 dark:bg-zinc-800 placeholder-zinc-400 text-zinc-900 dark:text-white"
       [type]="type"
       [id]="uniqueId"
       [(ngModel)]="value"

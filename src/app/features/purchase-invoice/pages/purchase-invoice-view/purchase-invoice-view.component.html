@@ -41,6 +41,11 @@
             class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
           >
             Branch
+            <span
+              *ngIf="hasRequiredValidator('branch')"
+              class="required-asterisk"
+              >*</span
+            >
           </p>
           <p *ngIf="purchaseInvoiceForm.value.branch" class="text-xs">
             {{ purchaseInvoiceForm.value.branch?.address || "-" }}
@@ -71,18 +76,18 @@
             placeholder="Select Invoice Date"
             appendTo="body"
             dateFormat="dd/mm/yy"
-            [inputStyle]="{
-              'background-color': '#27272a',
-              border: '1px solid #3f3f46',
-              color: '#ffffff',
-              'font-size': '12px',
-              'line-height': '1.7',
+            [inputStyle]="isDarkMode ? darkInputStyle : lightInputStyle"
+            [panelStyle]="{
+              backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
             }"
           />
           <label
             for="date"
-            style="font-weight: 500 !important; color: #ffffff99 !important"
-            >Invoice Date</label
+            [ngStyle]="{ color: isDarkMode ? '#ffffff' : '#1f2937' }"
+            >Invoice Date
+            <span *ngIf="hasRequiredValidator('date')" class="required-asterisk"
+              >*</span
+            ></label
           >
         </p-iftalabel>
       </div>
@@ -98,18 +103,20 @@
             placeholder="Select Due Date"
             appendTo="body"
             dateFormat="dd/mm/yy"
-            [inputStyle]="{
-              'background-color': '#27272a',
-              border: '1px solid #3f3f46',
-              color: '#ffffff',
-              'font-size': '12px',
-              'line-height': '1.7',
+            [inputStyle]="isDarkMode ? darkInputStyle : lightInputStyle"
+            [panelStyle]="{
+              backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
             }"
           />
           <label
             for="due_date"
-            style="font-weight: 500 !important; color: #ffffff99 !important"
-            >Due Date</label
+            [ngStyle]="{ color: isDarkMode ? '#ffffff' : '#1f2937' }"
+            >Due Date
+            <span
+              *ngIf="hasRequiredValidator('due_date')"
+              class="required-asterisk"
+              >*</span
+            ></label
           >
         </p-iftalabel>
       </div>
@@ -119,16 +126,14 @@
             class="w-full"
             formControlName="shipping_cost"
             placeholder="Enter Shipping Cost"
-            [inputStyle]="{
-              'background-color': '#27272a',
-              border: '1px solid #3f3f46',
-              color: '#ffffff',
-              'font-size': '12px',
+            [inputStyle]="isDarkMode ? darkInputStyle : lightInputStyle"
+            [style]="{
+              backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
             }"
           />
           <label
             for="shipping_cost"
-            style="font-weight: 500 !important; color: #ffffff99 !important"
+            [ngStyle]="{ color: isDarkMode ? '#ffffff' : '#1f2937' }"
             >Shipping Cost</label
           >
         </p-iftalabel>
@@ -358,20 +363,24 @@
                         [maxFractionDigits]="0"
                         formControlName="tax"
                         placeholder="Enter Tax"
-                        [inputStyle]="{
-                          'background-color': '#27272a',
-                          border: '1px solid #3f3f46',
-                          color: '#ffffff',
-                          'font-size': '12px',
+                        [inputStyle]="
+                          isDarkMode ? darkInputStyle : lightInputStyle
+                        "
+                        [style]="{
+                          backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
                         }"
                       />
                       <label
                         for="base_price"
-                        style="
-                          font-weight: 500 !important;
-                          color: #ffffff99 !important;
-                        "
-                        >Tax</label
+                        [ngStyle]="{
+                          color: isDarkMode ? '#ffffff' : '#1f2937',
+                        }"
+                        >Tax
+                        <span
+                          *ngIf="hasRequiredValidator('tax')"
+                          class="required-asterisk"
+                          >*</span
+                        ></label
                       >
                     </p-iftalabel>
                   </div>

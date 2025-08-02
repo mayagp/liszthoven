@@ -7,6 +7,7 @@ import {
   FormControl,
   Validators,
   FormArray,
+  AbstractControl,
 } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { PureAbility } from '@casl/ability';
@@ -96,6 +97,32 @@ export class PurchaseOrderAddComponent {
   ];
 
   purchaseOrderForm: FormGroup;
+
+  isDarkMode =
+    window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  lightInputStyle = {
+    backgroundColor: '#ffffff',
+    border: '1px solid #d1d5db',
+    color: '#000000',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
+
+  darkInputStyle = {
+    backgroundColor: '#27272a',
+    border: '1px solid #3f3f46',
+    color: '#ffffff',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
   constructor(
     private layoutService: LayoutService,
     private purchaseOrderService: PurchaseOrderService,
@@ -125,7 +152,7 @@ export class PurchaseOrderAddComponent {
       note: new FormControl(''),
       branch: new FormControl(null, Validators.required),
       purchase_order_documents: new FormArray([]),
-      purchase_order_details: new FormArray([], Validators.required),
+      purchase_order_details: new FormArray([]),
     });
   }
 
@@ -144,6 +171,14 @@ export class PurchaseOrderAddComponent {
     this.destroy$.next();
     this.destroy$.complete();
     this.layoutService.setSearchConfig({ hide: false });
+  }
+
+  hasRequiredValidator(controlName: string): boolean {
+    const control = this.purchaseOrderForm.get(controlName);
+    if (!control || !control.validator) return false;
+
+    const validator = control.validator({} as AbstractControl);
+    return validator && validator['required'];
   }
 
   isShowOrderSummary: boolean = false;
@@ -241,10 +276,7 @@ export class PurchaseOrderAddComponent {
 
   generatePurchaseOrderDetail(purchaseOrderDetail: any): FormGroup {
     return new FormGroup({
-      quotation_no: new FormControl(
-        purchaseOrderDetail.quotation_no,
-        Validators.required,
-      ),
+      quotation_no: new FormControl(purchaseOrderDetail.quotation_no),
       supplier_quotation: new FormControl(
         purchaseOrderDetail.supplier_quotation,
       ),

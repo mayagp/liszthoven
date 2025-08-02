@@ -27,6 +27,8 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { FcActionBarComponent } from '../../../../shared/components/fc-action-bar/fc-action-bar.component';
 import { ProgressSpinner } from 'primeng/progressspinner';
+import { PaginatorModule } from 'primeng/paginator';
+import { StaffViewComponent } from '../staff-view/staff-view.component';
 
 @Component({
   selector: 'app-staff-list',
@@ -36,6 +38,8 @@ import { ProgressSpinner } from 'primeng/progressspinner';
     DynamicDialogModule,
     FcActionBarComponent,
     ProgressSpinner,
+    PaginatorModule,
+    StaffViewComponent,
   ],
   templateUrl: './staff-list.component.html',
   styleUrls: ['./staff-list.component.css'],
@@ -49,6 +53,7 @@ export class StaffListComponent {
   faEye = faEye;
   faBuilding = faBuilding;
   quickView = false;
+  Math = Math;
 
   actionButtons: any[] = [
     {
@@ -281,17 +286,6 @@ export class StaffListComponent {
       loading: state,
     });
   }
-  onPageUpdate(pagination: any) {
-    let page = pagination.page;
-    let rows = pagination.rows;
-    this.rows = rows;
-    if (page > 0) {
-      this.page = page;
-    } else {
-      this.page = 1;
-    }
-    this.loadData(this.page);
-  }
   navigateToDetail(staff: Staff) {
     this.router.navigate(['/staff/view/', staff.id]);
   }
@@ -328,5 +322,10 @@ export class StaffListComponent {
       (item: Staff) => item.id == staff.id,
     );
     this.staffs[staffIndex] = staff;
+  }
+  onPageUpdate(event: any) {
+    this.rows = event.rows;
+    this.page = Math.floor(event.first / event.rows) + 1;
+    this.loadData();
   }
 }

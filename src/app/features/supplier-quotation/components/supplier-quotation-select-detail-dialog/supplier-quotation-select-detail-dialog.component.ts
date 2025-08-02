@@ -116,7 +116,7 @@ export class SupplierQuotationSelectDetailDialogComponent {
     if (this.config.data.statusFilter) {
       dataListParameter.filterObj = this.config.data.statusFilter;
     } else {
-      dataListParameter.filterObj = filterObj;
+      dataListParameter.filterObj = filterObj + 'with_filter=1&status=2';
     }
     dataListParameter.searchQuery = searchQuery;
     this.destroy$.next();

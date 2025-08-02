@@ -46,12 +46,15 @@ export class SupplierQuotationService {
     return this.http.put(`${ROOT_API}/supplier-quotations/${id}`, supplier);
   }
 
+    offeredSupplierQuotation(id: string) {
+    return this.http.put(`${ROOT_API}/supplier-quotations/${id}/offered`, {});
+  }
   receiveSupplierQuotation(id: string) {
     return this.http.put(`${ROOT_API}/supplier-quotations/${id}/received`, {});
   }
 
-  cancelSupplierQuotation(id: string) {
-    return this.http.put(`${ROOT_API}/supplier-quotations/${id}/cancelled`, {});
+  rejectSupplierQuotation(id: string) {
+    return this.http.put(`${ROOT_API}/supplier-quotations/${id}/rejected`, {});
   }
 
   deleteSupplierQuotation(id: string) {

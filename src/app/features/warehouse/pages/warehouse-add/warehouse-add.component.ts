@@ -5,6 +5,7 @@ import {
   Validators,
   FormsModule,
   ReactiveFormsModule,
+  AbstractControl,
 } from '@angular/forms';
 import { PureAbility } from '@casl/ability';
 import {
@@ -77,7 +78,7 @@ export class WarehouseAddComponent
       showHeader: true,
     });
     this.warehouseForm = new FormGroup({
-      branch: new FormControl(null),
+      branch: new FormControl('', Validators.required),
       code: new FormControl('', Validators.required),
       name: new FormControl('', Validators.required),
       location: new FormControl('', Validators.required),
@@ -94,6 +95,13 @@ export class WarehouseAddComponent
     this.layoutService.setSearchConfig({ hide: false });
   }
 
+  hasRequiredValidator(controlName: string): boolean {
+    const control = this.warehouseForm.get(controlName);
+    if (!control || !control.validator) return false;
+
+    const validator = control.validator({} as AbstractControl);
+    return validator && validator['required'];
+  }
   removeBranch() {
     this.warehouseForm.get('branch')?.reset();
   }

@@ -12,8 +12,10 @@
           Here’s today’s overview of your account.
         </p>
       </header>
+
+      <!-- admin manager -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div
+        <!-- <div
           class="bg-zinc-100/70 dark:bg-zinc-800 dark:border-zinc-800 border-zinc-100/70 p-4 rounded-lg shadow-md"
           (click)="navigatePurchaseRequest()"
         >
@@ -23,14 +25,43 @@
           <p class="text-2xl font-bold text-green-600">
             {{ totalPurchaseRequests }}
           </p>
+        </div> -->
+        <div
+          class="bg-zinc-100/70 dark:bg-zinc-800 dark:border-zinc-800 border-zinc-100/70 p-4 rounded-lg shadow-md relative cursor-pointer"
+          (click)="navigatePurchaseRequest()"
+        >
+          <div class="flex justify-between items-center mb-1">
+            <h2 class="text-lg font-semibold text-gray-700 dark:text-white">
+              Purchase Request
+            </h2>
+            <span
+              *ngIf="newPurchaseRequestCount > 0"
+              class="text-xs font-medium bg-red-600 text-white px-2 py-0.5 rounded-full animate-pulse"
+            >
+              {{ newPurchaseRequestCount }} New
+            </span>
+          </div>
+          <p class="text-2xl font-bold text-green-600">
+            {{ totalPurchaseRequests }}
+          </p>
         </div>
+
         <div
           class="bg-zinc-100/70 dark:bg-zinc-800 dark:border-zinc-800 border-zinc-100/70 p-4 rounded-lg shadow-md"
           (click)="navigatePurchaseOrder()"
         >
-          <h2 class="text-lg font-semibold text-gray-700 dark:text-white">
-            Purchase Order
-          </h2>
+          <div class="flex justify-between items-center mb-1">
+            <h2 class="text-lg font-semibold text-gray-700 dark:text-white">
+              Purchase Order
+            </h2>
+            <span
+              *ngIf="newPurchaseOrderCount > 0"
+              class="text-xs font-medium bg-red-600 text-white px-2 py-0.5 rounded-full animate-pulse"
+            >
+              {{ newPurchaseOrderCount }} New
+            </span>
+          </div>
+
           <p class="text-2xl font-bold text-yellow-600">
             {{ totalPurchaseOrders }}
           </p>
@@ -39,9 +70,17 @@
           class="bg-zinc-100/70 dark:bg-zinc-800 dark:border-zinc-800 border-zinc-100/70 p-4 rounded-lg shadow-md"
           (click)="navigateSupplierQuotation()"
         >
-          <h2 class="text-lg font-semibold text-gray-700 dark:text-white">
-            Supplier Quotation
-          </h2>
+          <div class="flex justify-between items-center mb-1">
+            <h2 class="text-lg font-semibold text-gray-700 dark:text-white">
+              Supplier Quotation
+            </h2>
+            <span
+              *ngIf="newSupplierQuotationCount > 0"
+              class="text-xs font-medium bg-red-600 text-white px-2 py-0.5 rounded-full animate-pulse"
+            >
+              {{ newSupplierQuotationCount }} New
+            </span>
+          </div>
           <p class="text-2xl font-bold text-blue-600">
             {{ totalSupplierQuotations }}
           </p>
@@ -165,22 +204,38 @@
           class="bg-zinc-100/70 dark:bg-zinc-800 dark:border-zinc-800 border-zinc-100/70 p-4 rounded-lg shadow-md"
           (click)="navigatePurchaseOrder()"
         >
-          <h2 class="text-lg font-semibold text-gray-700 dark:text-white">
-            Purchase Order
-          </h2>
+          <div class="flex justify-between items-center mb-1">
+            <h2 class="text-lg font-semibold text-gray-700 dark:text-white">
+              Purchase Order
+            </h2>
+            <span
+              *ngIf="newPurchaseOrderForSupplierCount > 0"
+              class="text-xs font-medium bg-red-600 text-white px-2 py-0.5 rounded-full animate-pulse"
+            >
+              {{ newPurchaseOrderForSupplierCount }} New
+            </span>
+          </div>
           <p class="text-2xl font-bold text-green-600">
-            {{ totalPurchaseOrders }}
+            {{ totalPurchaseOrderSuppliers }}
           </p>
         </div>
         <div
           class="bg-zinc-100/70 dark:bg-zinc-800 dark:border-zinc-800 border-zinc-100/70 p-4 rounded-lg shadow-md"
           (click)="navigateSupplierQuotation()"
         >
-          <h2 class="text-lg font-semibold text-gray-700 dark:text-white">
-            Supplier Quotation
-          </h2>
+          <div class="flex justify-between items-center mb-1">
+            <h2 class="text-lg font-semibold text-gray-700 dark:text-white">
+              Supplier Quotation
+            </h2>
+            <span
+              *ngIf="newSupplierQuotationForSupplierCount > 0"
+              class="text-xs font-medium bg-red-600 text-white px-2 py-0.5 rounded-full animate-pulse"
+            >
+              {{ newSupplierQuotationForSupplierCount }} New
+            </span>
+          </div>
           <p class="text-2xl font-bold text-blue-600">
-            {{ totalSupplierQuotations }}
+            {{ totalSupplierQuotationForSupplier }}
           </p>
         </div>
       </div>

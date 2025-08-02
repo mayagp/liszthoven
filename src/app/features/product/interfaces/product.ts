@@ -13,13 +13,13 @@ export interface Product {
   product_category_id: number;
   brand_id: number;
   quantity: number;
-  created_at: string;
-  updated_at: string;
-  deleted_at: any;
   brand: string;
   product_category: ProductCategory;
   product_images: ProductImage[];
   default_image?: ProductImage;
+  created_at: string;
+  updated_at: string;
+  deleted_at: any;
   isExist?: boolean;
 }
 export interface ProductImage {
@@ -30,14 +30,6 @@ export interface ProductImage {
   file_type: string;
   sequence: number;
   product_id: number;
-  created_at: string;
-  updated_at: string;
-  deleted_at: any;
-}
-
-export interface Brand {
-  id: string;
-  name: string;
   created_at: string;
   updated_at: string;
   deleted_at: any;

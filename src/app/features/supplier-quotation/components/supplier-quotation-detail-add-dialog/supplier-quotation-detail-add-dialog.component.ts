@@ -6,12 +6,14 @@ import {
   FormGroup,
   FormControl,
   Validators,
+  AbstractControl,
 } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faTimes,
   faSpinner,
   faRefresh,
+  faSearch,
 } from '@fortawesome/free-solid-svg-icons';
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { Subject, takeUntil } from 'rxjs';
@@ -45,6 +47,7 @@ export class SupplierQuotationDetailAddDialogComponent {
   faTimes = faTimes;
   faSpinner = faSpinner;
   faRefresh = faRefresh;
+  faSearch = faSearch;
 
   title = 'Add Supplier Quotation';
   supplierQuotation: SupplierQuotation = {} as SupplierQuotation;
@@ -59,6 +62,32 @@ export class SupplierQuotationDetailAddDialogComponent {
   totalPages = 1;
   page = 1;
   rows = 10;
+
+  isDarkMode =
+    window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  lightInputStyle = {
+    backgroundColor: '#ffffff',
+    border: '1px solid #d1d5db',
+    color: '#000000',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
+
+  darkInputStyle = {
+    backgroundColor: '#27272a',
+    border: '1px solid #3f3f46',
+    color: '#ffffff',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
 
   constructor(
     private ref: DynamicDialogRef,
@@ -101,6 +130,15 @@ export class SupplierQuotationDetailAddDialogComponent {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
+  hasRequiredValidator(controlName: string): boolean {
+    const control = this.supplierQuotationForm.get(controlName);
+    if (!control || !control.validator) return false;
+
+    const validator = control.validator({} as AbstractControl);
+    return validator && validator['required'];
+  }
+
   loadData() {
     this.loading = true;
 

@@ -22,3 +22,35 @@
 .fc-animate-translate-up {
   @apply transition ease-in-out hover:-translate-y-1;
 }
+.required-asterisk {
+  color: red;
+  margin-left: 3px;
+  font-size: medium;
+}
+
+.light-mode .p-inputtext {
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #d1d5db;
+}
+
+.dark-mode .p-inputtext {
+  background-color: #27272a;
+  color: #ffffff;
+  border: 1px solid #3f3f46;
+}
+
+.light-mode .p-datepicker-panel {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.dark-mode .p-datepicker-panel {
+  background-color: #27272a !important;
+  color: #ffffff !important;
+}
+
+/* Placeholder color */
+.p-inputtext::placeholder {
+  color: #9ca3af;
+}

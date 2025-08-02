@@ -93,10 +93,7 @@ export class ProductListComponent
   fcFilterConfig: FcFilterConfig = {
     filterFields: [],
     sort: {
-      fields: [
-        { name: 'name', header: 'Name' },
-        { name: 'brand', header: 'Brand' },
-      ],
+      fields: [{ name: 'name', header: 'Name' }],
       selectedField: 'id',
       direction: 'desc',
     },

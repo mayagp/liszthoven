@@ -26,16 +26,21 @@
       >
         <div class="flex flex-1 flex-col" (click)="onSelectProduct()">
           <p
-            class="m-0 block p-0 text-2xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+            class="m-0 block p-0 text-2xs font-medium leading-5 text-zinc-900 dark:text-white"
           >
             Product
+            <span
+              *ngIf="hasRequiredValidator('product')"
+              class="required-asterisk"
+              >*</span
+            >
           </p>
           <p *ngIf="purchasePlanForm.value.product" class="text-xs">
             {{ purchasePlanForm.value.product.name }}
           </p>
           <p
             *ngIf="!purchasePlanForm.value.product"
-            class="text-xs dark:text-gray-400"
+            class="text-xs dark:text-gray-400 text-zinc-400"
           >
             Select Product
           </p>
@@ -66,16 +71,21 @@
       >
         <div class="flex flex-1 flex-col" (click)="onSelectWarehouse()">
           <p
-            class="m-0 block p-0 text-2xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+            class="m-0 block p-0 text-2xs font-medium leading-5 text-zinc-900 dark:text-white"
           >
             Warehouse
+            <span
+              *ngIf="hasRequiredValidator('warehouse')"
+              class="required-asterisk"
+              >*</span
+            >
           </p>
           <p *ngIf="purchasePlanForm.value.warehouse" class="text-xs">
             {{ purchasePlanForm.value.warehouse.name }}
           </p>
           <p
             *ngIf="!purchasePlanForm.value.warehouse"
-            class="text-xs dark:text-gray-400"
+            class="text-xs dark:text-gray-400 text-zinc-400"
           >
             Select Warehouse
           </p>
@@ -99,17 +109,20 @@
             class="w-full"
             formControlName="quantity"
             placeholder="Enter Quantity"
-            [inputStyle]="{
-              'background-color': '#27272a',
-              border: '1px solid #3f3f46',
-              color: '#ffffff',
-              'font-size': '12px',
+            [inputStyle]="isDarkMode ? darkInputStyle : lightInputStyle"
+            [style]="{
+              backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
             }"
           />
           <label
             for="quantity"
-            style="font-weight: 500 !important; color: #ffffff99 !important"
-            >Quantity</label
+            [ngStyle]="{ color: isDarkMode ? '#ffffff' : '#1f2937' }"
+            >Quantity
+            <span
+              *ngIf="hasRequiredValidator('quantity')"
+              class="required-asterisk"
+              >*</span
+            ></label
           >
         </p-iftalabel>
       </div>
@@ -125,18 +138,18 @@
             placeholder="Select Date"
             appendTo="body"
             dateFormat="dd/mm/yy"
-            [inputStyle]="{
-              'background-color': '#27272a',
-              border: '1px solid #3f3f46',
-              color: '#ffffff',
-              'font-size': '12px',
-              'line-height': '1.7',
+            [inputStyle]="isDarkMode ? darkInputStyle : lightInputStyle"
+            [panelStyle]="{
+              backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
             }"
           />
           <label
             for="date"
-            style="font-weight: 500 !important; color: #ffffff99 !important"
-            >Date</label
+            [ngStyle]="{ color: isDarkMode ? '#ffffff' : '#1f2937' }"
+            >Date
+            <span *ngIf="hasRequiredValidator('date')" class="required-asterisk"
+              >*</span
+            ></label
           >
         </p-iftalabel>
       </div>
@@ -151,21 +164,15 @@
             optionValue="value"
             placeholder="Select Status"
             styleClass="w-full"
-            [style]="{
-              'background-color': '#27272a',
-              color: '#ffffff',
-              border: '1px solid #3f3f46',
-              'line-height': '1.5',
+            [style]="isDarkMode ? darkInputStyle : lightInputStyle"
+            [panelStyle]="{
+              backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
             }"
           >
           </p-select>
           <label
             for="dd-status"
-            style="
-              font-weight: 500 !important;
-              color: #ffffff99 !important;
-              line-height: 1.4 !important;
-            "
+            [ngStyle]="{ color: isDarkMode ? '#ffffff' : '#1f2937' }"
             >Status</label
           >
         </p-iftalabel>

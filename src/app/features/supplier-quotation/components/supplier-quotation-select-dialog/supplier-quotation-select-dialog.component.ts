@@ -11,6 +11,7 @@ import {
   faHashtag,
   faUser,
   faDollar,
+  faSearch,
 } from '@fortawesome/free-solid-svg-icons';
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { Subject, takeUntil } from 'rxjs';
@@ -44,6 +45,7 @@ export class SupplierQuotationSelectDialogComponent {
   faHashtag = faHashtag;
   faUser = faUser;
   faDollar = faDollar;
+  faSearch = faSearch;
 
   supplierQuotations: SupplierQuotation[] = [];
 
@@ -114,7 +116,7 @@ export class SupplierQuotationSelectDialogComponent {
     if (this.config.data.statusFilter) {
       dataListParameter.filterObj = this.config.data.statusFilter;
     } else {
-      dataListParameter.filterObj = filterObj + 'with_filter=1&status=1';
+      dataListParameter.filterObj = filterObj + 'with_filter=1&status=2';
     }
     dataListParameter.searchQuery = searchQuery;
     this.destroy$.next();

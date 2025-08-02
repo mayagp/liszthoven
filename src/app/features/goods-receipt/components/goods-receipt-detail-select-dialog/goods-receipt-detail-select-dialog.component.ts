@@ -9,6 +9,7 @@ import {
   faChevronDown,
   faRefresh,
   faPlus,
+  faSearch,
 } from '@fortawesome/free-solid-svg-icons';
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { Subject, takeUntil } from 'rxjs';
@@ -43,6 +44,7 @@ export class GoodsReceiptDetailSelectDialogComponent {
   faChevronDown = faChevronDown;
   faRefresh = faRefresh;
   faPlus = faPlus;
+  faSearch = faSearch;
 
   goodsReceipts: GoodsReceipt[] = [];
   supplierId: number | null = null;

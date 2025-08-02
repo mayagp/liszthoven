@@ -28,6 +28,7 @@ import { FcCurrencyPipe } from '../../../../shared/pipes/fc-currency.pipe';
 import { PurchaseOrderViewComponent } from '../purchase-order-view/purchase-order-view.component';
 import { PaginatorModule } from 'primeng/paginator';
 import { ProgressSpinner } from 'primeng/progressspinner';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-purchase-order-list',
@@ -117,6 +118,8 @@ export class PurchaseOrderListComponent {
   rows = 10;
   searchQuery: string = '';
   Math = Math;
+  supplierId: number | null = null;
+  isSupplier: boolean = false;
 
   purchaseOrders: PurchaseOrder[] = [];
   selectedPurchaseOrder: PurchaseOrder | undefined;
@@ -129,6 +132,7 @@ export class PurchaseOrderListComponent {
     private fcFilterDialogService: FcFilterDialogService,
     private dialogService: DialogService,
     private ability: PureAbility,
+    private authService: AuthService,
   ) {
     this.actionButtons[0].hidden = !this.ability.can(
       'create',
@@ -172,8 +176,28 @@ export class PurchaseOrderListComponent {
       });
   }
   ngOnInit(): void {
-    // initial load Data
-    this.loadData();
+    this.authService.currentUserDataSubject
+      .pipe(take(1))
+      .subscribe((userString) => {
+        let userObj = null;
+        try {
+          userObj =
+            typeof userString === 'string'
+              ? JSON.parse(userString)
+              : userString;
+        } catch (error) {
+          userObj = null;
+          console.error('Error parsing user JSON:', error);
+        }
+        this.supplierId = userObj?.supplier?.id || null;
+        this.isSupplier = !!this.supplierId;
+
+        if (this.isSupplier) {
+          this.loadDataBySupplier();
+        } else {
+          this.loadData();
+        }
+      });
 
     // load data when search
     this.layoutService.setSearchConfig({
@@ -294,6 +318,56 @@ export class PurchaseOrderListComponent {
           this.layoutService.setSearchConfig({
             loading: false,
           });
+        },
+      });
+  }
+
+  loadDataBySupplier() {
+    this.setParam();
+    this.loading = true;
+    this.layoutService.setSearchConfig({ loading: true });
+
+    let dataListParameter: DataListParameter = {} as DataListParameter;
+    dataListParameter.rows = this.rows;
+    dataListParameter.page = this.page;
+    dataListParameter.sortBy = this.fcFilterDialogService.getSortString(
+      this.fcFilterConfig,
+    );
+    dataListParameter.filterObj = this.fcFilterDialogService.getFilterString(
+      this.fcFilterConfig,
+    );
+    dataListParameter.searchQuery = this.searchQuery;
+
+    // Tambah filter supplier_id khusus untuk supplier
+    if (this.supplierId) {
+      if (dataListParameter.filterObj) {
+        dataListParameter.filterObj += `,supplier_id=${this.supplierId}`;
+      } else {
+        dataListParameter.filterObj = `supplier_id=${this.supplierId}`;
+      }
+    }
+
+    this.purchaseOrderService
+      .getPurchaseOrders(dataListParameter)
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe({
+        next: (res: any) => {
+          this.totalRecords = res.data.count;
+          this.totalPages =
+            this.totalRecords > this.rows
+              ? Math.ceil(this.totalRecords / this.rows)
+              : 1;
+          this.purchaseOrders = res.data.purchase_orders;
+
+          if (!this.selectedPurchaseOrder && this.purchaseOrders.length > 0) {
+            this.selectedPurchaseOrder = this.purchaseOrders[0];
+          }
+          this.loading = false;
+          this.layoutService.setSearchConfig({ loading: false });
+        },
+        error: () => {
+          this.loading = false;
+          this.layoutService.setSearchConfig({ loading: false });
         },
       });
   }

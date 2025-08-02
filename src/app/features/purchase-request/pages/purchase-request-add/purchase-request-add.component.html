@@ -45,22 +45,22 @@
             placeholder="Date"
             appendTo="body"
             dateFormat="dd/mm/yy"
-            [inputStyle]="{
-              'background-color': '#27272a',
-              border: '1px solid #3f3f46',
-              color: '#ffffff',
-              'font-size': '12px',
-              'line-height': '1.7',
+            [inputStyle]="isDarkMode ? darkInputStyle : lightInputStyle"
+            [panelStyle]="{
+              backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
             }"
           />
           <label
             for="date"
-            style="font-weight: 500 !important; color: #ffffff99 !important"
-            >Date</label
+            [ngStyle]="{ color: isDarkMode ? '#ffffff' : '#1f2937' }"
+            >Date
+            <span *ngIf="hasRequiredValidator('date')" class="required-asterisk"
+              >*</span
+            ></label
           >
         </p-iftalabel>
       </div>
-      <div
+      <!-- <div
         class="form-input flex cursor-pointer items-center rounded-lg border bg-white p-2 dark:bg-zinc-800 dark:hover:bg-zinc-700"
         [ngClass]="{
           'border-red-400':
@@ -99,7 +99,7 @@
             <fa-icon [fixedWidth]="true" [icon]="faChevronDown"></fa-icon>
           </button>
         </div>
-      </div>
+      </div> -->
       <div class="purchase-request-detail @xl:col-span-2">
         <div class="mt-2 flex w-full items-center">
           <h3 class="flex-1">Detail</h3>

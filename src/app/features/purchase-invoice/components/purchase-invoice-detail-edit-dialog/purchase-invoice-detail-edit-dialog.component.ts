@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import {
+  AbstractControl,
   FormControl,
   FormGroup,
   FormsModule,
@@ -55,6 +56,32 @@ export class PurchaseInvoiceDetailEditDialogComponent {
 
   quantityMessage: string = '';
   maxQuantity: number = 0;
+
+  isDarkMode =
+    window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  lightInputStyle = {
+    backgroundColor: '#ffffff',
+    border: '1px solid #d1d5db',
+    color: '#000000',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
+
+  darkInputStyle = {
+    backgroundColor: '#27272a',
+    border: '1px solid #3f3f46',
+    color: '#ffffff',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
 
   constructor(
     private ref: DynamicDialogRef,
@@ -119,6 +146,14 @@ export class PurchaseInvoiceDetailEditDialogComponent {
       this.purchaseInvoiceDetailForm.value.quantity *
       this.purchaseInvoiceDetailForm.value.unit_price
     );
+  }
+
+  hasRequiredValidator(controlName: string): boolean {
+    const control = this.purchaseInvoiceDetailForm.get(controlName);
+    if (!control || !control.validator) return false;
+
+    const validator = control.validator({} as AbstractControl);
+    return validator && validator['required'];
   }
 
   onSelectProduct() {

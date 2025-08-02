@@ -14,6 +14,7 @@ import {
   FormControl,
   Validators,
   FormArray,
+  AbstractControl,
 } from '@angular/forms';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { PureAbility } from '@casl/ability';
@@ -96,16 +97,17 @@ export class SupplierQuotationViewComponent {
       label: 'Receive',
       icon: faCheck,
       hidden: false,
+      style: 'background-color: green; color: white;',
       action: () => {
         this.receiveSupplierQuotation();
       },
     },
     {
-      label: 'Cancel',
+      label: 'Reject',
       icon: faTimes,
       hidden: false,
       action: () => {
-        this.cancelSupplierQuotation();
+        this.rejectSupplierQuotation();
       },
     },
     {
@@ -136,6 +138,32 @@ export class SupplierQuotationViewComponent {
   loading = false;
 
   isSupplier: boolean = false;
+
+  isDarkMode =
+    window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  lightInputStyle = {
+    backgroundColor: '#ffffff',
+    border: '1px solid #d1d5db',
+    color: '#000000',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
+
+  darkInputStyle = {
+    backgroundColor: '#27272a',
+    border: '1px solid #3f3f46',
+    color: '#ffffff',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
 
   constructor(
     private layoutService: LayoutService,
@@ -183,6 +211,14 @@ export class SupplierQuotationViewComponent {
     this.layoutService.setSearchConfig({ hide: false });
   }
 
+  hasRequiredValidator(controlName: string): boolean {
+    const control = this.supplierQuotationForm.get(controlName);
+    if (!control || !control.validator) return false;
+
+    const validator = control.validator({} as AbstractControl);
+    return validator && validator['required'];
+  }
+
   isShowDetailSummary: boolean = false;
   @ViewChild('detailSummary') detailSummary?: ElementRef;
   @ViewChild('supplierQuotationFormElement')
@@ -194,19 +230,32 @@ export class SupplierQuotationViewComponent {
     this.setOrderSummaryVisibility();
   }
   generateActionButtons() {
-    // Semua tombol disembunyikan dulu
-    this.actionButtons[0].hidden = true;
-    this.actionButtons[1].hidden = true;
-    this.actionButtons[2].hidden = true;
-    this.actionButtons[3].hidden = true;
+    // Reset semua tombol jadi hidden dulu
+    this.actionButtons.forEach((btn) => (btn.hidden = true));
 
+    // Jika yang login adalah supplier
+    if (this.isSupplier) {
+      this.actionButtons = [
+        {
+          label: 'Offered',
+          icon: faCheck,
+          hidden: false,
+          action: () => {
+            this.submit();
+          },
+        },
+      ];
+      return;
+    }
+
+    // Jika bukan supplier, jalankan aturan normal
     switch (this.supplierQuotation.status) {
       case 0:
         if (this.ability.can('update', 'supplier-quotation'))
-          this.actionButtons[0].hidden = false; // <<< ubah jadi false
+          this.actionButtons[0].hidden = false;
         if (this.ability.can('receive', 'supplier-quotation'))
           this.actionButtons[1].hidden = false;
-        if (this.ability.can('cancel', 'supplier-quotation'))
+        if (this.ability.can('reject', 'supplier-quotation'))
           this.actionButtons[2].hidden = false;
         if (this.ability.can('delete', 'supplier-quotation'))
           this.actionButtons[3].hidden = false;
@@ -214,22 +263,6 @@ export class SupplierQuotationViewComponent {
       default:
         break;
     }
-    console.log(
-      'Can update:',
-      this.ability.can('update', 'supplier-quotation'),
-    );
-    console.log(
-      'Can receive:',
-      this.ability.can('receive', 'supplier-quotation'),
-    );
-    console.log(
-      'Can cancel:',
-      this.ability.can('cancel', 'supplier-quotation'),
-    );
-    console.log(
-      'Can delete:',
-      this.ability.can('delete', 'supplier-quotation'),
-    );
   }
 
   updateHeader() {
@@ -523,22 +556,22 @@ export class SupplierQuotationViewComponent {
     });
   }
 
-  cancelSupplierQuotation() {
+  rejectSupplierQuotation() {
     this.confirmationService.confirm({
       header: 'Confirmation',
-      message: 'Are you sure to cancel this data?',
+      message: 'Are you sure to reject this quotation?',
       acceptLabel: 'Yes',
       rejectLabel: 'No',
       accept: () => {
         this.actionButtons[2].loading = true;
         this.supplierQuotationService
-          .cancelSupplierQuotation(this.supplierQuotation.id)
+          .rejectSupplierQuotation(this.supplierQuotation.id)
           .subscribe({
             next: (res: any) => {
               this.actionButtons[2].loading = false;
               this.messageService.add({
                 severity: 'success',
-                summary: 'Cancel Supplier Quotation',
+                summary: 'Rejected Supplier Quotation',
                 detail: res.message,
               });
               this.supplierQuotation.status_name = res.data.status_name;

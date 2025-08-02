@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private messageService: MessageService, // private fcToastService: FcToastService
+    private messageService: MessageService,
   ) {
     this.loginForm = new FormGroup({
       username: new FormControl('', Validators.required),
@@ -76,8 +76,8 @@ export class LoginComponent implements OnInit {
         if (res) {
           this.messageService.add({
             severity: 'success',
-            summary: 'Login Berhasil',
-            detail: 'Selamat datang!',
+            summary: 'Login Success',
+            detail: 'Welcome!',
           });
           this.router.navigate(['/']);
         }
@@ -85,8 +85,8 @@ export class LoginComponent implements OnInit {
       error: (err) => {
         this.messageService.add({
           severity: 'error',
-          summary: 'Login Gagal',
-          detail: 'Cek kembali username dan password!',
+          summary: 'Login Failed',
+          detail: 'Check your username and password again!',
         });
         this.loading = false;
       },

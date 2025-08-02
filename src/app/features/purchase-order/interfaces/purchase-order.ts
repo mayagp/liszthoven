@@ -45,7 +45,6 @@ export interface PurchaseOrderDetail {
   created_at: string;
   updated_at: string;
   deleted_at: any;
-  purchase_order_warehouses: PurchaseOrderWarehouse[];
   product: Product;
 }
 
@@ -58,15 +57,4 @@ export interface PurchaseOrderDocument {
   extension: string;
   created_at: string;
   updated_at: string;
-}
-
-export interface PurchaseOrderWarehouse {
-  id: number;
-  purchase_order_detail_id: number;
-  warehouse_id: number;
-  quantity_ordered: number;
-  quantity_received: number;
-  created_at: string;
-  updated_at: string;
-  warehouse: Warehouse;
 }

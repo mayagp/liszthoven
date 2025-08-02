@@ -15,6 +15,7 @@ import {
   FormArray,
   FormsModule,
   ReactiveFormsModule,
+  AbstractControl,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PureAbility } from '@casl/ability';
@@ -86,7 +87,6 @@ export class ProductViewComponent
   loading = false;
   productId: any;
   selectedCategory!: ProductCategory | null;
-  // selectedBrand!: Brand | null;
   selectedDefaultImage: any;
 
   actionButtons: any[] = [
@@ -144,6 +144,32 @@ export class ProductViewComponent
   @Output() onUpdated = new EventEmitter();
   pastedImages: any = [];
 
+  isDarkMode =
+    window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  lightInputStyle = {
+    backgroundColor: '#ffffff',
+    border: '1px solid #d1d5db',
+    color: '#000000',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
+
+  darkInputStyle = {
+    backgroundColor: '#27272a',
+    border: '1px solid #3f3f46',
+    color: '#ffffff',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
+
   constructor(
     private layoutService: LayoutService,
     private productService: ProductService,
@@ -196,6 +222,14 @@ export class ProductViewComponent
 
   refresh() {
     this.loadData();
+  }
+
+  hasRequiredValidator(controlName: string): boolean {
+    const control = this.productForm.get(controlName);
+    if (!control || !control.validator) return false;
+
+    const validator = control.validator({} as AbstractControl);
+    return validator && validator['required'];
   }
 
   loadData() {

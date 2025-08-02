@@ -12,16 +12,21 @@
         >
           <div class="flex flex-1 flex-col" (click)="onSelectWarehouseFrom()">
             <p
-              class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+              class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-900 dark:text-white"
             >
               Warehouse From
+              <span
+                *ngIf="hasRequiredValidator('from_warehouse')"
+                class="required-asterisk"
+                >*</span
+              >
             </p>
             <p *ngIf="stockMovementForm.value.from_warehouse" class="text-xs">
               {{ stockMovementForm.value.from_warehouse.name }}
             </p>
             <p
               *ngIf="!stockMovementForm.value.from_warehouse"
-              class="text-xs dark:text-gray-400"
+              class="text-xs dark:text-gray-400 text-zinc-400"
             >
               Select Warehouse From
             </p>
@@ -53,16 +58,21 @@
           >
             <div class="flex flex-1 flex-col">
               <p
-                class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+                class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-900 dark:text-white"
               >
                 Product Inventory
+                <span
+                  *ngIf="hasRequiredValidator('product')"
+                  class="required-asterisk"
+                  >*</span
+                >
               </p>
               <p *ngIf="stockMovementForm.value.product" class="text-xs">
                 {{ stockMovementForm.value.product.name }}
               </p>
               <p
                 *ngIf="!stockMovementForm.value.product"
-                class="text-xs dark:text-gray-400"
+                class="text-xs dark:text-gray-400 text-zinc-400"
               >
                 Select Product Inventory
               </p>
@@ -89,18 +99,21 @@
                 class="w-full"
                 formControlName="quantity"
                 placeholder="Enter Quantity"
-                [inputStyle]="{
-                  'background-color': '#27272a',
-                  border: '1px solid #3f3f46',
-                  color: '#ffffff',
-                  'font-size': '12px',
+                [inputStyle]="isDarkMode ? darkInputStyle : lightInputStyle"
+                [style]="{
+                  backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
                 }"
               />
               <label
                 for="quantity"
-                style="font-weight: 500 !important; color: #ffffff99 !important"
+                [ngStyle]="{ color: isDarkMode ? '#ffffff' : '#1f2937' }"
               >
-                Quantity (Max {{ allowedQuantity }} Pcs)</label
+                Quantity (Max {{ allowedQuantity }} Pcs)
+                <span
+                  *ngIf="hasRequiredValidator('quantity')"
+                  class="required-asterisk"
+                  >*</span
+                ></label
               >
             </p-iftalabel>
           </div>
@@ -114,16 +127,21 @@
         >
           <div class="flex flex-1 flex-col">
             <p
-              class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+              class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-900 dark:text-white"
             >
               Warehouse To
+              <span
+                *ngIf="hasRequiredValidator('to_warehouse')"
+                class="required-asterisk"
+                >*</span
+              >
             </p>
             <p *ngIf="stockMovementForm.value.to_warehouse" class="text-xs">
               {{ stockMovementForm.value.to_warehouse.name }}
             </p>
             <p
               *ngIf="!stockMovementForm.value.to_warehouse"
-              class="text-xs dark:text-gray-400"
+              class="text-xs dark:text-gray-400 text-zinc-400"
             >
               Select Warehouse To
             </p>
@@ -154,18 +172,20 @@
                 placeholder="Date"
                 appendTo="body"
                 dateFormat="dd/mm/yy"
-                [inputStyle]="{
-                  'background-color': '#27272a',
-                  border: '1px solid #3f3f46',
-                  color: '#ffffff',
-                  'font-size': '12px',
-                  'line-height': '1.7',
+                [inputStyle]="isDarkMode ? darkInputStyle : lightInputStyle"
+                [panelStyle]="{
+                  backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
                 }"
               />
               <label
                 for="date"
-                style="font-weight: 500 !important; color: #ffffff99 !important"
-                >Date</label
+                [ngStyle]="{ color: isDarkMode ? '#ffffff' : '#1f2937' }"
+                >Date
+                <span
+                  *ngIf="hasRequiredValidator('date')"
+                  class="required-asterisk"
+                  >*</span
+                ></label
               >
             </p-iftalabel>
           </div>

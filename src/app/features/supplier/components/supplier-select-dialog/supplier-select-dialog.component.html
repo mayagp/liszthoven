@@ -21,7 +21,7 @@
           <input
             pInputText
             type="text"
-            class="p-input h-8 w-full text-xs"
+            class="p-input h-8 w-full text-xs px-1 bg-zinc-100/70 dark:bg-zinc-800 rounded-md focus:outline-none focus:ring-0 focus:border-transparent"
             placeholder="Search Supplier"
             [(ngModel)]="searchQuery"
             fcDebounceKeyup
@@ -84,13 +84,18 @@
         <p-progress-spinner ariaLabel="loading" />
       </div>
     </div>
-    <!-- <div>
-      <fc-pagination
+    <div class="card flex justify-between gap-3">
+      <div class="flex text-sm dark:text-white text-gray-700 items-center px-2">
+        Total data {{ totalRecords }}
+      </div>
+      <p-paginator
         [rows]="rows"
-        [page]="page"
-        [totalPages]="totalPages"
+        [first]="(page - 1) * rows"
+        [rowsPerPageOptions]="[5, 10, 50, 100]"
         [totalRecords]="totalRecords"
-        (onPageUpdate)="onPageUpdate($event)"></fc-pagination>
-    </div> -->
+        (onPageChange)="onPageUpdate($event)"
+        [showFirstLastIcon]="false"
+      />
+    </div>
   </div>
 </div>

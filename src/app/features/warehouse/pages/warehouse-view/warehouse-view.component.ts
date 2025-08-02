@@ -14,6 +14,7 @@ import {
   Validators,
   FormsModule,
   ReactiveFormsModule,
+  AbstractControl,
 } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { PureAbility } from '@casl/ability';
@@ -156,6 +157,14 @@ export class WarehouseViewComponent
     this.destroy$.next();
     this.destroy$.complete();
     this.layoutService.setSearchConfig({ hide: false });
+  }
+
+  hasRequiredValidator(controlName: string): boolean {
+    const control = this.warehouseForm.get(controlName);
+    if (!control || !control.validator) return false;
+
+    const validator = control.validator({} as AbstractControl);
+    return validator && validator['required'];
   }
 
   loadData() {

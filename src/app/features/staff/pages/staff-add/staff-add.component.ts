@@ -6,6 +6,7 @@ import {
   FormArray,
   FormsModule,
   ReactiveFormsModule,
+  AbstractControl,
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PureAbility } from '@casl/ability';
@@ -116,6 +117,33 @@ export class StaffAddComponent implements OnInit, AfterContentInit, OnDestroy {
 
   registerForm: FormGroup;
   branches: any = [];
+
+  isDarkMode =
+    window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  lightInputStyle = {
+    backgroundColor: '#ffffff',
+    border: '1px solid #d1d5db',
+    color: '#000000',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
+
+  darkInputStyle = {
+    backgroundColor: '#27272a',
+    border: '1px solid #3f3f46',
+    color: '#ffffff',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
+
   constructor(
     private layoutService: LayoutService,
     private authService: AuthService,
@@ -136,12 +164,12 @@ export class StaffAddComponent implements OnInit, AfterContentInit, OnDestroy {
       email: new FormControl('', Validators.required),
       password: new FormControl('asdqwe123'), // default password
       address: new FormControl(''),
-      phone_no: new FormControl(''),
+      phone_no: new FormControl('', Validators.required),
       staff: new FormGroup({
         // branches: new FormControl(''),
-        branch: new FormControl(null),
+        branch: new FormControl(null, Validators.required),
         note: new FormControl(''),
-        role: new FormControl(0),
+        role: new FormControl(0, Validators.required),
         working_since: new FormControl(Date()),
         identification_number: new FormControl(''),
         tax_number: new FormControl(''),
@@ -176,81 +204,13 @@ export class StaffAddComponent implements OnInit, AfterContentInit, OnDestroy {
     return this.registerForm.get('staff') as FormGroup;
   }
 
-  // addMultipleFiles(files: any) {
-  //   const ref = this.dialogService.open(UserDocumentAddDialogComponent, {
-  //     data: {
-  //       title: 'Add User Document',
-  //       documents: files,
-  //     },
-  //     showHeader: false,
-  //     contentStyle: {
-  //       padding: '0',
-  //     },
-  //     style: {
-  //       overflow: 'hidden',
-  //     },
-  //     styleClass: 'rounded-sm',
-  //     dismissableMask: true,
-  //     width: '800px',
-  //   });
-  //   ref.onClose.subscribe((documents: any) => {
-  //     if (documents) {
-  //       documents.forEach((document: any, index: number) => {
-  //         const dotIndex = document.name.lastIndexOf('.');
-  //         let fileType = '';
-  //         if (dotIndex !== -1) {
-  //           // Extract the "type" part from the input
-  //           fileType = document.name.substring(dotIndex);
-  //         }
-  //         this.documentFilesArray.push(
-  //           new FormGroup({
-  //             file: new FormControl(document.file),
-  //             src: new FormControl(document.src),
-  //             name: new FormControl(document.name),
-  //             note: new FormControl(document.note),
-  //             file_type: new FormControl(fileType),
-  //             inputChangeName: new FormControl(false),
-  //           })
-  //         );
-  //       });
-  //     }
-  //   });
-  // }
+  hasRequiredValidator(controlName: string): boolean {
+    const control = this.staffForm.get(controlName);
+    if (!control || !control.validator) return false;
 
-  fileType(fileName: string) {
-    if (fileName.toLowerCase().match(/\.(jpeg|jpg|gif|png|webp)$/) != null) {
-      return 'image';
-    } else if (fileName.toLowerCase().match(/\.(pdf)$/) != null) {
-      return 'pdf';
-    } else {
-      return 'file';
-    }
+    const validator = control.validator({} as AbstractControl);
+    return validator && validator['required'];
   }
-
-  changeDocumentName(index: number) {
-    if (this.documentFilesArray.at(index).value.inputChangeName == true) {
-      this.documentFilesArray.at(index).patchValue({
-        name: this.documentFilesArray.at(index).value.name,
-        note: this.documentFilesArray.at(index).value.note,
-        inputChangeName: false,
-      });
-    } else {
-      this.documentFilesArray.at(index).patchValue({
-        inputChangeName: true,
-      });
-    }
-  }
-
-  // removeDocument(index: number) {
-  //   this.fcConfirmService.open({
-  //     header: 'Confirmation',
-  //     message: 'Are you sure to delete this document?',
-  //     accept: () => {
-  //       this.documentFilesArray.removeAt(index);
-  //     },
-  //   });
-  // }
-
   removeBranch() {
     this.staffForm.get('branch')?.reset();
   }

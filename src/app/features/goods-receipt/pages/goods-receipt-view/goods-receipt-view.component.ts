@@ -9,6 +9,7 @@ import {
   FormControl,
   Validators,
   FormArray,
+  AbstractControl,
 } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { PureAbility } from '@casl/ability';
@@ -193,6 +194,14 @@ export class GoodsReceiptViewComponent {
     this.layoutService.setSearchConfig({ hide: false });
   }
 
+  hasRequiredValidator(controlName: string): boolean {
+    const control = this.goodsReceiptForm.get(controlName);
+    if (!control || !control.validator) return false;
+
+    const validator = control.validator({} as AbstractControl);
+    return validator && validator['required'];
+  }
+
   generateActionButtons() {
     this.actionButtons.forEach((actionButton) => {
       actionButton.hidden = true;
@@ -218,7 +227,7 @@ export class GoodsReceiptViewComponent {
   }
   generateHeader() {
     this.layoutService.setHeaderConfig({
-      title: `Goods Receipt (${this.goodsReceipt.status_name})`,
+      title: `Goods Receipt`,
       icon: '',
       showHeader: true,
     });

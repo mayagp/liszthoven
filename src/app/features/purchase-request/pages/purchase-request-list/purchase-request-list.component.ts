@@ -92,10 +92,9 @@ export class PurchaseRequestListComponent {
       {
         options: [
           { name: 'All', value: null },
-          { name: 'Pending', value: 0 },
-          { name: 'Approval Request', value: 1 },
-          { name: 'Approved', value: 2 },
-          { name: 'Cancelled', value: 3 },
+          { name: 'Need Approval', value: 0 },
+          { name: 'Approved', value: 1 },
+          { name: 'Rejected', value: 2 },
         ],
         selectedValue: null,
         optionLabel: 'Status',
@@ -326,12 +325,10 @@ export class PurchaseRequestListComponent {
   getStatusColor(status: number): string {
     switch (status) {
       case 0:
-        return 'border border-gray-600 dark:border-gray-700 bg-gray-100 dark:bg-gray-700/20 text-gray-500';
-      case 1:
         return 'border border-blue-600 dark:border-blue-700 bg-blue-100 dark:bg-blue-700/20 text-blue-500';
-      case 2:
+      case 1:
         return 'border border-green-600 dark:border-green-700 bg-green-100 dark:bg-green-700/20 text-green-500';
-      case 3:
+      case 2:
         return 'border border-red-600 dark:border-red-700 bg-red-100 dark:bg-red-700/20 text-red-500';
       default:
         return '';

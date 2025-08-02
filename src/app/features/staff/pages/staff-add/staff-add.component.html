@@ -39,17 +39,14 @@
               placeholder="Select Working Since"
               appendTo="body"
               dateFormat="dd/mm/yy"
-              [inputStyle]="{
-                'background-color': '#27272a',
-                border: '1px solid #3f3f46',
-                color: '#ffffff',
-                'font-size': '12px',
-                'line-height': '1.7',
+              [inputStyle]="isDarkMode ? darkInputStyle : lightInputStyle"
+              [panelStyle]="{
+                backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
               }"
             />
             <label
               for="xs"
-              style="font-weight: 500 !important; color: #ffffff99 !important"
+              [ngStyle]="{ color: isDarkMode ? '#ffffff' : '#1f2937' }"
               >Working Since</label
             >
           </p-iftalabel>
@@ -82,22 +79,21 @@
               optionValue="id"
               placeholder="Select Role Name"
               styleClass="w-full"
-              [style]="{
-                'background-color': '#27272a',
-                color: '#ffffff',
-                border: '1px solid #3f3f46',
-                'line-height': '1.5',
+              [style]="isDarkMode ? darkInputStyle : lightInputStyle"
+              [panelStyle]="{
+                backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
               }"
             >
             </p-select>
             <label
               for="dd-type"
-              style="
-                font-weight: 500 !important;
-                color: #ffffff99 !important;
-                line-height: 1.4 !important;
-              "
-              >Role Name</label
+              [ngStyle]="{ color: isDarkMode ? '#ffffff' : '#1f2937' }"
+              >Role Name
+              <span
+                *ngIf="hasRequiredValidator('role')"
+                class="required-asterisk"
+                >*</span
+              ></label
             >
           </p-iftalabel>
         </div>
@@ -106,16 +102,21 @@
         >
           <div class="flex flex-1 flex-col" (click)="onSelectBranch()">
             <p
-              class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+              class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-900 dark:text-white"
             >
               Branch
+              <span
+                *ngIf="hasRequiredValidator('branch')"
+                class="required-asterisk"
+                >*</span
+              >
             </p>
             <p *ngIf="staffForm.get('branch')?.value" class="text-xs">
               {{ staffForm.get("branch")?.value?.address }}
             </p>
             <p
               *ngIf="!staffForm.get('branch')?.value"
-              class="text-xs dark:text-gray-400"
+              class="text-xs dark:text-gray-400 text-zinc-400"
             >
               Select Branch
             </p>

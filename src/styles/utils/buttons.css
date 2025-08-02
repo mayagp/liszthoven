@@ -4,3 +4,8 @@
 .btn-high {
   @apply bg-[#FFFFFF]  hover:bg-[#e5e7eb] dark:bg-[#161819] dark:shadow-[inset_-1px_-1px_4px_rgba(255,255,255,0.2)] dark:drop-shadow-[3px_3px_5px_rgba(0,0,0,0.3)] dark:hover:bg-[#1F2125];
 }
+
+.btn-save {
+  @apply bg-blue-500
+hover:bg-[#e5e7eb] dark:bg-[#161819] dark:shadow-[inset_-1px_-1px_4px_rgba(255,255,255,0.2)] dark:drop-shadow-[3px_3px_5px_rgba(0,0,0,0.3)] dark:hover:bg-[#1F2125];
+}

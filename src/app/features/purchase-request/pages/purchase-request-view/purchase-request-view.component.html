@@ -32,60 +32,20 @@
             placeholder="Date"
             appendTo="body"
             dateFormat="dd/mm/yy"
-            [inputStyle]="{
-              'background-color': '#27272a',
-              border: '1px solid #3f3f46',
-              color: '#ffffff',
-              'font-size': '12px',
-              'line-height': '1.7',
+            [inputStyle]="isDarkMode ? darkInputStyle : lightInputStyle"
+            [panelStyle]="{
+              backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
             }"
           />
           <label
             for="date"
-            style="font-weight: 500 !important; color: #ffffff99 !important"
-            >Date</label
+            [ngStyle]="{ color: isDarkMode ? '#ffffff' : '#1f2937' }"
+            >Date
+            <span *ngIf="hasRequiredValidator('date')" class="required-asterisk"
+              >*</span
+            ></label
           >
         </p-iftalabel>
-      </div>
-      <div
-        class="form-input flex cursor-pointer items-center rounded-lg border bg-white p-2 dark:bg-zinc-800 dark:hover:bg-zinc-700"
-        [ngClass]="{
-          'border-red-400':
-            purchaseRequestForm.get('branch')?.invalid &&
-            purchaseRequestForm.get('branch')?.touched,
-          'border-zinc-200 dark:border-zinc-700':
-            purchaseRequestForm.get('branch')?.valid ||
-            !purchaseRequestForm.get('branch')?.touched,
-        }"
-      >
-        <div class="flex flex-1 flex-col" (click)="onSelectBranch()">
-          <p
-            class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
-          >
-            Branch
-          </p>
-          <p *ngIf="purchaseRequestForm.value?.branch" class="text-xs">
-            {{ purchaseRequestForm.value.branch?.address || "-" }}
-          </p>
-          <p
-            *ngIf="!purchaseRequestForm.value.branch"
-            class="text-xs dark:text-gray-400"
-          >
-            Select Branch
-          </p>
-        </div>
-        <div class="flex items-center gap-2">
-          <button
-            *ngIf="purchaseRequestForm.value.branch"
-            type="button"
-            (click)="removeBranch()"
-          >
-            <fa-icon [icon]="faTimes" [fixedWidth]="true"></fa-icon>
-          </button>
-          <button type="button" (click)="onSelectBranch()">
-            <fa-icon [fixedWidth]="true" [icon]="faChevronDown"></fa-icon>
-          </button>
-        </div>
       </div>
       <div class="purchase-request-detail @xl:col-span-2">
         <div class="mt-2 flex w-full items-center">

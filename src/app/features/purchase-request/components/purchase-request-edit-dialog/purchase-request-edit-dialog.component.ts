@@ -6,6 +6,7 @@ import {
   FormGroup,
   FormControl,
   Validators,
+  AbstractControl,
 } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faTimes, faSpinner } from '@fortawesome/free-solid-svg-icons';
@@ -53,6 +54,32 @@ export class PurchaseRequestEditDialogComponent {
   page = 1;
   rows = 10;
 
+  isDarkMode =
+    window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  lightInputStyle = {
+    backgroundColor: '#ffffff',
+    border: '1px solid #d1d5db',
+    color: '#000000',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
+
+  darkInputStyle = {
+    backgroundColor: '#27272a',
+    border: '1px solid #3f3f46',
+    color: '#ffffff',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
+
   constructor(
     private ref: DynamicDialogRef,
     private config: DynamicDialogConfig,
@@ -79,7 +106,13 @@ export class PurchaseRequestEditDialogComponent {
     this.destroy$.next();
     this.destroy$.complete();
   }
+  hasRequiredValidator(controlName: string): boolean {
+    const control = this.purchaseRequestDetailForm.get(controlName);
+    if (!control || !control.validator) return false;
 
+    const validator = control.validator({} as AbstractControl);
+    return validator && validator['required'];
+  }
   onClose() {
     this.ref.close();
   }

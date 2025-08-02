@@ -16,13 +16,18 @@
             class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
           >
             Branch
+            <span
+              *ngIf="hasRequiredValidator('branch')"
+              class="required-asterisk"
+              >*</span
+            >
           </p>
           <p *ngIf="warehouseForm.get('branch')?.value" class="text-xs">
             {{ warehouseForm.get("branch")?.value?.address }}
           </p>
           <p
             *ngIf="!warehouseForm.get('branch')?.value"
-            class="text-xs dark:text-gray-400"
+            class="text-xs dark:text-gray-400 text-zinc-400"
           >
             Select Branch
           </p>

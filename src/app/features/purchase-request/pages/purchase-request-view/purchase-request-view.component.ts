@@ -14,6 +14,7 @@ import {
   FormControl,
   Validators,
   FormArray,
+  AbstractControl,
 } from '@angular/forms';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { PureAbility } from '@casl/ability';
@@ -47,6 +48,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { BranchSelectDialogComponent } from '../../../branch/components/branch-select-dialog/branch-select-dialog.component';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ProgressSpinner } from 'primeng/progressspinner';
+import { User } from '../../../user/interfaces/user';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-purchase-request-view',
@@ -92,11 +95,38 @@ export class PurchaseRequestViewComponent {
 
   purchaseRequestForm: FormGroup;
   loading = false;
+  user: any = {} as User;
 
   @Input() purchaseRequest: PurchaseRequest = {} as PurchaseRequest;
   @Input() quickView: Boolean = false;
   @Output() onDeleted = new EventEmitter();
   @Output() onUpdated = new EventEmitter();
+
+  isDarkMode =
+    window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  lightInputStyle = {
+    backgroundColor: '#ffffff',
+    border: '1px solid #d1d5db',
+    color: '#000000',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
+
+  darkInputStyle = {
+    backgroundColor: '#27272a',
+    border: '1px solid #3f3f46',
+    color: '#ffffff',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
 
   constructor(
     private layoutService: LayoutService,
@@ -108,6 +138,7 @@ export class PurchaseRequestViewComponent {
     private confirmationService: ConfirmationService,
     private fcDirtyStateService: FcDirtyStateService,
     private ability: PureAbility,
+    private authService: AuthService,
   ) {
     this.layoutService.setHeaderConfig({
       title: 'Purchase Request',
@@ -128,6 +159,25 @@ export class PurchaseRequestViewComponent {
       this.loadData();
     }
     this.layoutService.setSearchConfig({ hide: true });
+    this.authService.currentUserDataSubject.subscribe((user) => {
+      if (user) {
+        this.user = user;
+
+        let parsedUser: any = user;
+        if (typeof user === 'string') {
+          try {
+            parsedUser = JSON.parse(user);
+          } catch (e) {
+            console.error('Failed to parse user JSON:', e);
+          }
+        }
+
+        const userBranch = parsedUser.staff?.branch;
+        if (userBranch) {
+          this.purchaseRequestForm.get('branch')?.setValue(userBranch);
+        }
+      }
+    });
   }
 
   ngOnChanges(): void {
@@ -140,6 +190,15 @@ export class PurchaseRequestViewComponent {
     this.destroy$.complete();
     this.layoutService.setSearchConfig({ hide: false });
   }
+
+  hasRequiredValidator(controlName: string): boolean {
+    const control = this.purchaseRequestForm.get(controlName);
+    if (!control || !control.validator) return false;
+
+    const validator = control.validator({} as AbstractControl);
+    return validator && validator['required'];
+  }
+
   isShowPurchaseRequestDetailSummary: boolean = false;
   @ViewChild('purchaseRequestDetailSummary')
   purchaseRequestDetailSummary?: ElementRef;
@@ -194,34 +253,6 @@ export class PurchaseRequestViewComponent {
             },
             hidden: !this.ability.can('update', 'purchase-request'),
           },
-          {
-            label: 'Approval Request',
-            icon: faSave,
-            action: () => {
-              this.approvalRequest();
-            },
-            hidden: !this.ability.can('approval-request', 'purchase-request'),
-          },
-          {
-            label: 'Reject',
-            icon: faTimes,
-            action: () => {
-              this.reject();
-            },
-            hidden: !this.ability.can('reject', 'purchase-request'),
-          },
-          {
-            label: 'Delete',
-            icon: faTrash,
-            action: () => {
-              this.delete();
-            },
-            hidden: !this.ability.can('delete', 'purchase-request'),
-          },
-        ];
-        break;
-      case 1:
-        this.actionButtons = [
           {
             label: 'Approve',
             icon: faSave,

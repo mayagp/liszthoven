@@ -34,29 +34,29 @@ export class SupplierService {
     }
     return this.http.get(`${ROOT_API}/suppliers${param}`);
   }
-  getSupplier(id: string) {
+  getSupplier(id: number) {
     return this.http.get(`${ROOT_API}/suppliers/${id}`);
   }
   addSupplier(supplier: any) {
     return this.http.post(`${ROOT_API}/suppliers`, supplier);
   }
-  updateSupplier(id: string, supplier: any) {
+  updateSupplier(id: number, supplier: any) {
     return this.http.put(`${ROOT_API}/suppliers/${id}`, supplier);
   }
-  deleteSupplier(id: string) {
+  deleteSupplier(id: number) {
     return this.http.delete(`${ROOT_API}/suppliers/${id}`);
   }
-  getSupplierBankAccounts(id: string) {
+  getSupplierBankAccounts(id: number) {
     return this.http.get(`${ROOT_API}/suppliers/${id}/details`);
   }
-  addSupplierBankAccount(id: string, supplierBankAccount: any) {
+  addSupplierBankAccount(id: number, supplierBankAccount: any) {
     return this.http.post(
       `${ROOT_API}/suppliers/${id}/details`,
       supplierBankAccount,
     );
   }
   updateSupplierBankAccount(
-    id: string,
+    id: number,
     supplierBankAccountId: string,
     supplierBankAccount: any,
   ) {

@@ -18,6 +18,7 @@ import { Warehouse } from '../../interfaces/warehouse';
 import { WarehouseService } from '../../services/warehouse.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { PaginatorModule } from 'primeng/paginator';
 
 @Component({
   selector: 'app-warehouse-select-dialog',
@@ -27,6 +28,7 @@ import { RouterModule } from '@angular/router';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
+    PaginatorModule,
   ],
   templateUrl: './warehouse-select-dialog.component.html',
   styleUrl: './warehouse-select-dialog.component.css',
@@ -42,6 +44,7 @@ export class WarehouseSelectDialogComponent
   faLocationDot = faLocationDot;
   faEye = faEye;
   faSearch = faSearch;
+  Math = Math;
 
   warehouses: Warehouse[] = [];
 
@@ -134,6 +137,11 @@ export class WarehouseSelectDialogComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((res: any) => {
         this.loading = false;
+        this.totalRecords = res.data.count;
+        this.totalPages =
+          this.totalRecords > this.rows
+            ? Math.ceil(this.totalRecords / this.rows)
+            : 1;
         this.warehouses = res.data.warehouses;
         // Check existing data
         this.existingWarehouses.forEach((existWarehouse) => {
@@ -147,16 +155,10 @@ export class WarehouseSelectDialogComponent
       });
   }
 
-  onPageUpdate(pagination: any) {
-    let page = pagination.page;
-    let rows = pagination.rows;
-    this.rows = rows;
-    if (page > 0) {
-      this.page = page;
-    } else {
-      this.page = 1;
-    }
-    this.loadData(this.page);
+  onPageUpdate(event: any) {
+    this.rows = event.rows;
+    this.page = Math.floor(event.first / event.rows) + 1;
+    this.loadData();
   }
 
   search() {

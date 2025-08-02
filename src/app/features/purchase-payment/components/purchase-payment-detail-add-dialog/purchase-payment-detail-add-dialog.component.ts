@@ -5,9 +5,15 @@ import {
   ReactiveFormsModule,
   FormGroup,
   FormControl,
+  Validators,
+  AbstractControl,
 } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faTimes, faRefresh } from '@fortawesome/free-solid-svg-icons';
+import {
+  faTimes,
+  faRefresh,
+  faSearch,
+} from '@fortawesome/free-solid-svg-icons';
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { Subject, takeUntil } from 'rxjs';
 import { FcFilterConfig } from '../../../../shared/components/fc-filter-dialog/interfaces/fc-filter-config';
@@ -45,6 +51,7 @@ export class PurchasePaymentDetailAddDialogComponent {
   // Icons
   faTimes = faTimes;
   faRefresh = faRefresh;
+  faSearch = faSearch;
 
   purchaseInvoices: PurchaseInvoice[] = [];
 
@@ -69,6 +76,32 @@ export class PurchasePaymentDetailAddDialogComponent {
   purchasePaymentDetails: any[] = [];
   supplier: any;
   user!: User;
+
+  isDarkMode =
+    window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  lightInputStyle = {
+    backgroundColor: '#ffffff',
+    border: '1px solid #d1d5db',
+    color: '#000000',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
+
+  darkInputStyle = {
+    backgroundColor: '#27272a',
+    border: '1px solid #3f3f46',
+    color: '#ffffff',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
 
   constructor(
     private ref: DynamicDialogRef,
@@ -95,8 +128,16 @@ export class PurchasePaymentDetailAddDialogComponent {
 
     this.purchasePaymentDetailForm = new FormGroup({
       purchase_invoice: new FormControl(null),
-      amount_allocated: new FormControl(0),
+      amount_allocated: new FormControl(0, Validators.required),
     });
+  }
+
+  hasRequiredValidator(controlName: string): boolean {
+    const control = this.purchasePaymentDetailForm.get(controlName);
+    if (!control || !control.validator) return false;
+
+    const validator = control.validator({} as AbstractControl);
+    return validator && validator['required'];
   }
 
   ngOnInit(): void {

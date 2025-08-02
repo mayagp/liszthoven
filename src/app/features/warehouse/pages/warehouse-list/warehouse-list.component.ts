@@ -88,11 +88,7 @@ export class WarehouseListComponent {
   fcFilterConfig: FcFilterConfig = {
     filterFields: [],
     sort: {
-      fields: [
-        { name: 'name', header: 'Name' },
-        { name: 'pic', header: 'PIC' },
-        { name: 'address', header: 'Address' },
-      ],
+      fields: [{ name: 'name', header: 'Name' }],
       selectedField: 'id',
       direction: 'desc',
     },

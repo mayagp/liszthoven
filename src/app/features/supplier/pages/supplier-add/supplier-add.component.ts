@@ -86,7 +86,7 @@ export class SupplierAddComponent {
       email: new FormControl('', Validators.required),
       password: new FormControl('asdqwe123'), // default password
       address: new FormControl(''),
-      phone_no: new FormControl(''),
+      phone_no: new FormControl('', Validators.required),
       supplier: new FormGroup({
         tax_no: new FormControl(''),
         total_payable: new FormControl(''),

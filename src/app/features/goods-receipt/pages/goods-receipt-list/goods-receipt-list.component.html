@@ -32,14 +32,14 @@
                     {{ goodsReceipt.supplier.user.name }}
                   </p>
                 </div>
-                <div class="w-[100px] flex-none">
+                <!-- <div class="w-[100px] flex-none">
                   <div
                     [ngClass]="getStatusColor(goodsReceipt.status)"
                     class="w-fit rounded-md p-1 px-2"
                   >
                     {{ goodsReceipt.status_name }}
                   </div>
-                </div>
+                </div> -->
                 <div class="flex-1">
                   <p class="text-xs">Invoice</p>
                   <p *ngIf="goodsReceipt.purchase_invoice">
@@ -74,12 +74,12 @@
                     </p>
                   </div>
                   <div class="flex items-center justify-end gap-2">
-                    <div
+                    <!-- <div
                       class="w-fit rounded-md px-2 py-1"
                       [ngClass]="getStatusColor(goodsReceipt.status)"
                     >
                       {{ goodsReceipt.status_name }}
-                    </div>
+                    </div> -->
                     <button
                       type="button"
                       class="btn btn-high"

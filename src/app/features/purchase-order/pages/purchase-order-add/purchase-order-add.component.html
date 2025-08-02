@@ -47,18 +47,20 @@
                 placeholder="Order Date"
                 appendTo="body"
                 dateFormat="dd/mm/yy"
-                [inputStyle]="{
-                  'background-color': '#27272a',
-                  border: '1px solid #3f3f46',
-                  color: '#ffffff',
-                  'font-size': '12px',
-                  'line-height': '1.7',
+                [inputStyle]="isDarkMode ? darkInputStyle : lightInputStyle"
+                [panelStyle]="{
+                  backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
                 }"
               />
               <label
                 for="date"
-                style="font-weight: 500 !important; color: #ffffff99 !important"
-                >Order Date</label
+                [ngStyle]="{ color: isDarkMode ? '#ffffff' : '#1f2937' }"
+                >Order Date
+                <span
+                  *ngIf="hasRequiredValidator('date')"
+                  class="required-asterisk"
+                  >*</span
+                ></label
               >
             </p-iftalabel>
           </div>
@@ -74,18 +76,20 @@
                 placeholder="Expected Delivery"
                 appendTo="body"
                 dateFormat="dd/mm/yy"
-                [inputStyle]="{
-                  'background-color': '#27272a',
-                  border: '1px solid #3f3f46',
-                  color: '#ffffff',
-                  'font-size': '12px',
-                  'line-height': '1.7',
+                [inputStyle]="isDarkMode ? darkInputStyle : lightInputStyle"
+                [panelStyle]="{
+                  backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
                 }"
               />
               <label
                 for="date"
-                style="font-weight: 500 !important; color: #ffffff99 !important"
-                >Expected Delivery</label
+                [ngStyle]="{ color: isDarkMode ? '#ffffff' : '#1f2937' }"
+                >Expected Delivery
+                <span
+                  *ngIf="hasRequiredValidator('expected_delivery_date')"
+                  class="required-asterisk"
+                  >*</span
+                ></label
               >
             </p-iftalabel>
           </div>
@@ -107,16 +111,21 @@
         >
           <div class="flex flex-1 flex-col">
             <p
-              class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+              class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-900 dark:text-white"
             >
               Branch
+              <span
+                *ngIf="hasRequiredValidator('branch')"
+                class="required-asterisk"
+                >*</span
+              >
             </p>
             <p *ngIf="purchaseOrderForm.value.branch" class="text-xs">
               {{ purchaseOrderForm.value.branch.address }}
             </p>
             <p
               *ngIf="!purchaseOrderForm.value.branch"
-              class="text-xs dark:text-gray-400"
+              class="text-xs dark:text-gray-400 text-zinc-400"
             >
               Select Branch
             </p>
@@ -147,16 +156,21 @@
         >
           <div class="flex flex-1 flex-col" (click)="onSelectSupplier()">
             <p
-              class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+              class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-900 dark:text-white"
             >
               Supplier
+              <span
+                *ngIf="hasRequiredValidator('supplier')"
+                class="required-asterisk"
+                >*</span
+              >
             </p>
             <p *ngIf="purchaseOrderForm.value.supplier" class="text-xs">
               {{ purchaseOrderForm.value.supplier.user.name }}
             </p>
             <p
               *ngIf="!purchaseOrderForm.value.supplier"
-              class="text-xs dark:text-gray-400"
+              class="text-xs dark:text-gray-400 text-zinc-400"
             >
               Select Supplier
             </p>
@@ -301,13 +315,6 @@
           <div class="mb-3 flex items-center justify-between">
             <p>Ordered Items</p>
             <div class="flex items-center gap-2">
-              <button
-                type="button"
-                (click)="wizardPurchaseOrder()"
-                class="flex gap-1 rounded-lg p-2 hover:bg-zinc-200 dark:hover:bg-zinc-700"
-              >
-                <p>#Wizard</p>
-              </button>
               <button
                 type="button"
                 (click)="addPurchaseOrderDetail()"
@@ -455,19 +462,18 @@
                         [maxFractionDigits]="0"
                         formControlName="tax"
                         placeholder="Enter Tax"
-                        [inputStyle]="{
-                          'background-color': '#27272a',
-                          border: '1px solid #3f3f46',
-                          color: '#ffffff',
-                          'font-size': '12px',
+                        [inputStyle]="
+                          isDarkMode ? darkInputStyle : lightInputStyle
+                        "
+                        [style]="{
+                          backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
                         }"
                       />
                       <label
                         for="tax"
-                        style="
-                          font-weight: 500 !important;
-                          color: #ffffff99 !important;
-                        "
+                        [ngStyle]="{
+                          color: isDarkMode ? '#ffffff' : '#1f2937',
+                        }"
                         >Tax</label
                       >
                     </p-iftalabel>

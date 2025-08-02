@@ -7,6 +7,7 @@ import {
   FormControl,
   Validators,
   FormArray,
+  AbstractControl,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { PureAbility } from '@casl/ability';
@@ -148,6 +149,14 @@ export class GoodsReceiptAddComponent {
     this.destroy$.next();
     this.destroy$.complete();
     this.layoutService.setSearchConfig({ hide: false });
+  }
+
+  hasRequiredValidator(controlName: string): boolean {
+    const control = this.goodsReceiptForm.get(controlName);
+    if (!control || !control.validator) return false;
+
+    const validator = control.validator({} as AbstractControl);
+    return validator && validator['required'];
   }
 
   generateAutoNumber() {

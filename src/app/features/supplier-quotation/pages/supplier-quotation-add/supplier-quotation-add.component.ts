@@ -7,6 +7,7 @@ import {
   FormControl,
   Validators,
   FormArray,
+  AbstractControl,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { PureAbility } from '@casl/ability';
@@ -20,6 +21,7 @@ import {
   faPencil,
   faArrowRight,
   faSave,
+  faRefresh,
 } from '@fortawesome/free-solid-svg-icons';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -38,6 +40,7 @@ import { SupplierSelectDialogComponent } from '../../../supplier/components/supp
 import { DatePickerModule } from 'primeng/datepicker';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { AutoNumberService } from '../../../../shared/services/auto-number.service';
 
 @Component({
   selector: 'app-supplier-quotation-add',
@@ -70,6 +73,7 @@ export class SupplierQuotationAddComponent {
   faTrash = faTrash;
   faPencil = faPencil;
   faArrowRight = faArrowRight;
+  faRefresh = faRefresh;
 
   actionButtons: any[] = [
     {
@@ -86,6 +90,32 @@ export class SupplierQuotationAddComponent {
   supplierQuotationForm: FormGroup;
   loading = false;
 
+  isDarkMode =
+    window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  lightInputStyle = {
+    backgroundColor: '#ffffff',
+    border: '1px solid #d1d5db',
+    color: '#000000',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
+
+  darkInputStyle = {
+    backgroundColor: '#27272a',
+    border: '1px solid #3f3f46',
+    color: '#ffffff',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
+
   constructor(
     private layoutService: LayoutService,
     private supplierQuotationService: SupplierQuotationService,
@@ -96,6 +126,7 @@ export class SupplierQuotationAddComponent {
     private router: Router,
     private fcDirtyStateService: FcDirtyStateService,
     private ability: PureAbility,
+    private autoNumberService: AutoNumberService,
   ) {
     this.actionButtons[0].hidden = !this.ability.can(
       'create',
@@ -107,7 +138,7 @@ export class SupplierQuotationAddComponent {
       showHeader: true,
     });
     this.supplierQuotationForm = new FormGroup({
-      quotation_no: new FormControl(null, Validators.required),
+      // quotation_no: new FormControl(null),
       supplier: new FormControl(null, Validators.required),
       date: new FormControl(new Date(), Validators.required),
       expected_delivery_date: new FormControl(new Date(), Validators.required),
@@ -119,6 +150,7 @@ export class SupplierQuotationAddComponent {
 
   ngOnInit(): void {
     this.layoutService.setSearchConfig({ hide: true });
+    this.generateAutoNumber();
   }
 
   ngAfterContentInit(): void {}
@@ -126,6 +158,14 @@ export class SupplierQuotationAddComponent {
     this.destroy$.next();
     this.destroy$.complete();
     this.layoutService.setSearchConfig({ hide: false });
+  }
+
+  hasRequiredValidator(controlName: string): boolean {
+    const control = this.supplierQuotationForm.get(controlName);
+    if (!control || !control.validator) return false;
+
+    const validator = control.validator({} as AbstractControl);
+    return validator && validator['required'];
   }
 
   isShowDetailSummary: boolean = false;
@@ -193,6 +233,15 @@ export class SupplierQuotationAddComponent {
       (sum: any, item: any) => sum + item.price_per_unit * item.quantity,
       0,
     );
+  }
+
+  supplierQuotationNumber: string = '';
+  generateAutoNumber() {
+    this.autoNumberService
+      .getAutoNumberByTabel('supplier_quotations')
+      .subscribe((res: any) => {
+        this.supplierQuotationNumber = res.latest_auto_number;
+      });
   }
 
   removeSupplier() {

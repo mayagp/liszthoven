@@ -63,6 +63,32 @@ export class PurchaseOrderAddDetailComponent
 
   purchaseOrderDetailForm: FormGroup;
 
+  isDarkMode =
+    window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  lightInputStyle = {
+    backgroundColor: '#ffffff',
+    border: '1px solid #d1d5db',
+    color: '#000000',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
+
+  darkInputStyle = {
+    backgroundColor: '#27272a',
+    border: '1px solid #3f3f46',
+    color: '#ffffff',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
+
   constructor(
     private ref: DynamicDialogRef,
     private config: DynamicDialogConfig,
@@ -79,13 +105,12 @@ export class PurchaseOrderAddDetailComponent
     }
 
     this.purchaseOrderDetailForm = new FormGroup({
-      quotation_no: new FormControl('', Validators.required),
+      quotation_no: new FormControl(null),
       supplier_quotation: new FormControl(null),
       product: new FormControl(null, Validators.required),
       price_per_unit: new FormControl(null, Validators.required),
       quantity_ordered: new FormControl(null, Validators.required),
       expected_delivery_date: new FormControl(null),
-      // purchase_order_warehouses: new FormArray([], Validators.required),
     });
 
     if (this.config.data.purchaseOrderDetail) {
@@ -99,17 +124,6 @@ export class PurchaseOrderAddDetailComponent
         quantity_ordered: data.quantity_ordered,
         expected_delivery_date: data.expected_delivery_date,
       });
-      // data.purchase_order_warehouses.forEach((data: any) => {
-      //   this.purchaseOrderWarehouse.push(
-      //     new FormGroup({
-      //       warehouse: new FormControl(data.warehouse, Validators.required),
-      //       quantity_ordered: new FormControl(
-      //         data.quantity_ordered,
-      //         Validators.required
-      //       ),
-      //     })
-      //   );
-      // });
     }
   }
 
@@ -120,12 +134,6 @@ export class PurchaseOrderAddDetailComponent
     this.destroy$.next();
     this.destroy$.complete();
   }
-
-  // get purchaseOrderWarehouse(): FormArray {
-  //   return this.purchaseOrderDetailForm.get(
-  //     'purchase_order_warehouses'
-  //   ) as FormArray;
-  // }
 
   isSubmitAllowed(): boolean {
     if (this.purchaseOrderDetailForm.valid) {
@@ -181,79 +189,6 @@ export class PurchaseOrderAddDetailComponent
       }
     });
   }
-
-  // addWarehouseDetail() {
-  //   const ref = this.dialogService.open(
-  //     PurchaseOrderWarehouseAddDialogComponent,
-  //     {
-  //       data: {
-  //         title: 'Add Purchase Warehouse Detail',
-  //         existingWarehouse: this.purchaseOrderWarehouse.value,
-  //       },
-  //       showHeader: false,
-  //       contentStyle: {
-  //         padding: '0',
-  //       },
-  //       style: {
-  //         overflow: 'hidden',
-  //       },
-  //       styleClass: 'rounded-sm',
-  //       dismissableMask: true,
-  //       width: '350px',
-  //     }
-  //   );
-  //   ref.onClose.subscribe((data) => {
-  //     if (data) {
-  //       this.purchaseOrderWarehouse.push(
-  //         new FormGroup({
-  //           warehouse: new FormControl(data.warehouse, Validators.required),
-  //           quantity_ordered: new FormControl(
-  //             data.quantity_ordered,
-  //             Validators.required
-  //           ),
-  //         })
-  //       );
-  //     }
-  //   });
-  // }
-
-  // editPurchaseWarehouseDetail(index: number) {
-  //   const ref = this.dialogService.open(
-  //     PurchaseOrderWarehouseAddDialogComponent,
-  //     {
-  //       data: {
-  //         title: 'Edit Purchase Warehouse Detail',
-  //         existingWarehouse: this.purchaseOrderWarehouse.value,
-  //         purchaseOrderWarehouse: this.purchaseOrderWarehouse.value[index],
-  //       },
-  //       showHeader: false,
-  //       contentStyle: {
-  //         padding: '0',
-  //       },
-  //       style: {
-  //         overflow: 'hidden',
-  //       },
-  //       styleClass: 'rounded-sm',
-  //       dismissableMask: true,
-  //       width: '350px',
-  //     }
-  //   );
-  //   ref.onClose.subscribe((data) => {
-  //     if (data) {
-  //       this.purchaseOrderWarehouse.at(index).patchValue(data);
-  //     }
-  //   });
-  // }
-
-  // removePurchaseWarehouseDetail(index: number) {
-  //   this.confirmationService.confirm({
-  //     header: 'Confirmation',
-  //     message: 'Are you sure to delete this data?',
-  //     accept: () => {
-  //       this.purchaseOrderWarehouse.removeAt(index);
-  //     },
-  //   });
-  // }
 
   onSelectSupplierQuotation() {
     let existProduct: any[] = [];

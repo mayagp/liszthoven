@@ -42,20 +42,20 @@
                     [maxFractionDigits]="0"
                     formControlName="base_price"
                     placeholder="Enter price"
-                    [inputStyle]="{
-                      'background-color': '#27272a',
-                      border: '#3f3f46',
-                      color: '#ffffff',
-                      'font-size': '12px',
+                    [inputStyle]="isDarkMode ? darkInputStyle : lightInputStyle"
+                    [style]="{
+                      backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
                     }"
                   />
                   <label
                     for="base_price"
-                    style="
-                      font-weight: 500 !important;
-                      color: #ffffff99 !important;
-                    "
-                    >Base price</label
+                    [ngStyle]="{ color: isDarkMode ? '#ffffff' : '#1f2937' }"
+                    >Base price
+                    <span
+                      *ngIf="hasRequiredValidator('base_price')"
+                      class="required-asterisk"
+                      >*</span
+                    ></label
                   >
                 </p-iftalabel>
               </div>
@@ -93,22 +93,21 @@
                       optionValue="id"
                       placeholder="Select Product Type"
                       styleClass="w-full"
-                      [style]="{
-                        'background-color': '#27272a',
-                        color: '#ffffff',
-                        border: '1px solid #3f3f46',
-                        'line-height': '1.5',
+                      [style]="isDarkMode ? darkInputStyle : lightInputStyle"
+                      [panelStyle]="{
+                        backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
                       }"
                     >
                     </p-select>
                     <label
                       for="dd-type"
-                      style="
-                        font-weight: 500 !important;
-                        color: #ffffff99 !important;
-                        line-height: 1.4 !important;
-                      "
-                      >Product Type</label
+                      [ngStyle]="{ color: isDarkMode ? '#ffffff' : '#1f2937' }"
+                      >Product Type
+                      <span
+                        *ngIf="hasRequiredValidator('type')"
+                        class="required-asterisk"
+                        >*</span
+                      ></label
                     >
                   </p-iftalabel>
                 </div>
@@ -122,22 +121,21 @@
                       optionValue="id"
                       placeholder="Select Status Product"
                       styleClass="w-full"
-                      [style]="{
-                        'background-color': '#27272a',
-                        color: '#ffffff',
-                        border: '1px solid #3f3f46',
-                        'line-height': '1.5',
+                      [style]="isDarkMode ? darkInputStyle : lightInputStyle"
+                      [panelStyle]="{
+                        backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
                       }"
                     >
                     </p-select>
                     <label
                       for="dd-status"
-                      style="
-                        font-weight: 500 !important;
-                        color: #ffffff99 !important;
-                        line-height: 1.4 !important;
-                      "
-                      >Status</label
+                      [ngStyle]="{ color: isDarkMode ? '#ffffff' : '#1f2937' }"
+                      >Status
+                      <span
+                        *ngIf="hasRequiredValidator('status')"
+                        class="required-asterisk"
+                        >*</span
+                      ></label
                     >
                   </p-iftalabel>
                 </div>
@@ -151,22 +149,21 @@
                       optionValue="id"
                       placeholder="Select Valuation Method"
                       styleClass="w-full"
-                      [style]="{
-                        'background-color': '#27272a',
-                        color: '#ffffff',
-                        border: '1px solid #3f3f46',
-                        'line-height': '1.5',
+                      [style]="isDarkMode ? darkInputStyle : lightInputStyle"
+                      [panelStyle]="{
+                        backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
                       }"
                     >
                     </p-select>
                     <label
                       for="dd-valuation_method"
-                      style="
-                        font-weight: 500 !important;
-                        color: #ffffff99 !important;
-                        line-height: 1.4 !important;
-                      "
-                      >Valuation Method</label
+                      [ngStyle]="{ color: isDarkMode ? '#ffffff' : '#1f2937' }"
+                      >Valuation Method
+                      <span
+                        *ngIf="hasRequiredValidator('valuation_method')"
+                        class="required-asterisk"
+                        >*</span
+                      ></label
                     >
                   </p-iftalabel>
                 </div>
@@ -189,16 +186,21 @@
                     (click)="onSelectProductCategory()"
                   >
                     <p
-                      class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+                      class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-900 dark:text-white"
                     >
                       Product Category
+                      <span
+                        *ngIf="hasRequiredValidator('product_category_id')"
+                        class="required-asterisk"
+                        >*</span
+                      >
                     </p>
                     <p *ngIf="selectedCategory" class="text-xs">
                       {{ selectedCategory.name }}
                     </p>
                     <p
                       *ngIf="!selectedCategory"
-                      class="text-xs dark:text-gray-400"
+                      class="text-xs dark:text-gray-400 text-zinc-400"
                     >
                       Select Product Category
                     </p>

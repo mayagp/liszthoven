@@ -31,17 +31,20 @@
           class="w-full"
           formControlName="quantity"
           placeholder="Enter Quantity"
-          [inputStyle]="{
-            'background-color': '#27272a',
-            border: '1px solid #3f3f46',
-            color: '#ffffff',
-            'font-size': '12px',
+          [inputStyle]="isDarkMode ? darkInputStyle : lightInputStyle"
+          [style]="{
+            backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
           }"
         />
         <label
           for="quantity"
-          style="font-weight: 500 !important; color: #ffffff99 !important"
-          >Request Quantity</label
+          [ngStyle]="{ color: isDarkMode ? '#ffffff' : '#1f2937' }"
+          >Request Quantity
+          <span
+            *ngIf="hasRequiredValidator('quantity')"
+            class="required-asterisk"
+            >*</span
+          ></label
         >
       </p-iftalabel>
     </div>

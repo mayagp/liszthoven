@@ -64,12 +64,20 @@ export class FcInputTextComponent implements ControlValueAccessor, Validator {
   @Input() readonly: boolean = false;
   @Output() onRemove = new EventEmitter<any>();
   @Input() uniqueId = UniqueComponentId();
+  @Input() required: boolean = false;
 
   @Input() isInvalid = false;
 
   constructor() {}
 
   validate(control: AbstractControl<any, any>): ValidationErrors | null {
+    if (control.validator) {
+      const validator = control.validator({} as AbstractControl);
+      if (validator && validator['required']) {
+        this.required = true;
+      }
+    }
+
     if (control) {
       setTimeout(() => {
         this.isInvalid = control.invalid && control.touched;

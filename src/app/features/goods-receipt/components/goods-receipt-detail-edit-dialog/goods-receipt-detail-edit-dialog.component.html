@@ -16,11 +16,14 @@
     >
       <div class="flex flex-1 flex-col" (click)="onSelectProduct()">
         <p
-          class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+          class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-900 dark:text-white"
         >
           Product
         </p>
-        <p *ngIf="goodsReceiptDetailForm.value.product" class="text-xs">
+        <p
+          *ngIf="goodsReceiptDetailForm.value.product"
+          class="text-xs dark:text-gray-400 text-zinc-400"
+        >
           {{ goodsReceiptDetailForm.value.product.name }}
         </p>
         <p

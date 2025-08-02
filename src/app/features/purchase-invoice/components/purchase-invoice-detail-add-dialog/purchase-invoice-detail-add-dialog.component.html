@@ -56,9 +56,14 @@
           >
             <div class="flex flex-1 flex-col" (click)="onSelectProduct()">
               <p
-                class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+                class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-900 dark:text-white"
               >
                 Product
+                <span
+                  *ngIf="hasRequiredValidator('product')"
+                  class="required-asterisk"
+                  >*</span
+                >
               </p>
               <p
                 *ngIf="purchaseInvoiceDetailForm.value.product"
@@ -68,7 +73,7 @@
               </p>
               <p
                 *ngIf="!purchaseInvoiceDetailForm.value.product"
-                class="text-xs dark:text-gray-400"
+                class="text-xs dark:text-gray-400 text-zinc-400"
               >
                 Select Product
               </p>
@@ -97,17 +102,22 @@
                 [maxFractionDigits]="0"
                 formControlName="unit_price"
                 placeholder="Enter Unit Price"
-                [inputStyle]="{
-                  'background-color': '#27272a',
-                  border: '1px solid #3f3f46',
-                  color: '#ffffff',
-                  'font-size': '12px',
+                [inputStyle]="isDarkMode ? darkInputStyle : lightInputStyle"
+                [style]="{
+                  backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
                 }"
               />
               <label
                 for="unit_price"
-                style="font-weight: 500 !important; color: #ffffff99 !important"
-                >Unit price</label
+                [ngStyle]="{
+                  color: isDarkMode ? '#ffffff' : '#1f2937',
+                }"
+                >Unit price
+                <span
+                  *ngIf="hasRequiredValidator('unit_price')"
+                  class="required-asterisk"
+                  >*</span
+                ></label
               >
             </p-iftalabel>
           </div>
@@ -117,17 +127,22 @@
                 class="w-full"
                 formControlName="quantity"
                 placeholder="Enter Quantity"
-                [inputStyle]="{
-                  'background-color': '#27272a',
-                  border: '1px solid #3f3f46',
-                  color: '#ffffff',
-                  'font-size': '12px',
+                [inputStyle]="isDarkMode ? darkInputStyle : lightInputStyle"
+                [style]="{
+                  backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
                 }"
               />
               <label
                 for="quantity"
-                style="font-weight: 500 !important; color: #ffffff99 !important"
-                >Quantity</label
+                [ngStyle]="{
+                  color: isDarkMode ? '#ffffff' : '#1f2937',
+                }"
+                >Quantity
+                <span
+                  *ngIf="hasRequiredValidator('quantity')"
+                  class="required-asterisk"
+                  >*</span
+                ></label
               >
             </p-iftalabel>
           </div>

@@ -64,6 +64,32 @@ export class PurchaseOrderEditDetailComponent implements OnInit, OnDestroy {
   existingPurchaseOrderDetails: any;
   loadingButton = false;
 
+  isDarkMode =
+    window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  lightInputStyle = {
+    backgroundColor: '#ffffff',
+    border: '1px solid #d1d5db',
+    color: '#000000',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
+
+  darkInputStyle = {
+    backgroundColor: '#27272a',
+    border: '1px solid #3f3f46',
+    color: '#ffffff',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
+
   constructor(
     private ref: DynamicDialogRef,
     private config: DynamicDialogConfig,
@@ -88,7 +114,7 @@ export class PurchaseOrderEditDetailComponent implements OnInit, OnDestroy {
     }
 
     this.purchaseOrderDetailForm = new FormGroup({
-      quotation_no: new FormControl('', Validators.required),
+      quotation_no: new FormControl(null),
       supplier_quotation: new FormControl(null),
       product: new FormControl(null, Validators.required),
       price_per_unit: new FormControl(null, Validators.required),

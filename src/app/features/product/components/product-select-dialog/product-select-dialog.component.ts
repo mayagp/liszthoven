@@ -20,6 +20,7 @@ import { FcImagePreviewComponent } from '../../../../shared/components/fc-image-
 import { FcCurrencyPipe } from '../../../../shared/pipes/fc-currency.pipe';
 import { SkeletonModule } from 'primeng/skeleton';
 import { ScrollerModule } from 'primeng/scroller';
+import { PaginatorModule } from 'primeng/paginator';
 
 @Component({
   selector: 'app-product-select-dialog',
@@ -33,6 +34,7 @@ import { ScrollerModule } from 'primeng/scroller';
     FcCurrencyPipe,
     SkeletonModule,
     ScrollerModule,
+    PaginatorModule,
   ],
   templateUrl: './product-select-dialog.component.html',
   styleUrl: './product-select-dialog.component.css',
@@ -57,6 +59,7 @@ export class ProductSelectDialogComponent
   page = 1;
   rows = 10;
   title = '';
+  Math = Math;
 
   fcFilterConfig: FcFilterConfig = {
     filterFields: [],
@@ -188,16 +191,10 @@ export class ProductSelectDialogComponent
     }
   }
 
-  onPageUpdate(pagination: any) {
-    let page = pagination.page;
-    let rows = pagination.rows;
-    this.rows = rows;
-    if (page > 0) {
-      this.page = page;
-    } else {
-      this.page = 1;
-    }
-    this.loadData(this.page);
+  onPageUpdate(event: any) {
+    this.rows = event.rows;
+    this.page = Math.floor(event.first / event.rows) + 1;
+    this.loadData();
   }
 
   search() {

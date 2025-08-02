@@ -35,16 +35,21 @@
       >
         <div class="flex flex-1 flex-col">
           <p
-            class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+            class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-900 dark:text-white"
           >
             Purchase Invoice
+            <span
+              *ngIf="hasRequiredValidator('purchase_invoice')"
+              class="required-asterisk"
+              >*</span
+            >
           </p>
           <p *ngIf="goodsReceiptForm.value.purchase_invoice" class="text-xs">
             {{ goodsReceiptForm.value.purchase_invoice.invoice_no }}
           </p>
           <p
             *ngIf="!goodsReceiptForm.value.purchase_invoice"
-            class="text-xs dark:text-gray-400"
+            class="text-xs dark:text-gray-400 text-zinc-400"
           >
             Select Purchase Invoice
           </p>
@@ -64,16 +69,21 @@
       >
         <div class="flex flex-1 flex-col">
           <p
-            class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+            class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-900 dark:text-white"
           >
             Warehouse
+            <span
+              *ngIf="hasRequiredValidator('warehouse')"
+              class="required-asterisk"
+              >*</span
+            >
           </p>
           <p *ngIf="goodsReceiptForm.value.warehouse" class="text-xs">
             {{ goodsReceiptForm.value.warehouse.name }}
           </p>
           <p
             *ngIf="!goodsReceiptForm.value.warehouse"
-            class="text-xs dark:text-gray-400"
+            class="text-xs dark:text-gray-400 text-zinc-400"
           >
             Select Warehouse
           </p>

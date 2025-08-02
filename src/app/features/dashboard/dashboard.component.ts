@@ -33,6 +33,7 @@ export class DashboardComponent {
 
   purchaseOrders: any[] = [];
   totalPurchaseOrders = 0;
+  totalPurchaseOrderSuppliers = 0;
 
   purchaseRequests: any[] = [];
   totalPurchaseRequests = 0;
@@ -40,9 +41,16 @@ export class DashboardComponent {
 
   supplierQuotations: any[] = [];
   totalSupplierQuotations = 0;
+  totalSupplierQuotationForSupplier = 0;
 
   products: any[] = [];
   totalProducts = 0;
+
+  newPurchaseRequestCount = 0;
+  newPurchaseOrderCount = 0;
+  newSupplierQuotationCount = 0;
+  newPurchaseOrderForSupplierCount = 0;
+  newSupplierQuotationForSupplierCount = 0;
 
   constructor(
     private layoutService: LayoutService,
@@ -54,9 +62,18 @@ export class DashboardComponent {
     private supplierQuotationService: SupplierQuotationService,
     private productService: ProductService,
     private fcFilterDialogService: FcFilterDialogService,
-  ) {}
+  ) {
+    this.layoutService.setHeaderConfig({
+      title: 'Dashboard',
+      icon: '',
+      showHeader: true,
+    });
+  }
 
   ngOnInit(): void {
+    this.layoutService.setSearchConfig({
+      hide: true,
+    });
     this.authService.currentUserDataSubject.subscribe((rawUser) => {
       const user = rawUser as unknown as User;
 
@@ -69,7 +86,6 @@ export class DashboardComponent {
 
       if (isStaff && user.staff?.role !== undefined) {
         const role = user.staff.role;
-        console.log('Staff role:', user.staff.role_name);
 
         switch (role) {
           case 0:
@@ -90,9 +106,8 @@ export class DashboardComponent {
             break;
         }
       } else if (isSupplier) {
-        // Jika user adalah supplier
-        this.loadDataSupplierQuotation();
-        this.loadDataPurchaseOrder();
+        this.loadDataSupplierQuotationForSupplier();
+        this.loadDataPurchaseOrderSupplier();
       }
     });
   }
@@ -134,6 +149,50 @@ export class DashboardComponent {
             ? Math.ceil(this.totalRecords / this.rows)
             : 1;
         this.purchaseOrders = res.data.purchase_orders;
+        this.newPurchaseOrderCount = this.purchaseOrders.filter(
+          (po) => po.status === 0,
+        ).length;
+      });
+  }
+
+  loadDataPurchaseOrderSupplier(page: number = 0) {
+    this.loading = true;
+    this.layoutService.setSearchConfig({
+      loading: true,
+    });
+
+    const supplierFilter = `supplier_id=${this.user?.supplier.id ?? ''}`;
+
+    let dataListParameter: DataListParameter = {} as DataListParameter;
+    dataListParameter.rows = this.rows;
+    dataListParameter.page = this.page;
+    dataListParameter.filterObj = supplierFilter;
+
+    this.purchaseOrderService
+      .getPurchaseOrders(dataListParameter)
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe({
+        next: (res: any) => {
+          this.totalPurchaseOrderSuppliers = res.data.count;
+          this.totalPages =
+            this.totalRecords > this.rows
+              ? Math.ceil(this.totalRecords / this.rows)
+              : 1;
+          this.purchaseOrders = res.data.purchase_orders;
+          this.loading = false;
+          this.layoutService.setSearchConfig({
+            loading: false,
+          });
+          this.newPurchaseOrderForSupplierCount = this.purchaseOrders.filter(
+            (po) => po.status === 0,
+          ).length;
+        },
+        error: (err: any) => {
+          this.loading = false;
+          this.layoutService.setSearchConfig({
+            loading: false,
+          });
+        },
       });
   }
 
@@ -154,6 +213,10 @@ export class DashboardComponent {
             ? Math.ceil(this.totalRecords / this.rows)
             : 1;
         this.purchaseRequests = res.data.purchase_requests;
+
+        this.newPurchaseRequestCount = this.purchaseRequests.filter(
+          (pr) => pr.status === 0,
+        ).length;
       });
   }
 
@@ -213,7 +276,53 @@ export class DashboardComponent {
             ? Math.ceil(this.totalRecords / this.rows)
             : 1;
         this.supplierQuotations = res.data.supplier_quotations;
+        this.newSupplierQuotationCount = this.supplierQuotations.filter(
+          (sq) => sq.status === 0,
+        ).length;
       });
+  }
+
+  loadDataSupplierQuotationForSupplier(page: number = 0) {
+    this.loading = true;
+    const user =
+      typeof this.user === 'string' ? JSON.parse(this.user) : this.user;
+    const supplierId = user?.supplier?.id;
+
+    if (!supplierId) {
+      console.error('Supplier ID not found.');
+      this.loading = false;
+      return;
+    }
+
+    // Filter supplier_id
+    const supplierFilter = `supplier_id=${supplierId}`;
+    const dataListParameter: DataListParameter = {
+      page: this.page,
+      rows: this.rows,
+      sortBy: 'order_by=id&direction=desc',
+      filterObj: supplierFilter,
+    };
+
+    this.supplierQuotationService
+      .getSupplierQuotations(dataListParameter)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(
+        (res: any) => {
+          this.loading = false;
+          this.totalSupplierQuotationForSupplier = res.data.count;
+          this.totalPages =
+            this.totalSupplierQuotationForSupplier > this.rows
+              ? Math.ceil(this.totalSupplierQuotationForSupplier / this.rows)
+              : 1;
+          this.supplierQuotations = res.data.supplier_quotations;
+          this.newSupplierQuotationForSupplierCount =
+            this.supplierQuotations.filter((sq) => sq.status === 0).length;
+        },
+        (error) => {
+          console.error('Error loading supplier quotations:', error);
+          this.loading = false;
+        },
+      );
   }
 
   loadDataProduct(page: number = 0) {

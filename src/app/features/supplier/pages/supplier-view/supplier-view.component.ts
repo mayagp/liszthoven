@@ -104,7 +104,7 @@ export class SupplierViewComponent {
     private ability: PureAbility,
     private fcDirtyStateService: FcDirtyStateService,
   ) {
-    this.supplier.id = String(this.route.snapshot.paramMap.get('id'));
+    this.supplier.id = Number(this.route.snapshot.paramMap.get('id'));
     this.actionButtons[0].hidden = !this.ability.can('update', 'supplier');
     this.actionButtons[1].hidden = !this.ability.can('delete', 'supplier');
     this.layoutService.setHeaderConfig({
@@ -117,7 +117,7 @@ export class SupplierViewComponent {
       name: new FormControl('', Validators.required),
       email: new FormControl('', Validators.required),
       address: new FormControl(''),
-      phone_no: new FormControl(''),
+      phone_no: new FormControl('', Validators.required),
       supplier: new FormGroup({
         tax_no: new FormControl(''),
         total_payable: new FormControl(''),

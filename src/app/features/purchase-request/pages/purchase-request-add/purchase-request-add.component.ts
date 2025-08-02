@@ -7,6 +7,7 @@ import {
   FormControl,
   Validators,
   FormArray,
+  AbstractControl,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { PureAbility } from '@casl/ability';
@@ -38,6 +39,8 @@ import { FcCurrencyPipe } from '../../../../shared/pipes/fc-currency.pipe';
 import { DatePickerModule } from 'primeng/datepicker';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { ToastModule } from 'primeng/toast';
+import { AuthService } from '../../../auth/services/auth.service';
+import { User } from '../../../user/interfaces/user';
 
 @Component({
   selector: 'app-purchase-request-add',
@@ -86,6 +89,34 @@ export class PurchaseRequestAddComponent {
   purchaseRequestForm: FormGroup;
   loading = false;
 
+  user: any = {} as User;
+
+  isDarkMode =
+    window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  lightInputStyle = {
+    backgroundColor: '#ffffff',
+    border: '1px solid #d1d5db',
+    color: '#000000',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
+
+  darkInputStyle = {
+    backgroundColor: '#27272a',
+    border: '1px solid #3f3f46',
+    color: '#ffffff',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
+
   constructor(
     private layoutService: LayoutService,
     private purchaseRequestService: PurchaseRequestService,
@@ -96,6 +127,7 @@ export class PurchaseRequestAddComponent {
     private router: Router,
     private fcDirtyStateService: FcDirtyStateService,
     private ability: PureAbility,
+    private authService: AuthService,
   ) {
     this.actionButtons[0].hidden = !this.ability.can(
       'create',
@@ -121,6 +153,26 @@ export class PurchaseRequestAddComponent {
     }, 1);
     this.generateAutoNumber();
     this.layoutService.setSearchConfig({ hide: true });
+
+    this.authService.currentUserDataSubject.subscribe((user) => {
+      if (user) {
+        this.user = user;
+
+        let parsedUser: any = user;
+        if (typeof user === 'string') {
+          try {
+            parsedUser = JSON.parse(user);
+          } catch (e) {
+            console.error('Failed to parse user JSON:', e);
+          }
+        }
+
+        const userBranch = parsedUser.staff?.branch;
+        if (userBranch) {
+          this.purchaseRequestForm.get('branch')?.setValue(userBranch);
+        }
+      }
+    });
   }
 
   ngAfterContentInit(): void {}
@@ -128,6 +180,14 @@ export class PurchaseRequestAddComponent {
     this.destroy$.next();
     this.destroy$.complete();
     this.layoutService.setSearchConfig({ hide: false });
+  }
+
+  hasRequiredValidator(controlName: string): boolean {
+    const control = this.purchaseRequestForm.get(controlName);
+    if (!control || !control.validator) return false;
+
+    const validator = control.validator({} as AbstractControl);
+    return validator && validator['required'];
   }
 
   isShowPurchaseRequestDetailSummary: boolean = false;

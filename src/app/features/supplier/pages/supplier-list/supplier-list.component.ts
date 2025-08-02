@@ -91,8 +91,8 @@ export class SupplierListComponent {
     filterFields: [],
     sort: {
       fields: [
-        { name: 'name', header: 'Name' },
-        { name: 'address', header: 'Address' },
+        { name: 'user-name', header: 'Name' },
+        { name: 'user-address', header: 'Address' },
       ],
       selectedField: 'id',
       direction: 'desc',

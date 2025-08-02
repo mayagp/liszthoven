@@ -17,7 +17,7 @@
     >
       <div class="flex flex-1 flex-col">
         <p
-          class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+          class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-900 dark:text-white"
         >
           Purchase Invoice
         </p>
@@ -37,16 +37,14 @@
           [maxFractionDigits]="0"
           formControlName="amount_allocated"
           placeholder="Enter Amount Allocated"
-          [inputStyle]="{
-            'background-color': '#27272a',
-            border: '1px solid #3f3f46',
-            color: '#ffffff',
-            'font-size': '12px',
+          [inputStyle]="isDarkMode ? darkInputStyle : lightInputStyle"
+          [style]="{
+            backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
           }"
         />
         <label
           for="amount_allocated"
-          style="font-weight: 500 !important; color: #ffffff99 !important"
+          [ngStyle]="{ color: isDarkMode ? '#ffffff' : '#1f2937' }"
           >Amount Allocated</label
         >
       </p-iftalabel>

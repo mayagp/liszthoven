@@ -14,16 +14,20 @@
     <div class="space-y-3">
       <div class="purhcase-invoice-search mb-4 flex gap-2">
         <span class="p-input-icon-left w-full">
-          <input
-            pInputText
-            type="text"
-            class="p-input h-8 w-full text-xs"
-            placeholder="Search Purchase Invoice"
-            [(ngModel)]="searchQuery"
-            fcDebounceKeyup
-            (onEvent)="search()"
-          />
-          <i class="pi pi-search"></i>
+          <label
+            for="searchInput"
+            class="relative flex w-full items-center gap-1 rounded-md bg-zinc-100/70 px-2 text-xs dark:bg-zinc-800"
+          >
+            <fa-icon [fixedWidth]="true" [icon]="faSearch"></fa-icon>
+            <input
+              pInputText
+              type="text"
+              class="p-input h-8 w-full text-xs px-1 bg-zinc-100/70 dark:bg-zinc-800 rounded-md focus:outline-none focus:ring-0 focus:border-transparent"
+              placeholder="Search Purchase Invoice"
+              [(ngModel)]="searchQuery"
+              fcDebounceKeyup
+              (onEvent)="search()"
+          /></label>
         </span>
         <button
           type="button"
@@ -125,7 +129,7 @@
       >
         <div class="flex flex-1 flex-col">
           <p
-            class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-700 dark:text-white/60"
+            class="m-0 block p-0 text-xs font-medium leading-5 text-zinc-900 dark:text-white"
           >
             Purchase Invoice
           </p>
@@ -151,17 +155,20 @@
             [maxFractionDigits]="0"
             formControlName="amount_allocated"
             placeholder="Enter Amount Allocated"
-            [inputStyle]="{
-              'background-color': '#27272a',
-              border: '1px solid #3f3f46',
-              color: '#ffffff',
-              'font-size': '12px',
+            [inputStyle]="isDarkMode ? darkInputStyle : lightInputStyle"
+            [style]="{
+              backgroundColor: isDarkMode ? '#27272a' : '#ffffff',
             }"
           />
           <label
             for="amount_allocated"
-            style="font-weight: 500 !important; color: #ffffff99 !important"
-            >Amount Allocated</label
+            [ngStyle]="{ color: isDarkMode ? '#ffffff' : '#1f2937' }"
+            >Amount Allocated
+            <span
+              *ngIf="hasRequiredValidator('amount_allocated')"
+              class="required-asterisk"
+              >*</span
+            ></label
           >
         </p-iftalabel>
       </div>

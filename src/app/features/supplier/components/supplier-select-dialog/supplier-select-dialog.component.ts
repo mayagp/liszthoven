@@ -20,6 +20,7 @@ import { SupplierService } from '../../services/supplier.service';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProgressSpinner } from 'primeng/progressspinner';
+import { PaginatorModule } from 'primeng/paginator';
 
 @Component({
   selector: 'app-supplier-select-dialog',
@@ -30,6 +31,7 @@ import { ProgressSpinner } from 'primeng/progressspinner';
     FormsModule,
     ReactiveFormsModule,
     ProgressSpinner,
+    PaginatorModule,
   ],
   templateUrl: './supplier-select-dialog.component.html',
   styleUrl: './supplier-select-dialog.component.css',
@@ -56,6 +58,7 @@ export class SupplierSelectDialogComponent
   page = 1;
   rows = 10;
   title = '';
+  Math = Math;
 
   fcFilterConfig: FcFilterConfig = {
     filterFields: [],
@@ -129,16 +132,10 @@ export class SupplierSelectDialogComponent
       });
   }
 
-  onPageUpdate(pagination: any) {
-    let page = pagination.page;
-    let rows = pagination.rows;
-    this.rows = rows;
-    if (page > 0) {
-      this.page = page;
-    } else {
-      this.page = 1;
-    }
-    this.loadData(this.page);
+  onPageUpdate(event: any) {
+    this.rows = event.rows;
+    this.page = Math.floor(event.first / event.rows) + 1;
+    this.loadData();
   }
 
   search() {

@@ -7,6 +7,7 @@ import {
   FormControl,
   Validators,
   FormArray,
+  AbstractControl,
 } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
@@ -89,7 +90,7 @@ export class GoodsReceiptDetailAddDialogComponent {
     this.goodsReceiptDetailForm = new FormGroup({
       product: new FormControl(null, Validators.required),
       quantity: new FormControl(0, Validators.required),
-      gr_serial_numbers: new FormArray([]),
+      gr_serial_numbers: new FormArray([], Validators.required),
     });
 
     if (this.config.data.goodsReceiptDetail) {
@@ -146,11 +147,19 @@ export class GoodsReceiptDetailAddDialogComponent {
     if (this.goodsReceiptDetailForm.value.product.type == 0) {
       for (let i = 0; i < this.goodsReceiptDetailForm.value.quantity; i++) {
         let serialForm = new FormGroup({
-          serial_number: new FormControl(''),
+          serial_number: new FormControl('', Validators.required),
         });
         this.serialNumbers.push(serialForm);
       }
     }
+  }
+
+  hasRequiredValidator(controlName: string): boolean {
+    const control = this.goodsReceiptDetailForm.get(controlName);
+    if (!control || !control.validator) return false;
+
+    const validator = control.validator({} as AbstractControl);
+    return validator && validator['required'];
   }
 
   removeProduct() {

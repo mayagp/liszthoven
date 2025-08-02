@@ -28,6 +28,7 @@ import { FcCurrencyPipe } from '../../../../shared/pipes/fc-currency.pipe';
 import { SupplierQuotationViewComponent } from '../supplier-quotation-view/supplier-quotation-view.component';
 import { PaginatorModule } from 'primeng/paginator';
 import { ProgressSpinner } from 'primeng/progressspinner';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-supplier-quotation-list',
@@ -92,9 +93,10 @@ export class SupplierQuotationListComponent {
       {
         options: [
           { name: 'All', value: null },
-          { name: 'Pending', value: 0 },
-          { name: 'Approved', value: 1 },
-          { name: 'Cancelled', value: 2 },
+          { name: 'Requested', value: 0 },
+          { name: 'Offered', value: 1 },
+          { name: 'Approved', value: 2 },
+          { name: 'Rejected', value: 3 },
         ],
         selectedValue: null,
         optionLabel: 'Status',
@@ -117,6 +119,8 @@ export class SupplierQuotationListComponent {
   rows = 10;
   searchQuery: string = '';
   Math = Math;
+  supplierId: number | null = null;
+  isSupplier: boolean = false;
 
   supplierQuotations: SupplierQuotation[] = [];
   selectedSupplierQuotation: SupplierQuotation | undefined;
@@ -129,6 +133,7 @@ export class SupplierQuotationListComponent {
     private fcFilterDialogService: FcFilterDialogService,
     private dialogService: DialogService,
     private ability: PureAbility,
+    private authService: AuthService,
   ) {
     this.actionButtons[0].hidden = !this.ability.can(
       'create',
@@ -173,20 +178,46 @@ export class SupplierQuotationListComponent {
   }
 
   ngOnInit(): void {
-    // initial load Data
-    this.loadData();
-    // load data when search
+    this.authService.currentUserDataSubject
+      .pipe(take(1))
+      .subscribe((userString) => {
+        let userObj = null;
+        try {
+          userObj =
+            typeof userString === 'string'
+              ? JSON.parse(userString)
+              : userString;
+        } catch (error) {
+          userObj = null;
+          console.error('Error parsing user JSON:', error);
+        }
+        this.supplierId = userObj?.supplier?.id || null;
+        this.isSupplier = !!this.supplierId;
+
+        if (this.isSupplier) {
+          this.loadDataBySupplier();
+        } else {
+          this.loadData();
+        }
+      });
+
+    // Setup search config dan subscription seperti biasa
     this.layoutService.setSearchConfig({
       hide: false,
       featureName: 'supplier quotation',
     });
+
     this.layoutService.searchConfigSubject
       .pipe(takeUntil(this.destroy$))
       .subscribe((config) => {
-        if (config.featureName == 'supplier quotation') {
-          if (this.searchQuery != config.searchQuery) {
+        if (config.featureName === 'supplier quotation') {
+          if (this.searchQuery !== config.searchQuery) {
             this.searchQuery = config.searchQuery;
-            this.loadData();
+            if (this.isSupplier) {
+              this.loadDataBySupplier();
+            } else {
+              this.loadData();
+            }
           }
         }
       });
@@ -299,6 +330,58 @@ export class SupplierQuotationListComponent {
         },
       });
   }
+  loadDataBySupplier() {
+    this.setParam();
+    this.loading = true;
+    this.layoutService.setSearchConfig({ loading: true });
+
+    let dataListParameter: DataListParameter = {} as DataListParameter;
+    dataListParameter.rows = this.rows;
+    dataListParameter.page = this.page;
+    dataListParameter.sortBy = this.fcFilterDialogService.getSortString(
+      this.fcFilterConfig,
+    );
+    dataListParameter.filterObj = this.fcFilterDialogService.getFilterString(
+      this.fcFilterConfig,
+    );
+    dataListParameter.searchQuery = this.searchQuery;
+
+    // Tambah filter supplier_id khusus untuk supplier
+    if (this.supplierId) {
+      if (dataListParameter.filterObj) {
+        dataListParameter.filterObj += `,supplier_id=${this.supplierId}`;
+      } else {
+        dataListParameter.filterObj = `supplier_id=${this.supplierId}`;
+      }
+    }
+
+    this.supplierQuotationService
+      .getSupplierQuotations(dataListParameter)
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe({
+        next: (res: any) => {
+          this.totalRecords = res.data.count;
+          this.totalPages =
+            this.totalRecords > this.rows
+              ? Math.ceil(this.totalRecords / this.rows)
+              : 1;
+          this.supplierQuotations = res.data.supplier_quotations;
+
+          if (
+            !this.selectedSupplierQuotation &&
+            this.supplierQuotations.length > 0
+          ) {
+            this.selectedSupplierQuotation = this.supplierQuotations[0];
+          }
+          this.loading = false;
+          this.layoutService.setSearchConfig({ loading: false });
+        },
+        error: () => {
+          this.loading = false;
+          this.layoutService.setSearchConfig({ loading: false });
+        },
+      });
+  }
 
   onPageUpdate(event: any) {
     this.rows = event.rows;
@@ -315,8 +398,10 @@ export class SupplierQuotationListComponent {
       case 0:
         return 'border border-gray-600 dark:border-gray-700 bg-gray-100 dark:bg-gray-700/20 text-gray-500';
       case 1:
-        return 'border border-green-600 dark:border-green-700 bg-green-100 dark:bg-green-700/20 text-green-500';
+        return 'border border-blue-600 dark:border-blue-700 bg-blue-100 dark:bg-blue-700/20 text-blue-500';
       case 2:
+        return 'border border-green-600 dark:border-green-700 bg-green-100 dark:bg-green-700/20 text-green-500';
+      case 3:
         return 'border border-red-600 dark:border-red-700 bg-red-100 dark:bg-red-700/20 text-red-500';
       default:
         return '';

@@ -14,6 +14,7 @@ import {
   FormControl,
   Validators,
   FormArray,
+  AbstractControl,
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { PureAbility } from '@casl/ability';
@@ -164,6 +165,32 @@ export class PurchaseInvoiceViewComponent {
   loading = true;
 
   purchaseInvoiceForm: FormGroup;
+
+  isDarkMode =
+    window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  lightInputStyle = {
+    backgroundColor: '#ffffff',
+    border: '1px solid #d1d5db',
+    color: '#000000',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
+
+  darkInputStyle = {
+    backgroundColor: '#27272a',
+    border: '1px solid #3f3f46',
+    color: '#ffffff',
+    fontSize: '12px',
+    lineHeight: '1.7',
+    '::placeholder': {
+      color: '#9ca3af',
+    },
+  };
   constructor(
     private layoutService: LayoutService,
     private purchaseInvoiceService: PurchaseInvoiceService,
@@ -190,8 +217,8 @@ export class PurchaseInvoiceViewComponent {
       due_date: new FormControl(null, Validators.required),
       tax: new FormControl(null, Validators.required),
       note: new FormControl(null),
-      supplier: new FormControl(null),
-      branch: new FormControl(null),
+      supplier: new FormControl(null, Validators.required),
+      branch: new FormControl(null, Validators.required),
       shipping_cost: new FormControl(null),
       purchase_invoice_details: new FormArray([]),
       purchase_invoice_documents: new FormArray([]),
@@ -213,6 +240,14 @@ export class PurchaseInvoiceViewComponent {
     this.destroy$.next();
     this.destroy$.complete();
     this.layoutService.setSearchConfig({ hide: false });
+  }
+
+  hasRequiredValidator(controlName: string): boolean {
+    const control = this.purchaseInvoiceForm.get(controlName);
+    if (!control || !control.validator) return false;
+
+    const validator = control.validator({} as AbstractControl);
+    return validator && validator['required'];
   }
 
   loadPurchaseOrder = false;
